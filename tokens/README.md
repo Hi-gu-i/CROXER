@@ -1,67 +1,53 @@
-# MYA design tokens
+# MYA 디자인 토큰
 
-화면을 만들 때 어떤 토큰을 쓰는지는 [design-token-guide.md](./design-token-guide.md)를 따른다.
+CROXER 화면에서 쓰는 색, 간격, 둥글기, 글자, 그림자 값을 모아 둔 폴더다. 화면을 만들 때 어떤 토큰을 고르는지는 [UI 가이드](../docs/ui-guide.md)를 따른다. 이 문서는 토큰 파일을 고치는 사람이 출처와 변환 규칙을 확인하는 용도다.
 
-Source: Figma file `🤖 MYA_Design-System`, Foundation page, section `style guide`.
+출처는 Figma 파일 `🤖 MYA_Design-System`, Foundation 페이지의 `style guide` 섹션이다.
 
-- `design-tokens.json`: platform-neutral, DTCG-style source tokens with aliases.
-- `design-tokens.css`: ready-to-use CSS custom properties.
+| 파일 | 내용 |
+| --- | --- |
+| `design-tokens.json` | 토큰 원본. 특정 플랫폼에 묶이지 않는 DTCG 형식이고, semantic 토큰은 primitive를 별칭으로 가리킨다. |
+| `design-tokens.css` | 화면 코드에서 바로 쓰는 CSS 변수. `src/index.css`에서 한 번 불러온다. |
 
-Colors follow the local variable libraries (`♢ Color Primitive`, `♢ Color Semantic`).
-Text styles follow the local text styles (`ios/*`, `mac/*`). Effects follow the
-local effect styles. The style-guide swatches are bound to the color variables and
-their labels show the variable values.
+색은 Figma 로컬 변수 컬렉션(`♢ Color Primitive`, `♢ Color Semantic`)을 따른다. 텍스트 스타일은 로컬 텍스트 스타일(`ios/*`, `mac/*`), 그림자와 유리 효과는 로컬 효과 스타일을 따른다. 스타일 가이드의 색 칩은 색 변수에 연결되어 있고, 칩 라벨에는 변수 값이 적혀 있다.
 
-## Source coverage
+## 가져온 범위
 
-- 5 local variable collections
-- 176 variables inside those collections
-- 23 local text styles
-- 7 local effect styles
-- Color primitives and semantic aliases, including mint, violet, muted, and opacity
-- Padding, gap, radius primitives and semantic aliases
-- Typography primitives and iOS/macOS composite text styles
-- Shadow, glass, and background-blur effects
+- 로컬 변수 컬렉션 5개, 그 안의 변수 176개
+- 로컬 텍스트 스타일 23개
+- 로컬 효과 스타일 7개
+- 색 primitive와 semantic 별칭. mint, violet, muted, 투명도 포함
+- padding, gap, radius primitive와 semantic 별칭
+- 글자 primitive와 iOS·macOS 텍스트 스타일
+- 그림자, 유리, 배경 블러 효과
 
-All source collections currently contain one mode (`Mode 1`). Figma's typography
-`Spacing/*` variables represent letter spacing, so they are stored under
-`typography.primitive.letterSpacing`, not layout spacing.
+## 변환 규칙
 
-Each Figma text style is bound to typography variables, so composite text tokens
-reference the matching primitives (`var(--font-size-*)`, `{typography.primitive.*}`)
-instead of copying numbers.
+모든 컬렉션은 현재 모드가 하나(`Mode 1`)다.
 
-Shadow effects use the `LINEAR_BURN` blend mode in Figma; CSS `box-shadow` renders
-them with normal blending. Figma `GLASS` effects have no CSS equivalent, so the CSS
-tokens approximate them with `backdrop-filter: blur()` using the effect radius.
+Figma 글자 변수 `Spacing/*`는 레이아웃 간격이 아니라 자간이다. 그래서 `typography.primitive.letterSpacing`에 넣었다.
 
-The source names `Weight/weignt-*` contain a typo. Token paths normalize this to
-`fontWeight`, and the source strings `Regular` / `Medium` / `Semibold` / `Bold`
-are stored as CSS weights `400` / `500` / `600` / `700`. Figma's `SemiBold` text
-style is weight `600`. Opacity source names `Wpacity`, `Bpacity`, and `Cpacity`
-are stored as `opacity.white`, `opacity.black`, and `opacity.color`.
+Figma 텍스트 스타일은 모두 글자 변수에 묶여 있다. 그래서 텍스트 스타일 토큰도 숫자를 복사하지 않고 해당 primitive를 참조한다. CSS는 `var(--font-size-*)`, JSON은 `{typography.primitive.*}` 형식이다.
 
-## Webfont
+Figma 그림자는 `LINEAR_BURN` 혼합 모드를 쓰지만, CSS `box-shadow`는 일반 혼합으로 그린다. Figma `GLASS` 효과는 CSS에 대응하는 속성이 없어서, 효과의 반경을 `backdrop-filter: blur()`에 넣어 비슷하게 만들었다.
 
-`design-tokens.css` imports Wanted Sans v1.0.3 from jsDelivr
-(`wanteddev/wanted-sans`, static split build, SIL Open Font License 1.1). The
-stylesheet registers the family `"Wanted Sans"` with weights 400–1000 and splits
-each weight by Unicode range, so browsers download only the subsets a page uses.
-The version is pinned; update the `@import` tag to move to a newer release.
+Figma 변수 이름 `Weight/weignt-*`에는 오타가 있다. 토큰 경로는 `fontWeight`로 바로잡았고, 값 `Regular` / `Medium` / `Semibold` / `Bold`는 CSS 굵기 `400` / `500` / `600` / `700`으로 바꿨다. Figma 텍스트 스타일의 `SemiBold`도 `600`이다. 투명도 변수 이름 `Wpacity`, `Bpacity`, `Cpacity`는 `opacity.white`, `opacity.black`, `opacity.color`로 넣었다.
 
-## CSS usage
+## 웹폰트
 
-```css
-.card {
-  padding: var(--padding-card-md);
-  gap: var(--gap-md);
-  border-radius: var(--radius-card-md);
-  color: var(--color-text-primary);
-  background: var(--color-surface-default);
-}
+`design-tokens.css`는 맨 위에서 Wanted Sans v1.0.3 웹폰트를 jsDelivr에서 불러온다. 공식 저장소 `wanteddev/wanted-sans`의 static split 빌드이고, 라이선스는 SIL Open Font License 1.1이다. 글꼴 이름 `"Wanted Sans"`로 굵기 400–1000을 등록하고, 굵기마다 글자 범위별로 파일이 나뉘어 있어서 브라우저는 화면에 쓰인 글자 묶음만 받는다.
 
-.title {
-  font: var(--type-ios-title-large-font);
-  letter-spacing: var(--type-ios-title-large-tracking);
-}
-```
+버전을 고정해 두었으므로 새 버전으로 올릴 때는 `@import` 주소의 버전 태그를 바꾸고 화면에서 글꼴을 확인한다.
+
+## 토큰을 고칠 때
+
+1. Figma 변수, 텍스트 스타일, 효과 스타일을 먼저 확인한다.
+2. `design-tokens.json`과 `design-tokens.css`를 같은 PR에서 함께 고친다. CSS만 고치면 두 파일 값이 달라진다.
+3. 값이나 토큰 이름이 바뀌면 [UI 가이드](../docs/ui-guide.md)의 표와 이 문서의 `가져온 범위`도 고친다.
+4. 바뀐 토큰을 쓰는 화면을 PR의 `확인 방법`에 적는다.
+
+## 변경 이력
+
+| 버전 | 날짜 | 수정자 | 수정 내용과 이유 |
+| --- | --- | --- | --- |
+| 1.0 | 2026-11-11 | Cursor AI · 김민선 요청 | MYA 디자인 토큰의 출처, 변환 규칙, 웹폰트, 수정 절차 등록. 팀 문서 규칙에 맞춰 한국어로 작성하고 사용 기준은 `docs/ui-guide.md`로 분리 |

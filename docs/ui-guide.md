@@ -1,26 +1,25 @@
-# MYA Design Token 가이드
+# CROXER UI 가이드
 
-화면을 코드로 만들 때 색, 간격, 둥글기, 글자를 이 문서의 토큰으로만 맞춘다. 값(`#4146fd`, `16px`)을 직접 적지 않는다. 토큰 이름을 그대로 쓰면 Figma Foundation의 스타일 가이드와 같은 결과가 나온다.
+CROXER 화면의 색, 간격, 둥글기, 글자, 그림자를 MYA 디자인 토큰으로 맞추는 기준이다. 화면을 만들거나 고치는 팀원과 AI는 이 문서의 토큰만 쓰고, 값(`#4146fd`, `16px`)을 직접 적지 않는다. 토큰 이름을 그대로 쓰면 Figma Foundation의 스타일 가이드와 같은 결과가 나온다.
 
 색은 Figma에 등록된 Color Primitive, Color Semantic 변수를 따른다. 글자는 로컬 텍스트 스타일 `ios/*`, `mac/*`, 그림자와 유리 효과는 로컬 효과 스타일을 따른다. 스타일 가이드의 색 칩은 변수에 연결되어 있고, 칩의 이름과 hex는 이 문서의 값과 같다.
 
-원본은 Figma 파일 `🤖 MYA_Design-System`, Foundation 페이지의 `style guide`다. 코드에서 쓰는 파일은 `tokens/design-tokens.css`다.
+원본은 Figma 파일 `🤖 MYA_Design-System`, Foundation 페이지의 `style guide`다. 코드에서 쓰는 파일은 [`tokens/design-tokens.css`](../tokens/design-tokens.css)이고, 토큰 파일의 출처와 변환 규칙은 [`tokens/README.md`](../tokens/README.md)에 있다. 기본 카드와 버튼 같은 공통 부품 기준은 정해지면 이 문서에 추가한다.
 
 ## 파일을 연결한다
 
-스타일시트 맨 앞에서 토큰 파일을 불러온다.
-
-```html
-<link rel="stylesheet" href="tokens/design-tokens.css" />
-```
+토큰은 앱 전체에 적용되는 `src/index.css` 맨 위에서 한 번만 불러온다. 기능 폴더의 CSS나 컴포넌트에서는 다시 불러오지 않고 `var(--…)`로 바로 쓴다.
 
 ```css
+/* src/index.css 맨 위 */
 @import "../tokens/design-tokens.css";
 ```
 
+`src/index.css`는 여러 작업이 함께 쓰는 전역 CSS다. 이 연결을 추가하거나 바꿀 때는 [개발 가이드](dev-guide.md)에 따라 통합 담당과 순서를 맞추고, `npm run build`와 실제 화면에서 토큰과 글꼴이 적용되는지 확인한다.
+
 글꼴 가족은 `Wanted Sans`다. `design-tokens.css`가 맨 위에서 Wanted Sans 웹폰트(v1.0.3, jsDelivr)를 불러오므로, 토큰 파일만 연결하면 폰트가 설치되지 않은 방문자에게도 같은 글꼴로 보인다. 폰트를 따로 로드하거나 다른 웹폰트 링크를 추가하지 않는다.
 
-웹폰트는 글자 범위별로 나뉘어 있어서 브라우저는 화면에 쓰인 글자 묶음만 받는다. 첫 화면에서 글꼴이 늦게 바뀌는 것이 보이면 HTML `<head>`에 아래 줄을 토큰 링크보다 먼저 넣는다.
+웹폰트는 글자 범위별로 나뉘어 있어서 브라우저는 화면에 쓰인 글자 묶음만 받는다. 첫 화면에서 글꼴이 늦게 바뀌는 것이 보이면 `index.html`의 `<head>`에 아래 줄을 넣는다. `index.html`도 공용 파일이므로 통합 담당과 확인한다.
 
 ```html
 <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
@@ -180,7 +179,7 @@ padding·gap·radius는 숫자가 같아도 px가 다르다. `--padding-200`은 
 텍스트 스타일은 `font`와 `letter-spacing` 한 쌍이다. 크기만 따로 적지 않는다.
 
 ```css
-.title {
+.briefing-page-title {
   font: var(--type-ios-title-large-font);
   letter-spacing: var(--type-ios-title-large-tracking);
 }
@@ -275,11 +274,11 @@ Figma 효과 스타일 7개에 대응한다. 그림자는 `box-shadow`, 유리·
 | `--effect-blur-background-backdrop` | `blur(16px)` | `BlurBackground` | 배경 블러 |
 
 ```css
-.card {
+.activity-memory-card {
   box-shadow: var(--shadow-card);
 }
 
-.tab-glass--active {
+.role-switch-tab-active {
   backdrop-filter: var(--effect-glass-active-backdrop);
   box-shadow: var(--effect-glass-active-shadow);
 }
@@ -289,14 +288,16 @@ CSS로는 Figma와 똑같이 나오지 않는 부분이 두 가지 있다. Figma
 
 ## 이렇게 작성한다
 
+클래스 이름은 [개발 가이드](dev-guide.md)의 이름 규칙을 따른다. 아래 예시는 쓰이는 화면이나 부품 이름을 넣은 소문자·하이픈 클래스다.
+
 ```css
-.screen {
+.app-shell {
   padding: var(--padding-ios-y) var(--padding-ios-x);
   background: var(--color-bg-subtle);
   color: var(--color-text-primary);
 }
 
-.card {
+.activity-memory-card {
   display: flex;
   flex-direction: column;
   gap: var(--gap-md);
@@ -306,18 +307,18 @@ CSS로는 Figma와 똑같이 나오지 않는 부분이 두 가지 있다. Figma
   background: var(--color-surface-default);
 }
 
-.card h2 {
+.activity-memory-card-title {
   font: var(--type-ios-title-medium-font);
   letter-spacing: var(--type-ios-title-medium-tracking);
 }
 
-.card p {
+.activity-memory-card-condition {
   font: var(--type-ios-body-medium-font);
   letter-spacing: var(--type-ios-body-medium-tracking);
   color: var(--color-text-secondary);
 }
 
-.button {
+.primary-button {
   padding: var(--padding-control-y) var(--padding-control-x);
   border: 0;
   border-radius: var(--radius-control);
@@ -327,21 +328,21 @@ CSS로는 Figma와 똑같이 나오지 않는 부분이 두 가지 있다. Figma
   letter-spacing: var(--type-ios-body-strong-tracking);
 }
 
-.button:active {
+.primary-button:active {
   background: var(--color-brand-pressed);
 }
 ```
 
 `1px` 테두리 두께처럼 이 시스템에 스케일이 없는 값만 숫자로 둔다. 색, 여백, 둥글기, 글자 크기·굵기·줄높이·자간은 토큰이다.
 
-## 바이브코딩에 붙이는 지시
+## AI에게 전달하는 지시
 
-아래 블록을 프롬프트나 프로젝트 규칙에 그대로 붙인다.
+CROXER 협업 가이드는 AI가 작업 전에 이 문서(`docs/ui-guide.md`)를 읽도록 안내한다. 그래서 CROXER 폴더에서 작업할 때는 아래 블록을 따로 붙이지 않아도 된다. 저장소를 열 수 없는 대화형 AI에게 화면 코드를 요청할 때만 프롬프트에 붙인다.
 
 ```text
-MYA 화면을 만들 때는 tokens/design-tokens.css의 커스텀 프로퍼티만 사용한다.
+CROXER 화면을 만들 때는 tokens/design-tokens.css의 커스텀 프로퍼티만 사용한다.
 
-- design-tokens.css를 먼저 불러온다. Wanted Sans 웹폰트는 이 파일이 불러오므로 폰트 링크나 @font-face를 따로 추가하지 않는다.
+- 토큰은 src/index.css에서 이미 불러온다. 기능 CSS에서 다시 불러오지 않는다. Wanted Sans 웹폰트도 토큰 파일이 불러오므로 폰트 링크나 @font-face를 따로 추가하지 않는다.
 - 색, padding, gap, radius, font, letter-spacing에 hex, rgb, 임의 px를 쓰지 않는다.
 - 화면 CSS에는 semantic 토큰만 쓴다. --color-blue-600, --padding-300, --radius-200 같은 primitive는 새 semantic을 정의할 때만 쓴다.
 - 배경은 --color-bg-default, --color-bg-subtle, --color-bg-brand. 카드 표면은 --color-surface-*. 글자는 --color-text-*, 선은 --color-border-*, 아이콘은 --color-icon-*, 브랜드 채움은 --color-brand-*, 성공·경고·오류는 --color-status-* 를 쓴다.
@@ -351,11 +352,12 @@ MYA 화면을 만들 때는 tokens/design-tokens.css의 커스텀 프로퍼티�
 - 모바일 글자는 --type-ios-*, 데스크톱 글자는 --type-mac-* 를 쓰고, font와 letter-spacing을 항상 같이 선언한다. iOS 작은 강조는 --type-ios-body-accent-* 다.
 - 그림자는 --shadow-card|line|glass, 유리·블러는 --effect-*-backdrop 을 backdrop-filter에 쓴다. 활성 유리는 --effect-glass-active-shadow 도 같이 쓴다. box-shadow 값을 직접 만들지 않는다.
 - 표에 없는 토큰이 필요하면 기존 primitive를 var()로 가리키는 semantic만 design-tokens.css에 추가한다. 새 색 값이나 새 px 스케일은 만들지 않는다.
+- CSS 클래스는 쓰이는 화면이나 부품 이름을 넣은 소문자·하이픈 이름으로 짓는다. 예: .activity-memory-card, .primary-button
 ```
 
 ## 토큰을 추가할 때
 
-semantic이 역할을 표현하지 못할 때만 `design-tokens.css`의 semantic 구역에 한 줄을 추가한다.
+semantic이 역할을 표현하지 못할 때만 `tokens/design-tokens.css`의 semantic 구역에 한 줄을 추가한다. 토큰은 여러 화면이 함께 쓰는 공용 파일이므로, 추가 이유와 영향을 받는 화면을 PR에 적는다.
 
 ```css
 --color-border-brand: var(--color-blue-600);
@@ -364,4 +366,11 @@ semantic이 역할을 표현하지 못할 때만 `design-tokens.css`의 semantic
 - 오른쪽은 반드시 기존 primitive 또는 기존 semantic이다.
 - 팔레트에 없는 색, 스케일에 없는 px는 추가하지 않는다.
 - 이름 순서는 `--{종류}-{역할}-{단계}`다. 종류는 `color`, `padding`, `gap`, `radius`, `type`, `shadow`, `effect`이다.
-- `design-tokens.json`을 함께 고친다. JSON이 원본이고 CSS는 그 값을 펼친 파일이다. JSON의 `{color.primitive.blue.600}` 별칭이 CSS의 `var(--color-blue-600)`이다.
+- `tokens/design-tokens.json`을 함께 고친다. JSON이 원본이고 CSS는 그 값을 펼친 파일이다. JSON의 `{color.primitive.blue.600}` 별칭이 CSS의 `var(--color-blue-600)`이다.
+- 이 문서의 표와 아래 `변경 이력`도 같은 PR에서 고친다.
+
+## 변경 이력
+
+| 버전 | 날짜 | 수정자 | 수정 내용과 이유 |
+| --- | --- | --- | --- |
+| 1.0 | 2026-11-11 | Cursor AI · 김민선 요청 | MYA 디자인 시스템 토큰의 사용 기준 등록. 협업 가이드가 디자인 기준으로 참조하는 `docs/ui-guide.md` 경로에 두고, CROXER 전역 CSS 연결 방법과 팀 이름 규칙에 맞춘 예시 반영 |
