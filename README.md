@@ -22,3 +22,17 @@ npm run build
 ```
 
 새 기능은 `main`에서 작업 브랜치를 만든 뒤 PR로 합칩니다. 새 AI 대화에는 [협업 시작 가이드](docs/collaboration-guide.md)와 이번에 하고 싶은 일을 전달하세요.
+
+## 팀 문서
+
+- [협업 가이드](docs/collaboration-guide.md)
+- [개발 환경과 이름 규칙](docs/dev-guide.md)
+- [UT 데이터 베이스라인](docs/ut-data-baseline.md)
+
+## 변경 이력
+
+| 버전 | 날짜 | 수정자 | 수정 내용과 이유 |
+| --- | --- | --- | --- |
+| 1.2 | 2026-11-11 | Codex · Hi-gu-i 요청 | 변경 이력 추가 및 저장소 내 문서 위치 안내 |
+| 1.1 | 2026-11-11 | JIYOO · GitHub 등록 | 팀원이 같은 앱을 실행할 수 있도록 설치·실행 및 검증 방법 추가 · [e025705](https://github.com/Hi-gu-i/CROXER/commit/e025705) |
+| 1.0 | 2026-11-11 | JIYOO · GitHub 등록 | CROXER 저장소 소개 작성 · [9071a77](https://github.com/Hi-gu-i/CROXER/commit/9071a77) |
