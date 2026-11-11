@@ -8,6 +8,12 @@
 - Node.js 버전은 [`.nvmrc`](../.nvmrc), npm 환경은 README를 따릅니다. 처음 설치하거나 의존성이 바뀌면 `npm ci`, 화면을 확인할 때는 `npm run dev`를 사용합니다. `package-lock.json`은 함께 관리합니다.
 - 새 라이브러리가 필요한 경우 사용 목적을 통합 담당과 확인하고 `package.json`과 `package-lock.json` 변경을 같은 PR에 담습니다. 코드 변경을 올리기 전에는 `npm run lint`, `npm run build`, 변경된 화면의 실제 동작을 확인합니다.
 
+## 화면, 저장 로직, 서버의 역할
+
+- 화면은 입력·클릭·화면 이동을 처리하고, 데이터가 필요한 경우 해당 기능의 저장·조회 함수에 요청합니다. 예를 들어 `ActivityMemoryCard.tsx`는 조건을 보여주고, `memoryStore.ts`는 활동 ID로 조건을 저장하고 불러옵니다. 브리핑도 같은 조회 함수를 사용합니다.
+- 첫 UT는 브라우저에서 가상 데이터를 불러오고 참가자의 변경을 해당 세션에 저장하는 구성을 기준으로 합니다. 데이터베이스 서버 없이도 참가자 초기화, 일정 수락 후 반영, 역할 간 데이터 분리를 재현할 수 있습니다. 가상 초기 데이터와 참가자가 변경한 세션 데이터는 구분합니다.
+- 팀이 실제 AI API 호출이나 여러 기기 간 저장을 검증하기로 하면 서버를 별도로 추가합니다. 첫 서버 코드가 생기면 같은 저장소에 `server/`를 두고, 서버가 받을 값과 화면에 돌려줄 값, 실패했을 때의 표시를 프론트 담당과 서버 담당이 합의합니다. API 키는 서버 쪽에서 관리합니다.
+
 ## 파일을 둘 위치
 
 현재 저장소에는 `src/main.tsx`, `src/App.tsx`, `src/index.css`가 있습니다. 아래 예시 폴더는 해당 기능이 처음 생길 때 만듭니다.
@@ -17,11 +23,19 @@
 | `src/main.tsx` | 브라우저에서 앱을 시작하는 코드 | React 앱 실행 |
 | `src/App.tsx` | 앱의 공통 화면 틀과 기능 화면 연결 | 홈에서 기억 화면 열기 |
 | `src/index.css` | 앱 전체에 적용되는 기본 스타일 | 기본 글꼴과 바깥 여백 |
-| `src/features/<기능명>/` | 기능 하나의 화면·스타일·로직 | `memory/ActivityMemoryCard.tsx`, `memory/memoryStore.ts` |
+| `src/features/<기능명>/` | 기능 하나의 화면·전용 스타일·로직 | `briefing/BriefingPage.tsx`, `briefing/briefing-page.module.css` |
 | `src/components/` | 둘 이상의 기능에서 쓰는 공통 UI | `PrimaryButton.tsx` |
+| `src/fixtures/` | UT 시작 상태를 만드는 가상 데이터 | `croxer-ut-baseline.v1.json` |
 | `docs/` | 기획, 디자인, 개발, 협업 기준 문서 | `dev-guide.md` |
 
 기능 한 곳에서만 쓰는 부품은 그 기능 폴더에 함께 둡니다. `src/App.tsx`, 전역 CSS, 공통 UI, 개발 설정을 여러 작업에서 수정해야 하면, 담당자를 정해 먼저 합칠 작업의 순서를 맞춥니다.
+
+첫 UT의 기능 폴더는 구현 순서에 맞춰 `setup/`, `home/`, `briefing/`, `schedule/`, `role-switch/`, `memory/` 등을 추가합니다. 예를 들어 브리핑 담당은 `features/briefing/`을, 역할 전환 담당은 `features/role-switch/`를 수정합니다. 여러 화면에서 쓰는 데이터는 소유 기능의 저장·조회 함수로 연결합니다.
+
+## 화면별 CSS
+
+- 화면이나 컴포넌트 전용 스타일은 해당 코드 옆의 `.module.css` 파일에 둡니다. 예를 들어 `BriefingPage.tsx`에서 `briefing-page.module.css`를 불러옵니다. 이렇게 하면 다른 담당자가 홈이나 스케줄을 꾸밀 때 브리핑 스타일이 섞이는 일을 줄일 수 있습니다.
+- 앱 전체의 기본 글꼴, 바깥 여백 초기화, 배경은 `src/index.css`에 둡니다. 공통 색상과 간격은 디자인 시스템에서 정한 값을 공유하고, 버튼처럼 여러 기능에서 쓰는 부품의 CSS는 해당 공통 컴포넌트 옆에 둡니다.
 
 ## 이름 짓기
 
@@ -34,7 +48,7 @@
 | TypeScript 로직 파일, 변수, 함수, 데이터 필드 | 첫 단어는 소문자, 다음 단어는 대문자로 시작 | `memoryStore.ts`, `saveActivityMemory`, `activityId` |
 | 타입 이름 | 단어 첫 글자를 대문자로 시작 | `ActivityMemory`, `Role` |
 | 참·거짓 값 | 이름에서 의미가 드러나도록 작성 | `isSaving`, `hasMemory` |
-| CSS 클래스 | 소문자와 하이픈, 쓰이는 화면이나 부품 이름 포함 | `.activity-memory-card`, `.activity-memory-card-title` |
+| CSS 클래스 | CSS 모듈에서는 소문자로 시작하고 다음 단어는 대문자. 전역 클래스는 소문자와 하이픈 | 모듈 `.cardTitle`, 전역 `.app-shell` |
 
 새 이름을 정하기 전에 같은 의미로 쓰는 기존 이름을 확인합니다. 예를 들어 저장 화면에서 `activityId`를 쓰기로 했으면 브리핑에서도 `activityId`를 사용합니다. `taskId`, `activityID`를 같은 뜻으로 섞어 쓰면 두 화면을 연결할 때 값이 맞지 않을 수 있습니다.
 
@@ -61,5 +75,6 @@
 
 | 버전 | 날짜 | 수정자 | 수정 내용과 이유 |
 | --- | --- | --- | --- |
+| 1.2 | 2026-11-11 | Codex · Hi-gu-i 요청 | 화면별 폴더와 CSS, 브라우저 저장과 서버의 책임을 구체화해 병렬 작업 범위를 명확히 함 |
 | 1.1 | 2026-11-11 | Codex · Hi-gu-i 요청 | 변경 이력 추가 및 UT 데이터 규칙 참조 경로 갱신 |
 | 1.0 | 2026-11-11 | Codex · Hi-gu-i 요청 | 개발 환경, 파일 구조, 이름 규칙 정리 · [e1203b2](https://github.com/Hi-gu-i/CROXER/commit/e1203b2) |
