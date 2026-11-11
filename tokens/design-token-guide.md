@@ -1,0 +1,367 @@
+# MYA Design Token 가이드
+
+화면을 코드로 만들 때 색, 간격, 둥글기, 글자를 이 문서의 토큰으로만 맞춘다. 값(`#4146fd`, `16px`)을 직접 적지 않는다. 토큰 이름을 그대로 쓰면 Figma Foundation의 스타일 가이드와 같은 결과가 나온다.
+
+색은 Figma에 등록된 Color Primitive, Color Semantic 변수를 따른다. 글자는 로컬 텍스트 스타일 `ios/*`, `mac/*`, 그림자와 유리 효과는 로컬 효과 스타일을 따른다. 스타일 가이드의 색 칩은 변수에 연결되어 있고, 칩의 이름과 hex는 이 문서의 값과 같다.
+
+원본은 Figma 파일 `🤖 MYA_Design-System`, Foundation 페이지의 `style guide`다. 코드에서 쓰는 파일은 `tokens/design-tokens.css`다.
+
+## 파일을 연결한다
+
+스타일시트 맨 앞에서 토큰 파일을 불러온다.
+
+```html
+<link rel="stylesheet" href="tokens/design-tokens.css" />
+```
+
+```css
+@import "../tokens/design-tokens.css";
+```
+
+글꼴 가족은 `Wanted Sans`다. `design-tokens.css`가 맨 위에서 Wanted Sans 웹폰트(v1.0.3, jsDelivr)를 불러오므로, 토큰 파일만 연결하면 폰트가 설치되지 않은 방문자에게도 같은 글꼴로 보인다. 폰트를 따로 로드하거나 다른 웹폰트 링크를 추가하지 않는다.
+
+웹폰트는 글자 범위별로 나뉘어 있어서 브라우저는 화면에 쓰인 글자 묶음만 받는다. 첫 화면에서 글꼴이 늦게 바뀌는 것이 보이면 HTML `<head>`에 아래 줄을 토큰 링크보다 먼저 넣는다.
+
+```html
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
+```
+
+웹폰트를 불러오지 못하면 `sans-serif`로 보인다. 오프라인 환경이나 외부 CDN을 쓸 수 없는 배포 환경이라면 폰트 파일을 프로젝트에 넣고 이 `@import` 주소를 그 경로로 바꾼다.
+
+## 두 층으로 고른다
+
+토큰은 두 층이다.
+
+| 층 | 이름 예 | 쓰는 곳 |
+| --- | --- | --- |
+| Primitive | `--color-blue-600`, `--padding-300`, `--radius-200` | 팔레트와 스케일. 화면 CSS에 직접 쓰지 않는다. |
+| Semantic | `--color-brand-default`, `--padding-card-md`, `--radius-card-md` | 버튼, 카드, 본문처럼 역할이 있는 UI. 화면은 이 층만 쓴다. |
+
+Semantic은 Primitive를 가리킨다. 브랜드 색이 바뀌면 `--color-brand-default`가 가리키는 값만 바꾸면 되고, 화면의 hex는 건드리지 않는다.
+
+숫자 스케일 `000` `050` `100`은 밝기나 크기 단계다. `000`이 가장 작고 밝고, 숫자가 커질수록 진하거나 커진다. `999`는 끝값(검정, 완전 둥근 pill)이다. 모든 단계가 다 있지는 않다. 표에 있는 단계만 쓴다.
+
+## 화면을 만들 때 순서
+
+1. 플랫폼을 정한다. 모바일은 `ios`, 데스크톱은 `mac`.
+2. 요소의 역할을 고른다. 페이지 배경, 카드 표면, 본문, 브랜드 버튼, 상태 메시지.
+3. 아래 표에서 semantic 토큰을 고른다.
+4. 맞는 semantic이 없으면 새 hex나 px를 만들지 말고, 있는 primitive를 가리키는 semantic을 `design-tokens.css`에 추가한다.
+
+## 색
+
+### 화면에서 쓰는 색
+
+| 토큰 | 값 | 쓸 때 |
+| --- | --- | --- |
+| `--color-bg-default` | `#ffffff` | 페이지 기본 배경 |
+| `--color-bg-subtle` | `#f3f6ff` | 옅은 브랜드 배경, 구분되는 섹션 |
+| `--color-bg-brand` | `#5165fe` | 브랜드 배경 |
+| `--color-surface-default` | `#ffffff` | 카드, 시트, 입력 표면 |
+| `--color-surface-subtle` | `#f8f9fa` | 표면 안의 보조 영역 |
+| `--color-text-primary` | `#202731` | 제목, 본문 |
+| `--color-text-secondary` | `#47505c` | 보조 설명 |
+| `--color-text-tertiary` | `#838c97` | 메타 정보, 시간, 힌트 |
+| `--color-text-disabled` | `#a7afb9` | 비활성 글자 |
+| `--color-text-inverse` | `#ffffff` | 브랜드·어두운 배경 위의 글자 |
+| `--color-text-brand` | `#4146fd` | 링크, 브랜드 글자 |
+| `--color-border-subtle` | `#ecf0f3` | 약한 구분선 |
+| `--color-border-default` | `#dae0e5` | 기본 테두리, 구분선 |
+| `--color-border-strong` | `#bfc8d0` | 강조 테두리 |
+| `--color-border-color` | `#b2c5ff` | 브랜드 톤 테두리 |
+| `--color-icon-default` | `#47505c` | 기본 아이콘 |
+| `--color-icon-brand` | `#4146fd` | 브랜드 아이콘 |
+| `--color-icon-disabled` | `#838c97` | 비활성 아이콘 |
+| `--color-icon-inverse` | `#ffffff` | 브랜드·어두운 배경 위의 아이콘 |
+| `--color-brand-default` | `#4146fd` | 주요 버튼, 브랜드 채움 |
+| `--color-brand-pressed` | `#3224e1` | 눌림, 한 단계 진한 브랜드 |
+| `--color-brand-muted` | `#272c6d` | Muted 브랜드 채움 |
+| `--color-brand-light` | `#859fff` | 밝은 브랜드 강조 |
+| `--color-status-success` | `#42dcb2` | 성공 |
+| `--color-status-warning` | `#fcd658` | 경고 |
+| `--color-status-warning-strong` | `#fbc205` | 강한 경고 |
+| `--color-status-danger` | `#f15863` | 오류, 삭제 |
+| `--color-status-danger-strong` | `#a9040b` | 강한 오류 |
+
+배경·표면·글자·테두리·아이콘은 역할 토큰을 쓴다. 브랜드 버튼의 채움은 `--color-brand-*`, 버튼 위 글자와 아이콘은 `--color-text-inverse`, `--color-icon-inverse`다.
+
+### Primitive 팔레트
+
+새 semantic을 만들 때만 참조한다.
+
+| 이름 | 단계 |
+| --- | --- |
+| `--color-base-000` `#ffffff` · `--color-base-999` `#000000` | 흰색, 검정 |
+| `--color-gray-050` `075` `100`–`900` | `#f8f9fa` `#f1f4f6` `#ecf0f3` `#dae0e5` `#bfc8d0` `#a7afb9` `#838c97` `#626c79` `#47505c` `#2f3743` `#202731` |
+| `--color-blue-050`–`900` | `#f3f6ff` `#d7e1ff` `#b2c5ff` `#859fff` `#728dff` `#5165fe` `#4146fd` `#3224e1` `#2600be` `#210084` |
+| `--color-mint-050` `100` `200` `300` `400` `600` | `#e7f6f5` `#c8f1ee` `#95e6e0` `#42dcb2` `#25c7a1` `#168673` |
+| `--color-violet-050` `100` `200` `300` `400` `600` | `#f9f5ff` `#ebdbff` `#d9b9ff` `#b691fa` `#a480f7` `#6e3fce` |
+| `--color-red-400` `600` `800` | `#f15863` `#d0293c` `#a9040b` |
+| `--color-yellow-050` `100` `200` `300` `400` `600` | `#fffbe7` `#fbecb2` `#fcd658` `#fbc205` `#eba300` `#985907` |
+| `--color-muted-800` | `#272c6d` |
+
+Lime 스케일과 red 500·700, yellow의 이전 hex는 라이브러리에서 빠졌다. 성공은 mint, 오류는 red 400/800, 경고는 yellow 200/300이다.
+
+### 투명도
+
+오버레이와 스크림에만 쓴다. 8자리 hex의 마지막 두 자리가 알파다.
+
+| 토큰 | 값 | 소스 이름 |
+| --- | --- | --- |
+| `--color-opacity-white-000` | `#ffffff00` | `opacity/Wpacity-000` |
+| `--color-opacity-white-100` | `#ffffff1a` | `opacity/Wpacity-100` |
+| `--color-opacity-white-200` | `#ffffff33` | `opacity/Wpacity-200` |
+| `--color-opacity-white-400` | `#ffffff66` | `opacity/Wpacity-400` |
+| `--color-opacity-white-600` | `#ffffff99` | `opacity/Wpacity-600` |
+| `--color-opacity-black-100` | `#0000001a` | `opacity/Bpacity-100` |
+| `--color-opacity-black-200` | `#00000033` | `opacity/Bpacity-200` |
+| `--color-opacity-black-400` | `#00000066` | `opacity/Bpacity-400` |
+| `--color-opacity-black-600` | `#00000099` | `opacity/Bpacity-600` |
+| `--color-opacity-color-500` | `#f3f6ff80` | `opacity/Cpacity-500` |
+
+팔레트에 없는 단계(예: gray-250, mint-500, violet-700)는 만들지 않는다.
+
+## 간격, 틈, 둥글기
+
+레이아웃 변수는 이번 수정에서 바뀌지 않았다.
+
+### 화면에서 쓰는 레이아웃
+
+| 토큰 | 값 | 쓸 때 |
+| --- | --- | --- |
+| `--gap-xs` | `4px` | 아이콘과 글자처럼 붙는 사이 |
+| `--gap-sm` | `8px` | 관련 요소 사이 |
+| `--gap-md` | `16px` | 기본 스택, 카드 안 블록 |
+| `--gap-lg` | `20px` | 느슨한 그룹 |
+| `--gap-xl` | `24px` | 큰 그룹 |
+| `--gap-section` | `48px` | 섹션과 섹션 사이 |
+| `--padding-section` | `24px` | 섹션 안쪽 여백 |
+| `--padding-card-sm` | `12px` | 작은 카드 |
+| `--padding-card-md` | `16px` | 기본 카드 |
+| `--padding-card-lg` | `20px` | 큰 카드 |
+| `--padding-control-x` | `16px` | 버튼·입력 좌우 |
+| `--padding-control-y` | `8px` | 버튼·입력 상하 |
+| `--padding-ios-x` | `16px` | iOS 화면 좌우 |
+| `--padding-ios-y` | `8px` | iOS 화면 상하 |
+| `--padding-screen-mac` | `64px` | Mac 화면 바깥 여백 |
+| `--radius-control` | `999px` | 버튼, 필, 칩 |
+| `--radius-card-sm` | `16px` | 작은 카드 |
+| `--radius-card-md` | `24px` | 기본 카드 |
+| `--radius-card-lg` | `32px` | 큰 카드 |
+| `--radius-screen` | `44px` | 디바이스·화면 프레임 |
+
+카드는 padding·radius를 같은 크기로 맞춘다. `sm`끼리, `md`끼리, `lg`끼리.
+
+### Primitive 스케일
+
+| 토큰 | padding | gap | radius |
+| --- | --- | --- | --- |
+| `000` | 0 | 0 | 0 |
+| `025` | — | 2px | — |
+| `050` | 4px | 4px | 4px |
+| `100` | 8px | 8px | 8px |
+| `150` | 10px | 10px | 12px |
+| `200` | 12px | 12px | 16px |
+| `250` | — | — | 20px |
+| `300` | 16px | 16px | 24px |
+| `350` | — | — | 28px |
+| `400` | 20px | 20px | 32px |
+| `500` | 24px | 24px | 44px |
+| `600` | 32px | 32px | — |
+| `700` | 40px | 40px | — |
+| `800` | 48px | 48px | — |
+| `900` | 64px | — | — |
+| `999` | — | — | 999px |
+
+padding·gap·radius는 숫자가 같아도 px가 다르다. `--padding-200`은 12px이고 `--radius-200`은 16px이다. 스케일 번호를 눈대중으로 옮기지 말고 토큰 이름을 그대로 쓴다.
+
+## 글자
+
+텍스트 스타일은 `font`와 `letter-spacing` 한 쌍이다. 크기만 따로 적지 않는다.
+
+```css
+.title {
+  font: var(--type-ios-title-large-font);
+  letter-spacing: var(--type-ios-title-large-tracking);
+}
+```
+
+`font` 값 안에는 굵기, 크기, 줄높이, `Wanted Sans`가 들어 있다.
+
+역할은 네 가지다.
+
+| 역할 | 쓸 때 |
+| --- | --- |
+| `display` | 화면을 여는 큰 헤드라인 |
+| `title` | 섹션·카드 제목 |
+| `body` | 본문. `strong`은 강조, `read`는 긴 읽기, `medium`은 기본, `accent`는 작은 강조, `small`은 촘촘한 본문 |
+| `caption` | 캡션, 메타, 보조 수치 |
+
+`accent`는 iOS에만 있다. 모바일 화면은 `--type-ios-*`, 데스크톱 화면은 `--type-mac-*`를 쓴다. 한 화면 안에서 두 플랫폼을 섞지 않는다.
+
+### iOS
+
+| 토큰 접두사 | weight | size / line | tracking |
+| --- | --- | --- | --- |
+| `--type-ios-display-large` | 700 | 40 / 48 | -0.5px |
+| `--type-ios-display-medium` | 500 | 32 / 40 | -0.4px |
+| `--type-ios-title-large` | 700 | 28 / 36 | -0.4px |
+| `--type-ios-title-medium` | 700 | 22 / 32 | -0.3px |
+| `--type-ios-title-small` | 600 | 20 / 30 | -0.3px |
+| `--type-ios-body-strong` | 600 | 17 / 26 | -0.2px |
+| `--type-ios-body-read` | 400 | 17 / 28 | -0.3px |
+| `--type-ios-body-medium` | 400 | 16 / 24 | -0.3px |
+| `--type-ios-body-accent` | 600 | 14 / 22 | -0.2px |
+| `--type-ios-body-small` | 400 | 14 / 22 | -0.3px |
+| `--type-ios-caption-large` | 400 | 13 / 18 | 0 |
+| `--type-ios-caption-medium` | 400 | 12 / 16 | 0 |
+
+각 행은 `-font`와 `-tracking` 두 변수다. 예: `--type-ios-body-medium-font`, `--type-ios-body-medium-tracking`.
+
+### Mac
+
+| 토큰 접두사 | weight | size / line | tracking |
+| --- | --- | --- | --- |
+| `--type-mac-display-large` | 700 | 48 / 56 | -0.5px |
+| `--type-mac-display-medium` | 700 | 34 / 42 | -0.4px |
+| `--type-mac-title-large` | 700 | 28 / 36 | -0.4px |
+| `--type-mac-title-medium` | 700 | 22 / 32 | -0.3px |
+| `--type-mac-title-small` | 600 | 20 / 30 | -0.3px |
+| `--type-mac-body-strong` | 600 | 16 / 24 | -0.2px |
+| `--type-mac-body-read` | 400 | 18 / 28 | -0.2px |
+| `--type-mac-body-medium` | 400 | 16 / 24 | -0.2px |
+| `--type-mac-body-small` | 400 | 14 / 20 | 0 |
+| `--type-mac-caption-large` | 400 | 13 / 18 | 0 |
+| `--type-mac-caption-medium` | 400 | 12 / 16 | 0 |
+
+### 글자 primitive
+
+스타일로 표현할 수 없을 때만 조합한다. 굵기는 400, 500, 600, 700만 있다.
+
+| 스케일 | size | line-height |
+| --- | --- | --- |
+| 100 | 12 | 16 |
+| 150 | 13 | 18 |
+| 200 | 14 | 20 |
+| 250 | 15 | 22 |
+| 300 | 16 | 24 |
+| 350 | 17 | 26 |
+| 400 | 18 | 28 |
+| 500 | 20 | 30 |
+| 550 | 22 | 32 |
+| 600 | 28 | 36 |
+| 650 | 32 | 40 |
+| 700 | 34 | 42 |
+| 800 | 40 | 48 |
+| 900 | 48 | 56 |
+
+자간 primitive는 `--letter-spacing-000` `0`, `-100` `-0.2px`, `-200` `-0.3px`, `-300` `-0.4px`, `-400` `-0.5px`다. Figma의 `Spacing/*`는 글자 간격이지 레이아웃 간격이 아니다.
+
+Figma의 텍스트 스타일은 모두 이 primitive 변수에 묶여 있다. 그래서 `--type-*` 토큰도 숫자 대신 primitive를 참조한다. 예를 들어 `--type-ios-body-read-font`는 `var(--font-weight-regular) var(--font-size-350)/var(--line-height-400) var(--font-family-sans)`다. 글자 primitive 값을 바꾸면 그 값을 쓰는 텍스트 스타일 토큰이 함께 바뀐다.
+
+## 그림자와 효과
+
+Figma 효과 스타일 7개에 대응한다. 그림자는 `box-shadow`, 유리·블러 효과는 `backdrop-filter`로 쓴다.
+
+| 토큰 | 값 | Figma 스타일 | 쓸 때 |
+| --- | --- | --- | --- |
+| `--shadow-card` | `0 0 8px 0` gray-100 | `ShadowCard` | 카드 기본 그림자 |
+| `--shadow-line` | `0 0 12px 0` gray-200 | `ShadowLine` | 경계가 더 필요한 카드 |
+| `--shadow-glass` | `0 8px 16px 0` gray-075 | `ShadowGlass` | 유리 패널 아래 그림자 |
+| `--effect-glass-background-backdrop` | `blur(8px)` | `GlassBackground` | 유리 배경 |
+| `--effect-glass-active-backdrop` | `blur(24px)` | `GlassActive` | 활성 유리. `--effect-glass-active-shadow`와 같이 쓴다 |
+| `--effect-glass-active-shadow` | `inset 2px 2px 8px 2px` blue-100 | `GlassActive` | 활성 유리의 안쪽 그림자 |
+| `--effect-glass-gradient-backdrop` | `blur(8px)` | `GlassGradient` | 그라데이션 유리 |
+| `--effect-blur-background-backdrop` | `blur(16px)` | `BlurBackground` | 배경 블러 |
+
+```css
+.card {
+  box-shadow: var(--shadow-card);
+}
+
+.tab-glass--active {
+  backdrop-filter: var(--effect-glass-active-backdrop);
+  box-shadow: var(--effect-glass-active-shadow);
+}
+```
+
+CSS로는 Figma와 똑같이 나오지 않는 부분이 두 가지 있다. Figma 그림자는 `LINEAR_BURN` 혼합 모드라서 CSS에서는 조금 더 옅게 보인다. Figma `GLASS` 효과의 굴절, 깊이, 빛은 CSS에 대응하는 속성이 없어서 블러만 옮겼다. 그림자 값을 직접 만들지 말고 이 토큰을 쓴다.
+
+## 이렇게 작성한다
+
+```css
+.screen {
+  padding: var(--padding-ios-y) var(--padding-ios-x);
+  background: var(--color-bg-subtle);
+  color: var(--color-text-primary);
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-md);
+  padding: var(--padding-card-md);
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-card-md);
+  background: var(--color-surface-default);
+}
+
+.card h2 {
+  font: var(--type-ios-title-medium-font);
+  letter-spacing: var(--type-ios-title-medium-tracking);
+}
+
+.card p {
+  font: var(--type-ios-body-medium-font);
+  letter-spacing: var(--type-ios-body-medium-tracking);
+  color: var(--color-text-secondary);
+}
+
+.button {
+  padding: var(--padding-control-y) var(--padding-control-x);
+  border: 0;
+  border-radius: var(--radius-control);
+  background: var(--color-brand-default);
+  color: var(--color-text-inverse);
+  font: var(--type-ios-body-strong-font);
+  letter-spacing: var(--type-ios-body-strong-tracking);
+}
+
+.button:active {
+  background: var(--color-brand-pressed);
+}
+```
+
+`1px` 테두리 두께처럼 이 시스템에 스케일이 없는 값만 숫자로 둔다. 색, 여백, 둥글기, 글자 크기·굵기·줄높이·자간은 토큰이다.
+
+## 바이브코딩에 붙이는 지시
+
+아래 블록을 프롬프트나 프로젝트 규칙에 그대로 붙인다.
+
+```text
+MYA 화면을 만들 때는 tokens/design-tokens.css의 커스텀 프로퍼티만 사용한다.
+
+- design-tokens.css를 먼저 불러온다. Wanted Sans 웹폰트는 이 파일이 불러오므로 폰트 링크나 @font-face를 따로 추가하지 않는다.
+- 색, padding, gap, radius, font, letter-spacing에 hex, rgb, 임의 px를 쓰지 않는다.
+- 화면 CSS에는 semantic 토큰만 쓴다. --color-blue-600, --padding-300, --radius-200 같은 primitive는 새 semantic을 정의할 때만 쓴다.
+- 배경은 --color-bg-default, --color-bg-subtle, --color-bg-brand. 카드 표면은 --color-surface-*. 글자는 --color-text-*, 선은 --color-border-*, 아이콘은 --color-icon-*, 브랜드 채움은 --color-brand-*, 성공·경고·오류는 --color-status-* 를 쓴다.
+- 성공은 mint, 경고는 yellow, 오류는 red다. lime 색과 red-500, red-700은 없다.
+- 반투명 오버레이는 --color-opacity-white-*, --color-opacity-black-*, --color-opacity-color-500 만 쓴다.
+- 간격은 --gap-xs|sm|md|lg|xl|section, 카드 여백은 --padding-card-sm|md|lg, 버튼 여백은 --padding-control-x|y, 둥글기는 --radius-control 또는 --radius-card-sm|md|lg 를 쓴다. 카드의 padding과 radius는 같은 크기 단계를 짝으로 쓴다.
+- 모바일 글자는 --type-ios-*, 데스크톱 글자는 --type-mac-* 를 쓰고, font와 letter-spacing을 항상 같이 선언한다. iOS 작은 강조는 --type-ios-body-accent-* 다.
+- 그림자는 --shadow-card|line|glass, 유리·블러는 --effect-*-backdrop 을 backdrop-filter에 쓴다. 활성 유리는 --effect-glass-active-shadow 도 같이 쓴다. box-shadow 값을 직접 만들지 않는다.
+- 표에 없는 토큰이 필요하면 기존 primitive를 var()로 가리키는 semantic만 design-tokens.css에 추가한다. 새 색 값이나 새 px 스케일은 만들지 않는다.
+```
+
+## 토큰을 추가할 때
+
+semantic이 역할을 표현하지 못할 때만 `design-tokens.css`의 semantic 구역에 한 줄을 추가한다.
+
+```css
+--color-border-brand: var(--color-blue-600);
+```
+
+- 오른쪽은 반드시 기존 primitive 또는 기존 semantic이다.
+- 팔레트에 없는 색, 스케일에 없는 px는 추가하지 않는다.
+- 이름 순서는 `--{종류}-{역할}-{단계}`다. 종류는 `color`, `padding`, `gap`, `radius`, `type`, `shadow`, `effect`이다.
+- `design-tokens.json`을 함께 고친다. JSON이 원본이고 CSS는 그 값을 펼친 파일이다. JSON의 `{color.primitive.blue.600}` 별칭이 CSS의 `var(--color-blue-600)`이다.
