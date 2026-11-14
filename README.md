@@ -29,11 +29,14 @@ npm run build
 - [개발 환경과 이름 규칙](docs/dev-guide.md)
 - [UT 데이터 베이스라인](docs/ut-data-baseline.md)
 - [UI 가이드](docs/ui-guide.md) · 디자인 토큰 파일은 [`tokens/`](tokens/README.md)
+- [서비스 한 장 요약](docs/service-overview.md)
+- [제품 요구사항](docs/prd.md)
 
 ## 변경 이력
 
 | 버전 | 날짜 | 수정자 | 수정 내용과 이유 |
 | --- | --- | --- | --- |
+| 1.4 | 2026-11-14 | Cursor AI · 김민선 요청 | 팀 문서 목록에 서비스 요약과 제품 요구사항 추가 |
 | 1.3 | 2026-11-11 | Cursor AI · 김민선 요청 | 팀 문서 목록에 UI 가이드와 디자인 토큰 폴더 위치 추가 |
 | 1.2 | 2026-11-11 | Codex · Hi-gu-i 요청 | 변경 이력 추가 및 저장소 내 문서 위치 안내 |
 | 1.1 | 2026-11-11 | JIYOO · GitHub 등록 | 팀원이 같은 앱을 실행할 수 있도록 설치·실행 및 검증 방법 추가 · [e025705](https://github.com/Hi-gu-i/CROXER/commit/e025705) |
