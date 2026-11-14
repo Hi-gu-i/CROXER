@@ -25,8 +25,10 @@ npm run build
 
 ## 팀 문서
 
-- [협업 가이드](docs/collaboration-guide.md)
+- [협업 가이드](docs/collaboration-guide.md) · 담당 업무와 일정 포함
+- [AI 협업 요청 가이드](docs/ai-collaboration.md) · 다른 담당 파트에 요청하거나 충돌이 났을 때
 - [개발 환경과 이름 규칙](docs/dev-guide.md)
+- [간단 UT 활동 순서와 구현 범위](docs/ut-activity-flow.md) · 첫 UT에서 만들 활동 흐름
 - [UT 데이터 베이스라인](docs/ut-data-baseline.md)
 - [UI 가이드](docs/ui-guide.md) · 디자인 토큰 파일은 [`tokens/`](tokens/README.md)
 - [서비스 한 장 요약](docs/service-overview.md)
@@ -36,6 +38,7 @@ npm run build
 
 | 버전 | 날짜 | 수정자 | 수정 내용과 이유 |
 | --- | --- | --- | --- |
+| 1.5 | 2026-11-14 | Claude Code · 지유 요청 | 팀 문서 목록에 AI 협업 요청 가이드와 간단 UT 활동 순서 문서를 추가하고 협업 가이드에 담당 업무와 일정이 있음을 표시 |
 | 1.4 | 2026-11-14 | Cursor AI · 김민선 요청 | 팀 문서 목록에 서비스 요약과 제품 요구사항 추가 |
 | 1.3 | 2026-11-11 | Cursor AI · 김민선 요청 | 팀 문서 목록에 UI 가이드와 디자인 토큰 폴더 위치 추가 |
 | 1.2 | 2026-11-11 | Codex · Hi-gu-i 요청 | 변경 이력 추가 및 저장소 내 문서 위치 안내 |
