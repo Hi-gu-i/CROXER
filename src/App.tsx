@@ -79,7 +79,7 @@ export default function App() {
 
   return (
     <Frame>
-      <main className={styles.screen}>
+      <main className={`${styles.screen} ${styles.screenWithTabBar}`}>
         {screen.name === 'home' && (
           <HomeScreen
             onOpenActivity={openActivity}
@@ -115,7 +115,9 @@ export default function App() {
             >
               {tab.icon}
             </svg>
-            {tab.label}
+            <span className={tab.id === activeTab ? styles.tabLabel : styles.visuallyHidden}>
+              {tab.label}
+            </span>
           </button>
         ))}
       </nav>

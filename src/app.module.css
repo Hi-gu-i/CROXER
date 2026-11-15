@@ -8,7 +8,11 @@
 .frame {
   --frame-width: 390px;
   --frame-height: 844px;
+  --tab-bar-width: 306px;
+  --tab-bar-bottom: 42px;
+  --tab-item-height: 52px;
 
+  position: relative;
   display: flex;
   flex-direction: column;
   width: min(100%, var(--frame-width));
@@ -43,39 +47,71 @@
   background: var(--color-bg-subtle);
 }
 
+.screenWithTabBar {
+  padding-bottom: calc(
+    var(--tab-bar-bottom) + var(--tab-item-height) + var(--gap-xs) * 2 + var(--gap-md)
+  );
+}
+
 .tabBar {
+  position: absolute;
+  bottom: var(--tab-bar-bottom);
+  left: 50%;
   display: flex;
-  flex-shrink: 0;
-  padding: var(--padding-control-y) var(--padding-ios-x);
-  padding-bottom: max(var(--padding-control-y), env(safe-area-inset-bottom));
-  border-top: 1px solid var(--color-border-subtle);
-  background: var(--color-surface-default);
+  width: min(var(--tab-bar-width), calc(100% - var(--padding-ios-x) * 2));
+  padding: var(--gap-xs);
+  border-radius: var(--radius-control);
+  background: var(--color-opacity-white-600);
+  box-shadow: var(--shadow-glass);
+  backdrop-filter: var(--effect-glass-background-backdrop);
+  transform: translateX(-50%);
 }
 
 .tab {
   display: flex;
-  flex: 1;
-  flex-direction: column;
+  flex: 1 1 0;
   align-items: center;
+  justify-content: center;
   gap: var(--gap-xs);
-  padding: var(--padding-control-y) 0;
+  height: var(--tab-item-height);
+  padding: 0;
   border: 0;
+  border-radius: var(--radius-control);
   background: none;
   color: var(--color-icon-disabled);
-  font: var(--type-ios-caption-medium-font);
-  letter-spacing: var(--type-ios-caption-medium-tracking);
   cursor: pointer;
 }
 
 .tabActive {
-  color: var(--color-text-brand);
-  font: var(--type-ios-body-accent-font);
-  letter-spacing: var(--type-ios-body-accent-tracking);
+  /* Figma에서 선택 탭 폭이 다른 탭의 약 1.4배 */
+  flex-grow: 1.4;
+  /* 탭 선택 배경 semantic 토큰이 없어 같은 값(blue-200)인 토큰을 임시로 쓴다. 토큰 요청 후 교체 */
+  background: var(--color-border-color);
+  box-shadow: var(--effect-glass-active-shadow);
+  backdrop-filter: var(--effect-glass-active-backdrop);
+  color: var(--color-icon-brand);
 }
 
 .tabIcon {
+  flex-shrink: 0;
   width: 24px;
   height: 24px;
+}
+
+.tabLabel {
+  color: var(--color-text-brand);
+  font: var(--type-ios-caption-medium-font);
+  letter-spacing: var(--type-ios-caption-medium-tracking);
+  white-space: nowrap;
+}
+
+.visuallyHidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
 }
 
 .tempTitle {
