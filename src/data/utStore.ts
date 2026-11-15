@@ -3,7 +3,7 @@
 // - 초기 데이터(baseline): 가상 하루. 읽기 전용
 // - 참가자 세션(session): 참가자가 바꾼 상태. 브라우저 저장소의 UT 전용 키 하나에 저장
 // 상태 변경 규칙은 docs/prd.md 6.2를 따른다.
-import { tempBaseline } from './tempBaseline'
+import baselineJson from '../fixtures/croxer-ut-baseline.v1.json'
 import type {
   Activity,
   ActivityId,
@@ -29,10 +29,8 @@ import type {
   UtSession,
 } from './types'
 
-// 초기 데이터 파일이 합쳐지면 아래 한 줄만 바꾼다.
-// import baselineJson from '../fixtures/croxer-ut-baseline.v1.json'
-// const baseline = baselineJson as UtBaseline
-const baseline: UtBaseline = tempBaseline
+// 초기 데이터는 UT 담당의 src/fixtures/croxer-ut-baseline.v1.json(UtBaseline 모양)을 쓴다.
+const baseline = baselineJson as UtBaseline
 
 /** 브라우저 저장소의 UT 전용 키 */
 export const UT_STORAGE_KEY = 'croxer-ut-session'

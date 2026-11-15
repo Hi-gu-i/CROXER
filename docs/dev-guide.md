@@ -56,7 +56,7 @@
 | 스케줄(F-11) | `getScheduleSections()` — 진행 완료·진행 중·백그라운드·진행 후 | — |
 | 진행자 패널 | — | `resetUtSession()`, `skipToNextActivity()`, `fireAlert`, `fireInquiry` |
 
-초기 데이터 파일 `src/fixtures/croxer-ut-baseline.v1.json`은 `types.ts`의 `UtBaseline` 모양을 따릅니다. 이 파일이 합쳐지기 전까지는 `src/data/tempBaseline.ts`의 임시값으로 동작합니다.
+초기 데이터는 UT 담당의 `src/fixtures/croxer-ut-baseline.v1.json`을 쓰며, 이 파일은 `types.ts`의 `UtBaseline` 모양을 따릅니다. 화면에서 이 파일을 직접 불러오지 않고 위 함수로 읽습니다.
 
 ## 화면별 CSS
 
@@ -101,6 +101,7 @@
 
 | 버전 | 날짜 | 수정자 | 수정 내용과 이유 |
 | --- | --- | --- | --- |
+| 1.5 | 2026-11-15 | Claude Code · 지유 요청 | UT 담당의 초기 데이터 파일이 합쳐져 저장·조회 함수가 임시값 대신 이 파일을 쓰도록 안내 문구 수정 |
 | 1.4 | 2026-11-15 | Claude Code · 지유 요청 | 0단계 데이터 기반: 공용 데이터 폴더 `src/data/`를 파일 위치 표에 추가하고, 화면별 저장·조회 함수 이름과 저장 키를 공유하기 위해 `저장·조회 함수` 섹션 추가 |
 | 1.3 | 2026-11-14 | Claude Code · 지유 요청 | 팀 회의 결정 반영: 화면은 저장·조회 함수로만 데이터에 접근하고, ID와 상태 값은 UT 데이터 베이스라인을 그대로 쓰도록 약속 추가 |
 | 1.2 | 2026-11-11 | Codex · Hi-gu-i 요청 | 화면별 폴더와 CSS, 브라우저 저장과 서버의 책임을 구체화해 병렬 작업 범위를 명확히 함 |
