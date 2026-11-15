@@ -1,0 +1,83 @@
+.title {
+  margin: 0;
+  font: var(--type-ios-title-large-font);
+  letter-spacing: var(--type-ios-title-large-tracking);
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--gap-sm);
+  width: 100%;
+  padding: var(--padding-card-lg);
+  border: 1px solid var(--color-border-color);
+  border-radius: var(--radius-card-lg);
+  background: var(--color-surface-default);
+  box-shadow: var(--shadow-card);
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.card:active {
+  background: var(--color-surface-subtle);
+}
+
+.eyebrow {
+  color: var(--color-text-brand);
+  font: var(--type-ios-body-accent-font);
+  letter-spacing: var(--type-ios-body-accent-tracking);
+}
+
+.roleTag {
+  padding: var(--gap-xs) var(--gap-sm);
+  border-radius: var(--radius-control);
+  background: var(--color-bg-subtle);
+  color: var(--color-text-brand);
+  font: var(--type-ios-caption-large-font);
+  letter-spacing: var(--type-ios-caption-large-tracking);
+}
+
+.activityName {
+  font: var(--type-ios-title-medium-font);
+  letter-spacing: var(--type-ios-title-medium-tracking);
+}
+
+.meta {
+  color: var(--color-text-tertiary);
+  font: var(--type-ios-body-small-font);
+  letter-spacing: var(--type-ios-body-small-tracking);
+}
+
+.finished {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--gap-md);
+  padding: var(--padding-card-lg);
+  border-radius: var(--radius-card-lg);
+  background: var(--color-surface-default);
+  box-shadow: var(--shadow-card);
+}
+
+.finishedText {
+  margin: 0;
+  font: var(--type-ios-body-strong-font);
+  letter-spacing: var(--type-ios-body-strong-tracking);
+}
+
+.scheduleButton {
+  padding: var(--padding-control-y) var(--padding-control-x);
+  border: 0;
+  border-radius: var(--radius-control);
+  background: var(--color-brand-default);
+  color: var(--color-text-inverse);
+  font: var(--type-ios-body-strong-font);
+  letter-spacing: var(--type-ios-body-strong-tracking);
+  cursor: pointer;
+}
+
+.scheduleButton:active {
+  background: var(--color-brand-pressed);
+}
