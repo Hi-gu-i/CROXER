@@ -3,16 +3,20 @@ import styles from './app.module.css'
 import type { ActivityId, ReorderableScheduleId, ScheduleStatus } from './data/types'
 import { useUtSession } from './data/useUtSession'
 import {
+  completeActivity,
   confirmBriefing,
   enterActivity,
+  getActiveRoleId,
   getActivity,
   getBriefingItems,
   getCurrentActivityId,
   getRole,
+  getScheduleByActivity,
   isBriefingConfirmed,
   saveBriefingOrder,
 } from './data/utStore'
 import HomeScreen from './features/home/HomeScreen'
+import RoleSwitchPanel from './features/role-switch/RoleSwitchPanel'
 
 type TabId = 'home' | 'schedule' | 'report' | 'settings'
 
@@ -20,6 +24,8 @@ type Screen = { name: TabId } | { name: 'activity'; activityId: ActivityId }
 
 interface ActivityScreenProps {
   activityId: ActivityId
+  /** 활동의 UT 흐름을 마쳤을 때 한 번 부른다. 완료 처리와 다음 활동 안내는 App이 맡는다 */
+  onFinish: () => void
 }
 
 const tabs: { id: TabId; label: string; icon: ReactNode }[] = [
@@ -57,12 +63,18 @@ const activityScreens: Partial<Record<ActivityId, ComponentType<ActivityScreenPr
 export default function App() {
   useUtSession()
   const [screen, setScreen] = useState<Screen>({ name: 'home' })
+  const [switchTargetId, setSwitchTargetId] = useState<ActivityId | null>(null)
 
   if (!isBriefingConfirmed()) {
     return (
       <Frame>
         {/* 연결 지점: 브리핑 화면(src/features/briefing) */}
-        <TempBriefingScreen onConfirmed={() => setScreen({ name: 'home' })} />
+        <TempBriefingScreen
+          onConfirmed={() => {
+            setSwitchTargetId(null)
+            setScreen({ name: 'home' })
+          }}
+        />
       </Frame>
     )
   }
@@ -71,6 +83,23 @@ export default function App() {
     // 브리핑 확정(confirmBriefing)이 첫 활동 진입을 이미 처리했으므로 같은 활동이면 다시 시작하지 않는다.
     if (getCurrentActivityId() !== activityId) enterActivity(activityId)
     setScreen({ name: 'activity', activityId })
+  }
+
+  function finishActivity(activityId: ActivityId) {
+    if (getScheduleByActivity(activityId).status === 'done') return
+    const nextActivityId = completeActivity(activityId)
+    if (nextActivityId) {
+      setSwitchTargetId(nextActivityId)
+    } else {
+      setScreen({ name: 'schedule' })
+    }
+  }
+
+  function switchToNextActivity() {
+    if (!switchTargetId) return
+    enterActivity(switchTargetId)
+    setScreen({ name: 'activity', activityId: switchTargetId })
+    setSwitchTargetId(null)
   }
 
   const activeTab: TabId = screen.name === 'activity' ? 'home' : screen.name
@@ -87,7 +116,11 @@ export default function App() {
           />
         )}
         {screen.name === 'activity' && ActivityScreen && (
-          <ActivityScreen activityId={screen.activityId} />
+          <ActivityScreen
+            key={screen.activityId}
+            activityId={screen.activityId}
+            onFinish={() => finishActivity(screen.activityId)}
+          />
         )}
         {/* 연결 지점: 스케줄 화면(src/features/schedule) */}
         {screen.name === 'schedule' && <TempScheduleScreen />}
@@ -121,6 +154,13 @@ export default function App() {
           </button>
         ))}
       </nav>
+      {switchTargetId && (
+        <RoleSwitchPanel
+          nextActivityId={switchTargetId}
+          onSwitch={switchToNextActivity}
+          onKeep={() => setSwitchTargetId(null)}
+        />
+      )}
     </Frame>
   )
 }
@@ -197,15 +237,27 @@ function TempBriefingScreen({ onConfirmed }: { onConfirmed: () => void }) {
   )
 }
 
-function TempActivityScreen({ activityId }: ActivityScreenProps) {
+function TempActivityScreen({ activityId, onFinish }: ActivityScreenProps) {
   const activity = getActivity(activityId)
   const role = getRole(activity.roleId)
+  const activeRoleId = getActiveRoleId()
+  const isDone = getScheduleByActivity(activityId).status === 'done'
   return (
     <>
       <h1 className={styles.tempTitle}>{activity.name}</h1>
       <p className={styles.tempNotice}>
         {role.label} · 임시 활동 화면입니다. 담당 화면이 연결되면 교체됩니다.
       </p>
+      <p className={styles.tempNotice}>
+        현재 역할 · {activeRoleId ? getRole(activeRoleId).label : '없음'}
+      </p>
+      {isDone ? (
+        <p className={styles.tempNotice}>이 활동은 완료됐어요.</p>
+      ) : (
+        <button type="button" className={styles.tempPrimary} onClick={onFinish}>
+          활동 마치기 (임시)
+        </button>
+      )}
     </>
   )
 }
