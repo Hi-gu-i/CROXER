@@ -27,12 +27,36 @@
 | `src/index.css` | 앱 전체에 적용되는 기본 스타일 | 기본 글꼴과 바깥 여백 |
 | `src/features/<기능명>/` | 기능 하나의 화면·전용 스타일·로직 | `briefing/BriefingPage.tsx`, `briefing/briefing-page.module.css` |
 | `src/components/` | 둘 이상의 기능에서 쓰는 공통 UI | `PrimaryButton.tsx` |
+| `src/data/` | 공용 데이터 타입과 저장·조회 함수. 데이터·흐름 담당만 수정 | `types.ts`, `utStore.ts`, `useUtSession.ts` |
 | `src/fixtures/` | UT 시작 상태를 만드는 가상 데이터 | `croxer-ut-baseline.v1.json` |
 | `docs/` | 기획, 디자인, 개발, 협업 기준 문서 | `dev-guide.md` |
 
 기능 한 곳에서만 쓰는 부품은 그 기능 폴더에 함께 둡니다. `src/App.tsx`, 전역 CSS, 공통 UI, 개발 설정을 여러 작업에서 수정해야 하면, 담당자를 정해 먼저 합칠 작업의 순서를 맞춥니다.
 
 첫 UT의 기능 폴더는 구현 순서에 맞춰 `setup/`, `home/`, `briefing/`, `schedule/`, `role-switch/`, `memory/` 등을 추가합니다. 예를 들어 브리핑 담당은 `features/briefing/`을, 역할 전환 담당은 `features/role-switch/`를 수정합니다. 여러 화면에서 쓰는 데이터는 소유 기능의 저장·조회 함수로 연결합니다.
+
+## 저장·조회 함수 (`src/data/`)
+
+화면은 아래 함수로만 UT 데이터를 읽고 씁니다. 타입은 `src/data/types.ts`, 함수는 `src/data/utStore.ts`에 있습니다. 필요한 함수가 없거나 동작을 바꿔야 하면 데이터·흐름 담당에게 요청합니다.
+
+- **화면 다시 그리기.** 컴포넌트 맨 위에서 `useUtSession()`을 부른 뒤 조회 함수로 값을 읽습니다. 저장 함수를 부르면 값을 쓰는 모든 화면이 함께 갱신됩니다.
+- **저장 위치.** 참가자 세션은 브라우저 저장소의 UT 전용 키 `croxer-ut-session` 하나에 저장되어 새로고침해도 유지됩니다. 초기 데이터는 읽기 전용이며 세션과 섞이지 않습니다.
+- **상태 규칙.** 함수가 [PRD](prd.md) 6.2를 지킵니다. 예를 들어 `completeActivity`는 현재 역할과 AI 작업 상태를 바꾸지 않고, `requestAiJob`은 작업을 완료로 만들지 않습니다. 화면에서 상태 값을 직접 조합하지 않습니다.
+
+| 화면·기능 | 조회 | 저장·변경 |
+| --- | --- | --- |
+| 공통 | `getRoles`, `getRole`, `getActivities`, `getActivity`, `getSchedules`, `getSchedule`, `getScheduleByActivity`, `getActiveRoleId`, `getCurrentActivityId`, `getToday` | — |
+| 브리핑(F-03) | `getBriefingItems`, `getBriefingOrder`, `isBriefingConfirmed` | `saveBriefingOrder(앞 세 일정 ID)` — 뒤 두 칸은 자동 고정, `confirmBriefing()` — 첫 활동으로 진입하고 그 활동 ID를 돌려줌 |
+| 활동 순서·홈·전환 패널 | `getEntryOrder`, `getNextActivityId`, `isUtFlowFinished` | `enterActivity(활동 ID)` — 역할·열린 활동 변경, 일정 진행 중, `markActivityShown(활동 ID)` — 홈 카드가 뜰 때 일정만 진행 중, `completeActivity(활동 ID)` — 일정 완료, 다음 활동 ID를 돌려줌 |
+| 자료(Task 4) | `getResources(활동 ID)`, `getResource` — AI 작업 결과는 완료 전 숨김 | — |
+| 비 알림(Task 6) | `getFiredAlerts(활동 ID)`, `getAlert`, `isAlertFired` | `fireAlert` — 진입 10초 후·진행자 패널, `markAlertRead` |
+| 러닝 문의·코스·공지(Task 8) | `getFiredInquiries`, `isInquiryFired`, `getAiAssessment(문의 ID)`, `getCourses`, `getSelectedCourseId`, `getAnnouncement(활동 ID)` — 선택 코스·집결지 반영 | `fireInquiry` — 진입 시·진행자 패널, `selectCourse`, `sendAnnouncement` — 한 번만, 코스 선택 후에만 |
+| AI 작업(Task 9) | `getAiJobs`, `getAiJob`, `isAiJobRequested` | `requestAiJob` — `queued`, 한 번만, `markAiJobRunning` — `running` |
+| 채팅 입력 | `findKeywordReply(활동 ID, 입력)`, `getFallbackChoices(활동 ID)` | — |
+| 스케줄(F-11) | `getScheduleSections()` — 진행 완료·진행 중·백그라운드·진행 후 | — |
+| 진행자 패널 | — | `resetUtSession()`, `skipToNextActivity()`, `fireAlert`, `fireInquiry` |
+
+초기 데이터 파일 `src/fixtures/croxer-ut-baseline.v1.json`은 `types.ts`의 `UtBaseline` 모양을 따릅니다. 이 파일이 합쳐지기 전까지는 `src/data/tempBaseline.ts`의 임시값으로 동작합니다.
 
 ## 화면별 CSS
 
@@ -77,6 +101,7 @@
 
 | 버전 | 날짜 | 수정자 | 수정 내용과 이유 |
 | --- | --- | --- | --- |
+| 1.4 | 2026-11-15 | Claude Code · 지유 요청 | 0단계 데이터 기반: 공용 데이터 폴더 `src/data/`를 파일 위치 표에 추가하고, 화면별 저장·조회 함수 이름과 저장 키를 공유하기 위해 `저장·조회 함수` 섹션 추가 |
 | 1.3 | 2026-11-14 | Claude Code · 지유 요청 | 팀 회의 결정 반영: 화면은 저장·조회 함수로만 데이터에 접근하고, ID와 상태 값은 UT 데이터 베이스라인을 그대로 쓰도록 약속 추가 |
 | 1.2 | 2026-11-11 | Codex · Hi-gu-i 요청 | 화면별 폴더와 CSS, 브라우저 저장과 서버의 책임을 구체화해 병렬 작업 범위를 명확히 함 |
 | 1.1 | 2026-11-11 | Codex · Hi-gu-i 요청 | 변경 이력 추가 및 UT 데이터 규칙 참조 경로 갱신 |
