@@ -1,0 +1,98 @@
+/* 원본: VERTICAL · itemSpacing 10 · width FIXED 363 · height HUG */
+.card {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--gap-150);
+  width: 100%;
+  max-width: 363px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  text-align: left;
+  cursor: pointer;
+  box-sizing: border-box;
+}
+
+/* 타이틀 행: HORIZONTAL · HUG/HUG · gap 10 · counter CENTER */
+.copy {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--gap-150);
+  width: fit-content;
+  max-width: 100%;
+}
+
+/* 원본 Vector 7083 — 제목 칩과 caption 사이 세로 구분 */
+.divider {
+  flex-shrink: 0;
+  width: 0;
+  height: 20px;
+  border-left: 1px solid var(--color-gray-200);
+}
+
+/* 13 Regular / 18 · HUG */
+.caption {
+  font: var(--type-ios-caption-large-font);
+  letter-spacing: var(--type-ios-caption-large-tracking);
+  color: var(--color-gray-600);
+}
+
+/* 원본 콜라주 363×210 · 조각 radius 24(바깥 모서리) */
+.media {
+  display: grid;
+  grid-template-columns: 229fr 132fr;
+  grid-template-rows: 104px 104px;
+  gap: 2px;
+  width: 100%;
+  height: 210px;
+}
+
+.tileA,
+.tileB,
+.tileC {
+  display: block;
+  background:
+    linear-gradient(
+      135deg,
+      var(--color-blue-050) 0%,
+      var(--color-gray-100) 55%,
+      var(--color-blue-100) 100%
+    );
+}
+
+.tileA {
+  grid-column: 1;
+  grid-row: 1 / span 2;
+  border-radius: var(--radius-300) 0 0 var(--radius-300);
+}
+
+.tileB {
+  grid-column: 2;
+  grid-row: 1;
+  border-radius: 0 var(--radius-300) 0 0;
+}
+
+.tileC {
+  grid-column: 2;
+  grid-row: 2;
+  border-radius: 0 0 var(--radius-300) 0;
+}
+
+.mediaCustom {
+  display: block;
+  width: 100%;
+  height: 210px;
+  overflow: hidden;
+  border-radius: var(--radius-300);
+  background: var(--color-gray-050);
+}
+
+.mediaCustom :global(img) {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}

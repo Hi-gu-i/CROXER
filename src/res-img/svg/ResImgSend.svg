@@ -1,0 +1,18 @@
+<svg width="64" height="56" viewBox="0 0 64 56" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="ResImgSend_ResImgSend">
+<g id="ResImgSend___236___160___132___236___134___161____234___183___184___235___163___185_">
+<path id="ResImgSend_Vector" d="M55.3247 0.188191L6.4271 16.4898C3.33585 17.5178 3.15316 21.8269 6.15128 23.1129L26.3644 31.7777C27.2026 32.1359 27.8688 32.8021 28.227 33.6403L36.8883 53.8499C38.1742 56.848 42.4797 56.6689 43.5114 53.5741L59.8094 4.67283C60.7335 1.90038 58.0972 -0.73596 55.3247 0.188191Z" fill="url(#ResImgSend_paint0_linear_138_322)"/>
+<path id="ResImgSend_Vector_2" d="M55.3247 0.188191L6.4271 16.4898C3.33585 17.5178 3.15316 21.8269 6.15128 23.1129L26.3644 31.7777C27.2026 32.1359 27.8688 32.8021 28.227 33.6403L36.8883 53.8499C38.1742 56.848 42.4797 56.6689 43.5114 53.5741L59.8094 4.67283C60.7335 1.90038 58.0972 -0.73596 55.3247 0.188191Z" fill="url(#ResImgSend_paint1_linear_138_322)" fill-opacity="0.6"/>
+</g>
+</g>
+<defs>
+<linearGradient id="ResImgSend_paint0_linear_138_322" x1="58.9549" y1="1.04623" x2="21.3324" y2="38.6687" gradientUnits="userSpaceOnUse">
+<stop stop-color="#5165FE" stop-opacity="0.6"/>
+<stop offset="1" stop-color="#5165FE" stop-opacity="0"/>
+</linearGradient>
+<linearGradient id="ResImgSend_paint1_linear_138_322" x1="58.9549" y1="1.04623" x2="21.3324" y2="38.6687" gradientUnits="userSpaceOnUse">
+<stop stop-color="#5165FE"/>
+<stop offset="1" stop-color="#5165FE" stop-opacity="0.6"/>
+</linearGradient>
+</defs>
+</svg>

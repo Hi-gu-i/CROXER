@@ -1,0 +1,56 @@
+/* 원본: VERTICAL · gap 6 · counter CENTER · width FIXED 295 · height HUG */
+.root {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  width: 100%;
+  max-width: 295px;
+  box-sizing: border-box;
+}
+
+/* 26×26 FIXED · radius 32 · pad는 시각용, 박스 크기 FIXED */
+.badge {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  border-radius: var(--radius-400);
+  background: var(--color-brand-light);
+  font: var(--type-ios-body-accent-font);
+  letter-spacing: var(--type-ios-body-accent-tracking);
+  color: var(--color-text-inverse);
+  box-sizing: border-box;
+}
+
+/* 텍스트 스택: 자식 width FILL · 중앙 정렬 */
+.copy {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--gap-025);
+  width: 100%;
+  text-align: center;
+}
+
+/* 20 SemiBold / 30 · FILL · center */
+.title {
+  margin: 0;
+  width: 100%;
+  font: var(--type-ios-title-small-font);
+  letter-spacing: var(--type-ios-title-small-tracking);
+  color: var(--color-gray-900);
+  text-align: center;
+}
+
+/* 14 Regular / 22 · FILL · center */
+.description {
+  margin: 0;
+  width: 100%;
+  font: var(--type-ios-body-small-font);
+  letter-spacing: var(--type-ios-body-small-tracking);
+  color: var(--color-gray-700);
+  text-align: center;
+}

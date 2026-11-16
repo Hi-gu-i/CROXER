@@ -1,0 +1,138 @@
+.page {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 393px;
+  min-height: 100dvh;
+  margin: 0 auto;
+  background: var(--color-surface-default);
+  color: var(--color-gray-900);
+  box-sizing: border-box;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--gap-200);
+  padding: var(--padding-200) var(--padding-300);
+  box-sizing: border-box;
+}
+
+.headerTitle {
+  margin: 0;
+  font: var(--type-ios-title-small-font);
+  letter-spacing: var(--type-ios-title-small-tracking);
+  color: var(--color-gray-900);
+}
+
+.body {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: var(--gap-300);
+  padding: 0 var(--padding-300) var(--padding-300);
+  box-sizing: border-box;
+  overflow: auto;
+}
+
+.sectionTitle {
+  margin: 0;
+  font: var(--type-ios-body-strong-font);
+  letter-spacing: var(--type-ios-body-strong-tracking);
+  color: var(--color-gray-900);
+}
+
+.stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-300);
+}
+
+.courseList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-200);
+}
+
+.chatList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-200);
+  width: 100%;
+}
+
+.chatRow {
+  display: flex;
+  width: 100%;
+}
+
+.chatRowAi {
+  justify-content: flex-start;
+}
+
+.chatRowUser {
+  justify-content: flex-end;
+}
+
+.fallback {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-100);
+}
+
+.fallbackLabel {
+  margin: 0;
+  font: var(--type-ios-caption-large-font);
+  letter-spacing: var(--type-ios-caption-large-tracking);
+  color: var(--color-gray-500);
+}
+
+.footer {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-150);
+  padding: var(--padding-200) var(--padding-300) var(--padding-300);
+  box-sizing: border-box;
+}
+
+.runningHero {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--gap-200);
+  text-align: center;
+  padding: var(--padding-400) var(--padding-300);
+}
+
+.runningHero p {
+  margin: 0;
+  font: var(--type-ios-body-medium-font);
+  letter-spacing: var(--type-ios-body-medium-tracking);
+  color: var(--color-gray-700);
+}
+
+.metrics {
+  display: flex;
+  gap: var(--gap-300);
+  font: var(--type-ios-body-strong-font);
+  letter-spacing: var(--type-ios-body-strong-tracking);
+  color: var(--color-gray-900);
+}
+
+.metrics span {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font: var(--type-ios-caption-medium-font);
+  letter-spacing: var(--type-ios-caption-medium-tracking);
+  color: var(--color-gray-500);
+}
+
+.metrics strong {
+  font: var(--type-ios-title-medium-font);
+  letter-spacing: var(--type-ios-title-medium-tracking);
+  color: var(--color-gray-900);
+}

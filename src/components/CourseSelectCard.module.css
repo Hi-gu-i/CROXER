@@ -1,0 +1,222 @@
+.card {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: 100%;
+  max-width: 361px;
+  min-height: 189px;
+  padding: var(--padding-300);
+  border-radius: var(--radius-card-md);
+  text-align: left;
+  cursor: pointer;
+  box-sizing: border-box;
+}
+
+.card:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.selected {
+  border: 1px solid var(--color-blue-300);
+  background: var(--color-blue-050);
+  box-shadow: var(--shadow-card);
+}
+
+.unselected {
+  border: none;
+  background: var(--color-gray-075);
+  box-shadow: var(--shadow-line);
+}
+
+/* Body: HUG */
+.body {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--gap-150);
+  width: fit-content;
+  max-width: 100%;
+}
+
+.selectIcon {
+  display: inline-flex;
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+}
+
+/* Content: FIXED 149 · Head / TitleBlock / TitleRow / Tags → FILL */
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-200);
+  width: 149px;
+  min-width: 0;
+}
+
+.head {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  width: 100%;
+  min-width: 0;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: fit-content;
+  min-height: 24px;
+  padding: var(--padding-050) var(--padding-100);
+  border-radius: var(--radius-control);
+  font: var(--type-ios-caption-medium-font);
+  letter-spacing: var(--type-ios-caption-medium-tracking);
+  color: var(--color-text-inverse);
+}
+
+.selected .badge {
+  background: radial-gradient(
+    circle at 45% 45%,
+    rgba(65, 70, 253, 0.9) 0%,
+    rgba(81, 133, 254, 0.9) 71%,
+    rgba(127, 178, 255, 0.88) 100%
+  );
+}
+
+.unselected .badge {
+  background: var(--color-gray-400);
+}
+
+.titleBlock {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-050);
+  width: 100%;
+  min-width: 0;
+}
+
+.titleRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 5px;
+  width: 100%;
+  min-width: 0;
+}
+
+.label,
+.title {
+  font: var(--font-weight-semibold) var(--font-size-350) / var(--line-height-350)
+    var(--font-family-sans);
+  letter-spacing: 0;
+}
+
+.selected .label {
+  color: var(--color-blue-500);
+}
+
+.unselected .label {
+  color: var(--color-gray-900);
+}
+
+.selected .title {
+  color: var(--color-gray-900);
+}
+
+.unselected .title {
+  color: var(--color-gray-700);
+}
+
+.metrics {
+  display: flex;
+  align-items: center;
+  gap: var(--gap-150);
+  width: fit-content;
+  font: var(--font-weight-regular) var(--font-size-250) / var(--line-height-150)
+    var(--font-family-sans);
+  letter-spacing: 0;
+  color: var(--color-gray-700);
+}
+
+.sep {
+  color: var(--color-gray-700);
+}
+
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  width: 100%;
+}
+
+.tag {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 22px;
+  padding: 4px 8px;
+  border-radius: var(--radius-control);
+  font: var(--font-weight-regular) var(--font-size-100) / 14px
+    var(--font-family-sans);
+  letter-spacing: 0;
+}
+
+.selected .tag {
+  background: var(--color-blue-050);
+  color: var(--color-blue-500);
+}
+
+.unselected .tag {
+  background: var(--color-gray-200);
+  color: var(--color-gray-700);
+}
+
+/* Gap11 11 · Divider · Gap16 16 */
+.divider {
+  display: block;
+  width: 100%;
+  height: 1px;
+  margin: 11px 0 16px;
+  border-radius: var(--radius-050);
+  background: var(--color-gray-200);
+  flex-shrink: 0;
+}
+
+/* Footer: HUG */
+.footer {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--gap-150);
+  width: fit-content;
+  max-width: 100%;
+}
+
+.insightIcon {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: 14px;
+  height: 14px;
+  overflow: hidden;
+  color: var(--color-gray-400);
+}
+
+.selected .insightIcon {
+  color: var(--color-blue-400);
+}
+
+.description {
+  font: var(--type-ios-caption-large-font);
+  letter-spacing: var(--type-ios-caption-large-tracking);
+  white-space: nowrap;
+}
+
+.selected .description {
+  color: var(--color-blue-400);
+}
+
+.unselected .description {
+  color: var(--color-gray-700);
+}

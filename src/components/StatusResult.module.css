@@ -1,0 +1,51 @@
+/* 원본 전송 완료 블록: 아이콘 86 + 중앙 타이포 */
+.root {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--gap-300);
+  width: 100%;
+  max-width: 242px;
+  margin-inline: auto;
+  text-align: center;
+  box-sizing: border-box;
+}
+
+.icon {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: 86px;
+  height: 86px;
+}
+
+.copy {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--gap-150);
+  width: 100%;
+}
+
+/* 원본 20 Medium / 26 · center */
+.title {
+  margin: 0;
+  width: 100%;
+  font-family: var(--font-family-sans);
+  font-weight: var(--font-weight-medium);
+  font-size: var(--font-size-500);
+  line-height: var(--line-height-350);
+  letter-spacing: var(--letter-spacing-200);
+  color: var(--color-gray-900);
+}
+
+/* 16 Regular / 24 · gray-700 · center */
+.description {
+  margin: 0;
+  width: 100%;
+  font: var(--type-ios-body-medium-font);
+  letter-spacing: var(--type-ios-body-medium-tracking);
+  color: var(--color-gray-700);
+  white-space: pre-wrap;
+}

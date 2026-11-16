@@ -1,0 +1,110 @@
+/* Task 9 AI 작업 토스트 — 원본 333×44 · pad 4/3/4/24 · radius 20 */
+.root {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  width: 100%;
+  max-width: 333px;
+  height: 44px;
+  padding: var(--padding-050) 3px var(--padding-050) var(--padding-500);
+  box-sizing: border-box;
+  border: 1px solid var(--color-border-color);
+  border-radius: var(--radius-250);
+  background: var(--color-bg-subtle);
+  overflow: visible;
+  isolation: isolate;
+}
+
+.ack {
+  /* 접수·진행 안내 — 보더만 */
+}
+
+.done {
+  /* 완료 — Blue Violet 외곽 글로우 */
+  box-shadow: 0 0 10px 2px color-mix(in srgb, var(--color-blue-200) 80%, transparent);
+}
+
+.glow {
+  position: absolute;
+  left: -10px;
+  top: -10px;
+  z-index: -1;
+  width: 353px;
+  height: 64px;
+  border-radius: var(--radius-300);
+  background: radial-gradient(
+    ellipse at center,
+    color-mix(in srgb, var(--color-blue-300) 55%, transparent) 0%,
+    color-mix(in srgb, var(--color-blue-200) 35%, transparent) 45%,
+    transparent 70%
+  );
+  pointer-events: none;
+}
+
+.inner {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--gap-200);
+  width: 100%;
+  height: 36px;
+  box-sizing: border-box;
+}
+
+/* 원본 14 Regular / 20 · tracking -3% ≈ letter-spacing-300 */
+.message {
+  margin: 0;
+  flex: 1 1 auto;
+  min-width: 0;
+  font: var(--font-weight-regular) var(--font-size-200) / var(--line-height-200)
+    var(--font-family-sans);
+  letter-spacing: var(--letter-spacing-300);
+  color: var(--color-text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.action {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--gap-200);
+  min-width: 99px;
+  height: 36px;
+  margin: 0;
+  padding: 0;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.action:disabled,
+span.action {
+  cursor: default;
+}
+
+.actionLabel {
+  font: var(--font-weight-regular) var(--font-size-200) / var(--line-height-200)
+    var(--font-family-sans);
+  letter-spacing: var(--letter-spacing-300);
+  color: var(--color-text-brand);
+}
+
+/* 채팅 「작업 상세」 보조 — 원본 36 원 */
+.chevron {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 999px;
+  background: var(--color-surface-default);
+  color: var(--color-icon-default);
+  box-shadow: 0 0 4px 0 var(--color-gray-100);
+}

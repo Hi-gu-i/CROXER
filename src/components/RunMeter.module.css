@@ -1,0 +1,219 @@
+/* Task 9 러닝 측정 — 원본 Frame 2085668108 (393×732 본문) */
+.root {
+  --rm-ring: 253px;
+  --rm-ring-top: 78px;
+  --rm-controls-top: 371px;
+  --rm-metrics-top: 484px;
+  --rm-toolbar-top: var(--padding-300); /* 16 */
+  --rm-toolbar-right: 15px;
+  --rm-control-gap: var(--gap-400); /* 20 · 원본 side↔primary */
+  --rm-metrics-width: 265px;
+
+  position: relative;
+  width: 100%;
+  max-width: 393px;
+  height: 732px;
+  margin: 0 auto;
+  box-sizing: border-box;
+  overflow: hidden;
+  background:
+    linear-gradient(
+      180deg,
+      var(--color-base-000) 0%,
+      var(--color-blue-050) 42%,
+      var(--color-base-000) 64%
+    );
+}
+
+/* 하단 흰 패널 · 원본 y=465 h=235 */
+.root::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 235px;
+  background: var(--color-surface-default);
+  pointer-events: none;
+}
+
+/* 원본 x=274 y=16 · gap 12 · right 15 */
+.toolbar {
+  position: absolute;
+  top: var(--rm-toolbar-top);
+  right: var(--rm-toolbar-right);
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  gap: var(--gap-200);
+}
+
+.toolBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 46px;
+  height: 46px;
+  padding: 0;
+  border: none;
+  border-radius: 999px;
+  background: var(--color-surface-default);
+  color: var(--color-icon-default);
+  cursor: pointer;
+}
+
+/* 원본 253×253 · top 78 · 수평 중앙 */
+.ringBlock {
+  position: absolute;
+  top: var(--rm-ring-top);
+  left: 50%;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--rm-ring);
+  height: var(--rm-ring);
+  transform: translateX(-50%);
+}
+
+.ringSvg {
+  position: absolute;
+  inset: 0;
+  display: block;
+}
+
+.ringTrack {
+  stroke: var(--color-gray-100);
+}
+
+.ringProgress {
+  transition: stroke-dashoffset 200ms linear;
+}
+
+.hero {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--gap-000);
+}
+
+/* ios/Display/medium · 32 Medium / 40 · tracking -0.4 */
+.time {
+  margin: 0;
+  font: var(--type-ios-display-medium-font);
+  letter-spacing: var(--type-ios-display-medium-tracking);
+  color: var(--color-text-primary);
+  text-align: center;
+}
+
+.distance {
+  margin: 0;
+  font: var(--type-ios-display-medium-font);
+  letter-spacing: var(--type-ios-display-medium-tracking);
+  color: var(--color-text-tertiary);
+  text-align: center;
+}
+
+/* 원본 top 371 · 가로 218 · side 56 + gap 20 + primary 66 + gap 20 + side 56 */
+.controls {
+  position: absolute;
+  top: var(--rm-controls-top);
+  left: 50%;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--rm-control-gap);
+  width: 218px;
+  height: 66px;
+  transform: translateX(-50%);
+}
+
+.sideBtn {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  padding: 0;
+  border: none;
+  border-radius: 999px;
+  background: var(--color-surface-default);
+  color: var(--color-icon-default);
+  box-shadow: 0 0 4px 0 var(--color-gray-100);
+  cursor: pointer;
+}
+
+.primaryBtn {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: 66px;
+  height: 66px;
+  padding: 0;
+  border: 3px solid var(--color-blue-100);
+  border-radius: 999px;
+  background: var(--color-blue-100);
+  color: var(--color-icon-brand);
+  cursor: pointer;
+}
+
+/* 원본 top 484 · width 265 · Pace / Avg. Pace / BPM */
+.metrics {
+  position: absolute;
+  top: var(--rm-metrics-top);
+  left: 50%;
+  z-index: 2;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  width: var(--rm-metrics-width);
+  height: 70px;
+  transform: translateX(-50%);
+}
+
+.metric {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 48px;
+}
+
+.metricAvg {
+  width: 71px;
+}
+
+/* ios/Body/medium · 16 Regular / 24 · text-secondary */
+.metricLabel {
+  font: var(--type-ios-body-medium-font);
+  letter-spacing: var(--type-ios-body-medium-tracking);
+  color: var(--color-text-secondary);
+  text-align: center;
+  white-space: nowrap;
+}
+
+/* ios/Title/small · 20 SemiBold / 30 */
+.metricValue {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 48px;
+  min-height: 46px;
+  font: var(--type-ios-title-small-font);
+  letter-spacing: var(--type-ios-title-small-tracking);
+  color: var(--color-text-primary);
+  text-align: center;
+}
+
+.metricDash {
+  display: block;
+  width: 12px;
+  height: 1.5px;
+  margin-top: 22px;
+  background: var(--color-text-primary);
+}

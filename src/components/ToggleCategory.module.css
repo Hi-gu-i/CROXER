@@ -1,0 +1,51 @@
+.toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--gap-100);
+  box-sizing: border-box;
+  width: fit-content;
+  max-width: 100%;
+  margin: 0;
+  padding: var(--padding-100) var(--padding-200) var(--padding-100) var(--padding-300);
+  border: none;
+  border-radius: var(--radius-control);
+  box-shadow: none;
+  font: var(--type-ios-body-strong-font);
+  letter-spacing: var(--type-ios-body-strong-tracking);
+  white-space: nowrap;
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.toggle:focus-visible {
+  outline: 2px solid var(--color-blue-500);
+  outline-offset: 2px;
+}
+
+.label {
+  min-width: 0;
+}
+
+.icon {
+  flex-shrink: 0;
+  color: currentColor;
+}
+
+/* 활동 화면 역할 톤 — 01 편집자 / 러닝 / 교양 원본 */
+.yellow {
+  background: var(--color-yellow-100);
+  color: #cd5500;
+}
+
+.violet {
+  background: var(--color-violet-100);
+  color: #7d00db;
+}
+
+.mint {
+  background: var(--color-mint-100);
+  color: #006b5b;
+}

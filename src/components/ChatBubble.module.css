@@ -1,0 +1,36 @@
+.bubble {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  max-width: 280px;
+  box-sizing: border-box;
+}
+
+.shapeBubble {
+  padding: 14px var(--padding-300);
+  border-radius: var(--radius-250);
+}
+
+.shapePill {
+  padding: var(--padding-150) var(--padding-300);
+  border-radius: var(--radius-control);
+}
+
+.ai {
+  background: var(--color-surface-default);
+  box-shadow: 0 0 4px 0 var(--color-gray-200);
+  color: var(--color-text-primary);
+}
+
+.user {
+  background: var(--color-bg-brand);
+  color: var(--color-text-inverse);
+}
+
+.message {
+  margin: 0;
+  font: var(--type-ios-body-medium-font);
+  letter-spacing: var(--type-ios-body-medium-tracking);
+  color: inherit;
+  white-space: pre-line;
+}

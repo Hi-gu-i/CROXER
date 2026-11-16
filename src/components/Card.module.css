@@ -1,0 +1,24 @@
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-md);
+  width: 100%;
+  background: var(--color-surface-default);
+  box-shadow: var(--shadow-card);
+  box-sizing: border-box;
+}
+
+.sm {
+  padding: var(--padding-card-sm);
+  border-radius: var(--radius-card-sm);
+}
+
+.md {
+  padding: var(--padding-card-md);
+  border-radius: var(--radius-card-md);
+}
+
+.lg {
+  padding: var(--padding-card-lg);
+  border-radius: var(--radius-card-lg);
+}

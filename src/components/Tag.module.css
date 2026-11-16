@@ -1,0 +1,38 @@
+.tag {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  width: fit-content;
+  max-width: 100%;
+  padding: var(--padding-050) var(--padding-200);
+  border-radius: var(--radius-control);
+  font: var(--type-ios-caption-large-font);
+  letter-spacing: var(--type-ios-caption-large-tracking);
+  white-space: nowrap;
+}
+
+.neutral {
+  background: var(--color-border-subtle);
+  color: var(--color-text-secondary);
+}
+
+.yellow {
+  background: var(--color-yellow-100);
+  color: var(--color-yellow-600);
+}
+
+.violet {
+  background: var(--color-violet-100);
+  color: var(--color-violet-600);
+}
+
+.blue {
+  background: var(--color-blue-100);
+  color: var(--color-blue-700);
+}
+
+.mint {
+  background: var(--color-mint-100);
+  color: var(--color-mint-600);
+}

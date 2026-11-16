@@ -1,0 +1,63 @@
+/* 홈 04 ai 아이콘(접힘) · 05 펼친 ai 아이콘(펼침) 기준 */
+
+.capsule {
+  position: relative;
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  border: none;
+  cursor: pointer;
+  box-sizing: border-box;
+  background: var(--color-opacity-white-600);
+  box-shadow: var(--shadow-glass);
+  backdrop-filter: var(--effect-glass-background-backdrop);
+  -webkit-backdrop-filter: var(--effect-glass-background-backdrop);
+  transition:
+    width 280ms ease,
+    padding 280ms ease,
+    border-radius 280ms ease;
+}
+
+.collapsed {
+  width: 48px;
+  height: 48px;
+  padding: 0;
+  border-radius: var(--radius-control);
+  justify-content: center;
+}
+
+.expanded {
+  width: 252px;
+  height: 48px;
+  padding: 0 var(--padding-200) 0 var(--padding-100);
+  border-radius: var(--radius-control);
+  gap: var(--gap-sm);
+  justify-content: flex-start;
+}
+
+.orb {
+  flex-shrink: 0;
+  width: 22px;
+  height: 22px;
+  border-radius: var(--radius-control);
+  background:
+    radial-gradient(
+      circle at 35% 30%,
+      var(--color-blue-200),
+      var(--color-bg-brand) 55%,
+      var(--color-blue-700)
+    );
+  box-shadow: inset 0 0 0 1px var(--color-opacity-white-200);
+}
+
+.title {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  font: var(--type-ios-body-small-font);
+  letter-spacing: var(--type-ios-body-small-tracking);
+  color: var(--color-text-primary);
+  text-align: left;
+}

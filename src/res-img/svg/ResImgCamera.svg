@@ -1,0 +1,25 @@
+<svg width="64" height="56" viewBox="0 0 64 56" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="ResImgCamera_ResImgCamera" clip-path="url(#ResImgCamera_clip0_138_322)">
+<g id="ResImgCamera___236___185___180___235___169___148___235___157___188_">
+<g id="ResImgCamera_Group_2085666572">
+<g id="ResImgCamera_Vector" filter="url(#ResImgCamera_filter0_f_138_322)">
+<path d="M44.2986 14.1333H19.7066C16.5333 14.1333 14.4693 10.7946 15.8879 7.95729L18.0213 3.69062C18.7413 2.24529 20.2186 1.33329 21.8346 1.33329H42.1599C43.7759 1.33329 45.2533 2.24529 45.9786 3.69062L48.1119 7.95729C49.5306 10.7946 47.4666 14.1333 44.2933 14.1333H44.2986Z" fill="#5165FE" fill-opacity="0.8"/>
+</g>
+<path id="ResImgCamera_Vector_2" d="M54.4 7.73338H9.6C4.29807 7.73338 0 12.0314 0 17.3334V45.0667C0 50.3686 4.29807 54.6667 9.6 54.6667H54.4C59.7019 54.6667 64 50.3686 64 45.0667V17.3334C64 12.0314 59.7019 7.73338 54.4 7.73338Z" fill="#5165FE" fill-opacity="0.4"/>
+<path id="ResImgCamera_Vector_3" d="M32.0004 19.3262C38.5579 19.3265 43.8735 24.6427 43.8735 31.2003C43.8733 37.7576 38.5578 43.0731 32.0004 43.0733C25.4429 43.0733 20.1266 37.7577 20.1264 31.2003C20.1264 24.6426 25.4428 19.3262 32.0004 19.3262Z" stroke="white" stroke-width="5.05263"/>
+<circle id="ResImgCamera_Ellipse_5452" cx="48.8" cy="19.1999" r="2.4" fill="white"/>
+</g>
+<circle id="ResImgCamera_Ellipse_5463" cx="32" cy="31.1999" r="11.2" fill="#5165FE" fill-opacity="0.9"/>
+</g>
+</g>
+<defs>
+<filter id="ResImgCamera_filter0_f_138_322" x="-23.3048" y="-37.4036" width="110.609" height="90.2737" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+<feFlood flood-opacity="0" result="BackgroundImageFix"/>
+<feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape"/>
+<feGaussianBlur stdDeviation="19.3684" result="effect1_foregroundBlur_138_322"/>
+</filter>
+<clipPath id="ResImgCamera_clip0_138_322">
+<rect width="64" height="56" fill="white"/>
+</clipPath>
+</defs>
+</svg>
