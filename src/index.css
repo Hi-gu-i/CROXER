@@ -1,10 +1,20 @@
-body {
-  margin: 0;
-  font-family: system-ui, sans-serif;
+@import "../tokens/design-tokens.css";
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
 }
 
-main {
-  display: grid;
-  min-height: 100dvh;
-  place-items: center;
+body {
+  margin: 0;
+  background: var(--color-gray-075);
+  color: var(--color-text-primary);
+  font: var(--type-ios-body-medium-font);
+  letter-spacing: var(--type-ios-body-medium-tracking);
+}
+
+button {
+  font: inherit;
+  letter-spacing: inherit;
 }

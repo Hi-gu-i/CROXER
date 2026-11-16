@@ -1,0 +1,194 @@
+.stage {
+  display: grid;
+  min-height: 100dvh;
+  padding: var(--padding-ios-x);
+  place-items: center;
+}
+
+.frame {
+  --frame-width: 390px;
+  --frame-height: 844px;
+  --tab-bar-width: 306px;
+  --tab-bar-bottom: 42px;
+  --tab-item-height: 52px;
+
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: min(100%, var(--frame-width));
+  height: min(var(--frame-height), calc(100dvh - var(--padding-ios-x) * 2));
+  overflow: hidden;
+  border-radius: var(--radius-screen);
+  background: var(--color-bg-default);
+  box-shadow: var(--shadow-line);
+}
+
+@media (max-width: 430px) {
+  .stage {
+    padding: 0;
+  }
+
+  .frame {
+    width: 100%;
+    height: 100dvh;
+    border-radius: 0;
+    box-shadow: none;
+  }
+}
+
+.screen {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: var(--gap-md);
+  min-height: 0;
+  padding: var(--padding-ios-x);
+  overflow-y: auto;
+  background: var(--color-bg-subtle);
+}
+
+.screenWithTabBar {
+  padding-bottom: calc(
+    var(--tab-bar-bottom) + var(--tab-item-height) + var(--gap-xs) * 2 + var(--gap-md)
+  );
+}
+
+.tabBar {
+  position: absolute;
+  bottom: var(--tab-bar-bottom);
+  left: 50%;
+  display: flex;
+  width: min(var(--tab-bar-width), calc(100% - var(--padding-ios-x) * 2));
+  padding: var(--gap-xs);
+  border-radius: var(--radius-control);
+  background: var(--color-opacity-white-600);
+  box-shadow: var(--shadow-glass);
+  backdrop-filter: var(--effect-glass-background-backdrop);
+  transform: translateX(-50%);
+}
+
+.tab {
+  display: flex;
+  flex: 1 1 0;
+  align-items: center;
+  justify-content: center;
+  gap: var(--gap-xs);
+  height: var(--tab-item-height);
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-control);
+  background: none;
+  color: var(--color-icon-disabled);
+  cursor: pointer;
+}
+
+.tabActive {
+  /* Figma에서 선택 탭 폭이 다른 탭의 약 1.4배 */
+  flex-grow: 1.4;
+  /* 탭 선택 배경 semantic 토큰이 없어 같은 값(blue-200)인 토큰을 임시로 쓴다. 토큰 요청 후 교체 */
+  background: var(--color-border-color);
+  box-shadow: var(--effect-glass-active-shadow);
+  backdrop-filter: var(--effect-glass-active-backdrop);
+  color: var(--color-icon-brand);
+}
+
+.tabIcon {
+  flex-shrink: 0;
+  width: 24px;
+  height: 24px;
+}
+
+.tabLabel {
+  color: var(--color-text-brand);
+  font: var(--type-ios-caption-medium-font);
+  letter-spacing: var(--type-ios-caption-medium-tracking);
+  white-space: nowrap;
+}
+
+.visuallyHidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.tempTitle {
+  margin: 0;
+  font: var(--type-ios-title-large-font);
+  letter-spacing: var(--type-ios-title-large-tracking);
+}
+
+.tempNotice {
+  margin: 0;
+  color: var(--color-text-tertiary);
+  font: var(--type-ios-body-small-font);
+  letter-spacing: var(--type-ios-body-small-tracking);
+}
+
+.tempList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-sm);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.tempItem {
+  display: flex;
+  align-items: center;
+  gap: var(--gap-sm);
+  padding: var(--padding-card-sm);
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-card-sm);
+  background: var(--color-surface-default);
+}
+
+.tempItemText {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: var(--gap-xs);
+}
+
+.tempItemName {
+  font: var(--type-ios-body-strong-font);
+  letter-spacing: var(--type-ios-body-strong-tracking);
+}
+
+.tempItemMeta {
+  color: var(--color-text-tertiary);
+  font: var(--type-ios-caption-large-font);
+  letter-spacing: var(--type-ios-caption-large-tracking);
+}
+
+.tempMove {
+  padding: var(--padding-control-y) var(--padding-control-x);
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-control);
+  background: var(--color-surface-default);
+  color: var(--color-text-secondary);
+  cursor: pointer;
+}
+
+.tempMove:disabled {
+  color: var(--color-text-disabled);
+  cursor: default;
+}
+
+.tempPrimary {
+  padding: var(--padding-control-y) var(--padding-control-x);
+  border: 0;
+  border-radius: var(--radius-control);
+  background: var(--color-brand-default);
+  color: var(--color-text-inverse);
+  font: var(--type-ios-body-strong-font);
+  letter-spacing: var(--type-ios-body-strong-tracking);
+  cursor: pointer;
+}
+
+.tempPrimary:active {
+  background: var(--color-brand-pressed);
+}
