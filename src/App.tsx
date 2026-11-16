@@ -1,142 +1,295 @@
+import { useState, type ComponentType, type ReactNode } from 'react'
+import styles from './app.module.css'
+import type { ActivityId, ReorderableScheduleId, ScheduleStatus } from './data/types'
+import { useUtSession } from './data/useUtSession'
 import {
-  AiJobCard,
-  AiJobToast,
-  AnnouncementDraftCard,
-  CourseSelectCard,
-  InquiryCard,
-  AiAssessmentCard,
-  RunMeter,
-  SectionIntro,
-  StatusResult,
-  Button,
-  ChatBubble,
-  ChatInput,
-} from "./components";
-import styles from "./App.module.css";
+  completeActivity,
+  confirmBriefing,
+  enterActivity,
+  getActiveRoleId,
+  getActivity,
+  getBriefingItems,
+  getCurrentActivityId,
+  getRole,
+  getScheduleByActivity,
+  isBriefingConfirmed,
+  saveBriefingOrder,
+} from './data/utStore'
+import HomeScreen from './features/home/HomeScreen'
+import RoleSwitchPanel from './features/role-switch/RoleSwitchPanel'
 
-/**
- * 통합 담당(예은) 소유 파일.
- * Task 8·9 부품 미리보기용. 홈·탭바 틀이 준비되면 활동 진입 경로로 교체한다.
- */
+type TabId = 'home' | 'schedule' | 'report' | 'settings'
+
+type Screen = { name: TabId } | { name: 'activity'; activityId: ActivityId }
+
+interface ActivityScreenProps {
+  activityId: ActivityId
+  /** 활동의 UT 흐름을 마쳤을 때 한 번 부른다. 완료 처리와 다음 활동 안내는 App이 맡는다 */
+  onFinish: () => void
+}
+
+const tabs: { id: TabId; label: string; icon: ReactNode }[] = [
+  {
+    id: 'home',
+    label: '홈',
+    icon: <path d="M4 11.5 12 5l8 6.5V19a1 1 0 0 1-1 1h-4v-5H9v5H5a1 1 0 0 1-1-1z" />,
+  },
+  {
+    id: 'schedule',
+    label: '스케줄',
+    icon: <path d="M7 3v3M17 3v3M4 8h16M5 5h14a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1z" />,
+  },
+  {
+    id: 'report',
+    label: '리포트',
+    icon: <path d="M5 20V10M12 20V4M19 20v-7" />,
+  },
+  {
+    id: 'settings',
+    label: '설정',
+    icon: (
+      <>
+        <circle cx="12" cy="12" r="3" />
+        <path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M18.4 5.6l-2.1 2.1M7.7 16.3l-2.1 2.1" />
+      </>
+    ),
+  },
+]
+
+// 활동 화면 연결 지점. 담당 화면이 준비되면 활동 ID에 맞춰 여기에 등록한다.
+// 등록하지 않은 활동은 임시 화면(TempActivityScreen)이 열린다.
+const activityScreens: Partial<Record<ActivityId, ComponentType<ActivityScreenProps>>> = {}
+
 export default function App() {
+  useUtSession()
+  const [screen, setScreen] = useState<Screen>({ name: 'home' })
+  const [switchTargetId, setSwitchTargetId] = useState<ActivityId | null>(null)
+
+  if (!isBriefingConfirmed()) {
+    return (
+      <Frame>
+        {/* 연결 지점: 브리핑 화면(src/features/briefing) */}
+        <TempBriefingScreen
+          onConfirmed={() => {
+            setSwitchTargetId(null)
+            setScreen({ name: 'home' })
+          }}
+        />
+      </Frame>
+    )
+  }
+
+  function openActivity(activityId: ActivityId) {
+    // 브리핑 확정(confirmBriefing)이 첫 활동 진입을 이미 처리했으므로 같은 활동이면 다시 시작하지 않는다.
+    if (getCurrentActivityId() !== activityId) enterActivity(activityId)
+    setScreen({ name: 'activity', activityId })
+  }
+
+  function finishActivity(activityId: ActivityId) {
+    if (getScheduleByActivity(activityId).status === 'done') return
+    const nextActivityId = completeActivity(activityId)
+    if (nextActivityId) {
+      setSwitchTargetId(nextActivityId)
+    } else {
+      setScreen({ name: 'schedule' })
+    }
+  }
+
+  function switchToNextActivity() {
+    if (!switchTargetId) return
+    enterActivity(switchTargetId)
+    setScreen({ name: 'activity', activityId: switchTargetId })
+    setSwitchTargetId(null)
+  }
+
+  const activeTab: TabId = screen.name === 'activity' ? 'home' : screen.name
+  const ActivityScreen =
+    screen.name === 'activity' ? (activityScreens[screen.activityId] ?? TempActivityScreen) : null
+
   return (
-    <main className={styles.page}>
-      <h1 className={styles.heading}>Task 9 부품</h1>
+    <Frame>
+      <main className={`${styles.screen} ${styles.screenWithTabBar}`}>
+        {screen.name === 'home' && (
+          <HomeScreen
+            onOpenActivity={openActivity}
+            onOpenSchedule={() => setScreen({ name: 'schedule' })}
+          />
+        )}
+        {screen.name === 'activity' && ActivityScreen && (
+          <ActivityScreen
+            key={screen.activityId}
+            activityId={screen.activityId}
+            onFinish={() => finishActivity(screen.activityId)}
+          />
+        )}
+        {/* 연결 지점: 스케줄 화면(src/features/schedule) */}
+        {screen.name === 'schedule' && <TempScheduleScreen />}
+        {screen.name === 'report' && <TempPlaceholderScreen title="리포트" />}
+        {screen.name === 'settings' && <TempPlaceholderScreen title="설정" />}
+      </main>
+      <nav className={styles.tabBar} aria-label="하단 탭">
+        {tabs.map((tab) => (
+          <button
+            key={tab.id}
+            type="button"
+            className={tab.id === activeTab ? `${styles.tab} ${styles.tabActive}` : styles.tab}
+            aria-current={tab.id === activeTab ? 'page' : undefined}
+            onClick={() => setScreen({ name: tab.id })}
+          >
+            <svg
+              className={styles.tabIcon}
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.75"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              aria-hidden="true"
+            >
+              {tab.icon}
+            </svg>
+            <span className={tab.id === activeTab ? styles.tabLabel : styles.visuallyHidden}>
+              {tab.label}
+            </span>
+          </button>
+        ))}
+      </nav>
+      {switchTargetId && (
+        <RoleSwitchPanel
+          nextActivityId={switchTargetId}
+          onSwitch={switchToNextActivity}
+          onKeep={() => setSwitchTargetId(null)}
+        />
+      )}
+    </Frame>
+  )
+}
 
-      <section className={styles.section}>
-        <h2 className={styles.label}>RunMeter · idle</h2>
-        <RunMeter phase="idle" progress={0} />
-      </section>
+function Frame({ children }: { children: ReactNode }) {
+  return (
+    <div className={styles.stage}>
+      <div className={styles.frame}>{children}</div>
+    </div>
+  )
+}
 
-      <section className={styles.section}>
-        <h2 className={styles.label}>RunMeter · running</h2>
-        <RunMeter
-          phase="running"
-          time="00:00:59"
-          distance="0.16km"
-          pace="5:55"
-          avgPace="6:00"
-          bpm="134"
-          progress={0.25}
-        />
-      </section>
+const scheduleStatusLabel: Record<ScheduleStatus, string> = {
+  waiting: '진행 전',
+  in_progress: '진행 중',
+  done: '완료',
+}
 
-      <section className={styles.section}>
-        <h2 className={styles.label}>AiJobToast</h2>
-        <AiJobToast
-          tone="ack"
-          message="정리가 끝나면 알려드릴게요."
-          actionLabel="작업 완료"
-        />
-        <AiJobToast
-          tone="done"
-          message="레퍼런스 정리가 완료됐어요"
-          actionLabel="작업 완료"
-        />
-        <AiJobToast
-          tone="ack"
-          message="정리가 끝나면 알려드릴게요."
-          actionLabel="작업 상세"
-          showActionChevron
-        />
-      </section>
+function formatStartTime(startsAt: string) {
+  return startsAt.slice(11, 16)
+}
 
-      <section className={styles.section}>
-        <h2 className={styles.label}>ChatBubble · ChatInput · AiJobCard (기존)</h2>
-        <ChatBubble role="user">
-          러닝하는 동안 내일 강변 촬영에서 쓸 레퍼런스 찾아서 추가해 줘
-        </ChatBubble>
-        <ChatBubble role="ai">
-          기존 촬영 메모를 기준으로 레퍼런스를 찾고 ‘강변 촬영’ 페이지에 정리해
-          둘게요
-        </ChatBubble>
-        <AiJobCard
-          title="강변 촬영 레퍼런스 정리"
-          status="현재 레퍼런스를 찾고 있어요"
-          steps={[
-            { label: "촬영 메모 확인", state: "done" },
-            { label: "레퍼런스 탐색", state: "todo" },
-            { label: "선별 및 정리", state: "todo" },
-          ]}
-        />
-        <ChatInput placeholder="메세지를 입력하세요" />
-      </section>
+// 아래 Temp* 화면은 담당 화면이 합쳐지면 위의 연결 지점에서 교체하고 지운다.
 
-      <h1 className={styles.heading}>Task 8 부품</h1>
+function TempBriefingScreen({ onConfirmed }: { onConfirmed: () => void }) {
+  const items = getBriefingItems()
+  const movable = items.filter((item) => item.activity.isReorderable)
 
-      <section className={styles.section}>
-        <h2 className={styles.label}>InquiryCard · AiAssessmentCard</h2>
-        <InquiryCard
-          channel="카카오톡 • 크로싱 러닝크루"
-          question="비가 오는데 오늘 러닝 코스는 그대로 진행하나요?"
-          time="최근 20분"
-        />
-        <AiAssessmentCard
-          title="오늘 달리기 좋은 대체 코스를 찾아뒀어요"
-          badge="확인한 상황"
-          description="러닝 시간에는 비가 그칠 예보예요. 다만 흙길은 젖어 있을 수 있어서 대체 코스를 찾아뒀어요."
-          actionLabel="코스 확인"
-        />
-      </section>
+  function moveUp(index: number) {
+    const ids = movable.map((item) => item.schedule.id as ReorderableScheduleId)
+    ;[ids[index - 1], ids[index]] = [ids[index], ids[index - 1]]
+    saveBriefingOrder(ids)
+  }
 
-      <section className={styles.section}>
-        <h2 className={styles.label}>SectionIntro + CourseSelectCard</h2>
-        <SectionIntro
-          title={"시간과 집결지는 그대로,\n코스만 골라주세요"}
-          description="젖은 흙길을 피해 달릴 코스 2곳을 찾았어요"
-        />
-        <CourseSelectCard
-          selected
-          badge="A"
-          label="CROXER 추천"
-          title="공원 순환 코스"
-          distance="4.2km"
-          duration="약 45분"
-          tag1="평탄한 포장길"
-          tag2="공원 순환"
-          description="공원 포장길로, 크루가 함께 달리기 편해요."
-        />
-        <Button fullWidth>코스 선택하기</Button>
-      </section>
+  function confirm() {
+    confirmBriefing()
+    onConfirmed()
+  }
 
-      <section className={styles.section}>
-        <h2 className={styles.label}>AnnouncementDraftCard · StatusResult</h2>
-        <AnnouncementDraftCard
-          channel="카카오톡 • 크로싱 러닝크루"
-          title="오늘 러닝 코스를 변경합니다"
-          body="오늘 러닝은 예정대로 진행합니다. 강변 흙길이 젖어 있을 수 있어 공원 순환 A코스로 변경해요."
-          time="오늘 19:00"
-          location="여의도공원 문화의마당"
-          courseTitle="공원 순환 A코스"
-          courseMeta="4.2km • 약 45분"
-        />
-        <StatusResult
-          title="변경된 소식을 전송했어요"
-          description={
-            "선택한 코스와 집결 안내, 경로 지도를\n크로싱 러닝크루 단톡방에 함께 보냈어요"
-          }
-        />
-      </section>
-    </main>
-  );
+  return (
+    <div className={styles.screen}>
+      <h1 className={styles.tempTitle}>오늘의 브리핑</h1>
+      <p className={styles.tempNotice}>임시 브리핑 화면입니다. 담당 화면이 연결되면 교체됩니다.</p>
+      <ol className={styles.tempList}>
+        {items.map((item) => {
+          const movableIndex = movable.indexOf(item)
+          return (
+            <li key={item.schedule.id} className={styles.tempItem}>
+              <span className={styles.tempItemText}>
+                <span className={styles.tempItemName}>{item.activity.name}</span>
+                <span className={styles.tempItemMeta}>
+                  {item.role.label} · {formatStartTime(item.schedule.startsAt)}
+                </span>
+              </span>
+              {movableIndex >= 0 && (
+                <button
+                  type="button"
+                  className={styles.tempMove}
+                  disabled={movableIndex === 0}
+                  onClick={() => moveUp(movableIndex)}
+                  aria-label={`${item.activity.name} 위로 이동`}
+                >
+                  위로
+                </button>
+              )}
+            </li>
+          )
+        })}
+      </ol>
+      <button type="button" className={styles.tempPrimary} onClick={confirm}>
+        이 순서로 시작하기
+      </button>
+    </div>
+  )
+}
+
+function TempActivityScreen({ activityId, onFinish }: ActivityScreenProps) {
+  const activity = getActivity(activityId)
+  const role = getRole(activity.roleId)
+  const activeRoleId = getActiveRoleId()
+  const isDone = getScheduleByActivity(activityId).status === 'done'
+  return (
+    <>
+      <h1 className={styles.tempTitle}>{activity.name}</h1>
+      <p className={styles.tempNotice}>
+        {role.label} · 임시 활동 화면입니다. 담당 화면이 연결되면 교체됩니다.
+      </p>
+      <p className={styles.tempNotice}>
+        현재 역할 · {activeRoleId ? getRole(activeRoleId).label : '없음'}
+      </p>
+      {isDone ? (
+        <p className={styles.tempNotice}>이 활동은 완료됐어요.</p>
+      ) : (
+        <button type="button" className={styles.tempPrimary} onClick={onFinish}>
+          활동 마치기 (임시)
+        </button>
+      )}
+    </>
+  )
+}
+
+function TempScheduleScreen() {
+  const items = getBriefingItems()
+  return (
+    <>
+      <h1 className={styles.tempTitle}>스케줄</h1>
+      <p className={styles.tempNotice}>임시 스케줄 화면입니다. 담당 화면이 연결되면 교체됩니다.</p>
+      <ul className={styles.tempList}>
+        {items.map((item) => (
+          <li key={item.schedule.id} className={styles.tempItem}>
+            <span className={styles.tempItemText}>
+              <span className={styles.tempItemName}>{item.activity.name}</span>
+              <span className={styles.tempItemMeta}>
+                {item.role.label} · {formatStartTime(item.schedule.startsAt)} ·{' '}
+                {scheduleStatusLabel[item.schedule.status]}
+              </span>
+            </span>
+          </li>
+        ))}
+      </ul>
+    </>
+  )
+}
+
+function TempPlaceholderScreen({ title }: { title: string }) {
+  return (
+    <>
+      <h1 className={styles.tempTitle}>{title}</h1>
+      <p className={styles.tempNotice}>첫 UT에서는 준비 중인 화면입니다.</p>
+    </>
+  )
 }

@@ -8,8 +8,13 @@
 
 body {
   margin: 0;
-  min-height: 100dvh;
-  font-family: var(--font-family-sans);
-  background: var(--color-gray-100);
-  color: var(--color-gray-900);
+  background: var(--color-gray-075);
+  color: var(--color-text-primary);
+  font: var(--type-ios-body-medium-font);
+  letter-spacing: var(--type-ios-body-medium-tracking);
+}
+
+button {
+  font: inherit;
+  letter-spacing: inherit;
 }
