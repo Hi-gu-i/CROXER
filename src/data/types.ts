@@ -44,6 +44,8 @@ export interface Activity {
   id: ActivityId
   roleId: RoleId
   name: string
+  /** 브리핑·스케줄 활동 카드에서 이름 아래에 보여 주는 설명 한 줄. 01~03 문구에는 시각을 쓰지 않는다 */
+  summary: string
   /** 브리핑에서 순서를 바꿀 수 있는지. 01~03은 true, 04·05는 false */
   isReorderable: boolean
 }
