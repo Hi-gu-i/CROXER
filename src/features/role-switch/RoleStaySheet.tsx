@@ -94,13 +94,6 @@ export default function RoleStaySheet({ activityId, enteredAt, onKeep, onDismiss
           {activity.name}
         </h2>
 
-        <div className={styles.arc} aria-hidden="true">
-          <svg viewBox="0 0 360 56" focusable="false">
-            <path d="M16 44 Q 150 8 344 28" strokeWidth="2" />
-            <circle cx="16" cy="44" r="4" />
-          </svg>
-        </div>
-
         <button type="button" className={styles.keep} onClick={onKeep}>
           유지하기
         </button>
