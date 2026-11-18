@@ -1,10 +1,9 @@
 import { useState, type ComponentType, type ReactNode } from 'react'
 import styles from './app.module.css'
-import type { ActivityId, ReorderableScheduleId, ScheduleStatus } from './data/types'
+import type { ActivityId, ScheduleStatus } from './data/types'
 import { useUtSession } from './data/useUtSession'
 import {
   completeActivity,
-  confirmBriefing,
   enterActivity,
   getActiveRoleId,
   getActivity,
@@ -13,8 +12,8 @@ import {
   getRole,
   getScheduleByActivity,
   isBriefingConfirmed,
-  saveBriefingOrder,
 } from './data/utStore'
+import BriefingPage from './features/briefing/BriefingPage'
 import HomeScreen from './features/home/HomeScreen'
 import RoleSwitchPanel from './features/role-switch/RoleSwitchPanel'
 
@@ -68,9 +67,8 @@ export default function App() {
   if (!isBriefingConfirmed()) {
     return (
       <Frame>
-        {/* 연결 지점: 브리핑 화면(src/features/briefing) */}
-        <TempBriefingScreen
-          onConfirmed={() => {
+        <BriefingPage
+          onConfirm={() => {
             setSwitchTargetId(null)
             setScreen({ name: 'home' })
           }}
@@ -184,58 +182,6 @@ function formatStartTime(startsAt: string) {
 }
 
 // 아래 Temp* 화면은 담당 화면이 합쳐지면 위의 연결 지점에서 교체하고 지운다.
-
-function TempBriefingScreen({ onConfirmed }: { onConfirmed: () => void }) {
-  const items = getBriefingItems()
-  const movable = items.filter((item) => item.activity.isReorderable)
-
-  function moveUp(index: number) {
-    const ids = movable.map((item) => item.schedule.id as ReorderableScheduleId)
-    ;[ids[index - 1], ids[index]] = [ids[index], ids[index - 1]]
-    saveBriefingOrder(ids)
-  }
-
-  function confirm() {
-    confirmBriefing()
-    onConfirmed()
-  }
-
-  return (
-    <div className={styles.screen}>
-      <h1 className={styles.tempTitle}>오늘의 브리핑</h1>
-      <p className={styles.tempNotice}>임시 브리핑 화면입니다. 담당 화면이 연결되면 교체됩니다.</p>
-      <ol className={styles.tempList}>
-        {items.map((item) => {
-          const movableIndex = movable.indexOf(item)
-          return (
-            <li key={item.schedule.id} className={styles.tempItem}>
-              <span className={styles.tempItemText}>
-                <span className={styles.tempItemName}>{item.activity.name}</span>
-                <span className={styles.tempItemMeta}>
-                  {item.role.label} · {formatStartTime(item.schedule.startsAt)}
-                </span>
-              </span>
-              {movableIndex >= 0 && (
-                <button
-                  type="button"
-                  className={styles.tempMove}
-                  disabled={movableIndex === 0}
-                  onClick={() => moveUp(movableIndex)}
-                  aria-label={`${item.activity.name} 위로 이동`}
-                >
-                  위로
-                </button>
-              )}
-            </li>
-          )
-        })}
-      </ol>
-      <button type="button" className={styles.tempPrimary} onClick={confirm}>
-        이 순서로 시작하기
-      </button>
-    </div>
-  )
-}
 
 function TempActivityScreen({ activityId, onFinish }: ActivityScreenProps) {
   const activity = getActivity(activityId)
