@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type CSSProperties } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { RoleTransitionPanel } from '../../components'
 import type { ToggleCategoryTone } from '../../components/ToggleCategory'
 import type { ActivityId, RoleId } from '../../data/types'
@@ -7,7 +7,7 @@ import styles from './role-switch-panel.module.css'
 
 interface RoleSwitchPanelProps {
   nextActivityId: ActivityId
-  /** 초가 다 지나면 다음 활동으로 넘긴다 */
+  /** 초가 다 지나고 잠시 더 머문 뒤 다음 활동으로 넘긴다 */
   onSwitch: () => void
   /** 유지하기. 넘어가지 않고 지금 활동 화면에 남긴다 */
   onKeep: () => void
@@ -20,36 +20,13 @@ const toneByRole: Record<RoleId, ToggleCategoryTone> = {
 }
 
 const countdownStart = 5
-
-/** 아치 위 점. 패널 좌표. 5초에서 왼쪽, 1초에서 오른쪽. */
-const arcPoints: Array<[number, number]> = [
-  [33, 321],
-  [69, 299],
-  [109, 282],
-  [152, 272],
-  [197, 268],
-  [241, 272],
-  [284, 282],
-  [324, 299],
-  [360, 321],
-]
-
-function arcCell(mix: number) {
-  const scaled = Math.min(1, Math.max(0, mix)) * (arcPoints.length - 1)
-  const index = Math.floor(scaled)
-  const next = Math.min(arcPoints.length - 1, index + 1)
-  const t = scaled - index
-  const [x0, y0] = arcPoints[index]
-  const [x1, y1] = arcPoints[next]
-  return {
-    cellX: x0 + (x1 - x0) * t,
-    cellY: y0 + (y1 - y0) * t,
-  }
-}
+/** 1이 보인 뒤 패널을 조금 더 두고 다음 화면으로 넘어간다 */
+const holdAfterCountMs = 2000
 
 /**
- * 활동 전환 패널은 그대로 두고, 뒤 배경만 쉬머로 바뀐다.
- * 5초를 그대로 두면 다음 활동으로 넘어가고, 유지하기는 지금 화면에 남긴다.
+ * 활동 전환 패널이 내려오고 5초를 센다.
+ * 뒤는 활동 화면을 가린 투명 배경만 보이고, 선은 그리지 않는다.
+ * 유지하기는 지금 화면에 남기고, 그대로 두면 잠시 더 있다가 다음 활동으로 넘어간다.
  */
 export default function RoleSwitchPanel({ nextActivityId, onSwitch, onKeep }: RoleSwitchPanelProps) {
   const onSwitchRef = useRef(onSwitch)
@@ -58,8 +35,6 @@ export default function RoleSwitchPanel({ nextActivityId, onSwitch, onKeep }: Ro
   const current = getActivity(getCurrentActivityId() ?? nextActivityId)
   const next = getActivity(nextActivityId)
   const role = getRole(current.roleId)
-  const backMix = (countdownStart - left) / (countdownStart - 1)
-  const { cellX, cellY } = arcCell(backMix)
 
   useEffect(() => {
     onSwitchRef.current = onSwitch
@@ -67,7 +42,7 @@ export default function RoleSwitchPanel({ nextActivityId, onSwitch, onKeep }: Ro
 
   useEffect(() => {
     if (holding) {
-      const timer = window.setTimeout(() => onSwitchRef.current(), 900)
+      const timer = window.setTimeout(() => onSwitchRef.current(), holdAfterCountMs)
       return () => window.clearTimeout(timer)
     }
     const timer = window.setInterval(() => {
@@ -85,26 +60,6 @@ export default function RoleSwitchPanel({ nextActivityId, onSwitch, onKeep }: Ro
 
   return (
     <div className={styles.stage}>
-      <div
-        className={styles.shimmer}
-        style={{ '--back-mix': String(backMix) } as CSSProperties}
-        aria-hidden="true"
-      >
-        <span className={styles.lineWide} />
-        <span className={styles.lineMid} />
-        <span className={styles.lineShort} />
-        <span className={styles.block} />
-        <span className={styles.row}>
-          <span className={styles.circle} />
-          <span className={styles.stack}>
-            <span className={styles.lineMid} />
-            <span className={styles.lineShort} />
-          </span>
-        </span>
-        <span className={styles.block} />
-        <span className={styles.pill} />
-      </div>
-      <div className={styles.veil} />
       <RoleTransitionPanel
         phase="before"
         roleLabel={role.label}
@@ -112,8 +67,6 @@ export default function RoleSwitchPanel({ nextActivityId, onSwitch, onKeep }: Ro
         count={left}
         fromActivity={current.name}
         toActivity={next.name}
-        cellX={cellX}
-        cellY={cellY}
         onKeep={onKeep}
       />
     </div>

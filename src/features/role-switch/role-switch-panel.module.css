@@ -5,45 +5,17 @@
   display: flex;
   justify-content: center;
   align-items: flex-start;
+  /* 활동 화면이 비치지 않게 패널 뒤는 빈 표면만 둔다 */
+  background: var(--color-surface-default);
 }
 
-.shimmer {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  flex-direction: column;
-  gap: var(--gap-md);
-  box-sizing: border-box;
-  padding: var(--padding-700) var(--padding-ios-x) var(--padding-card-lg);
-  background: var(--color-surface-subtle);
-  opacity: var(--back-mix);
-  overflow: hidden;
-  pointer-events: none;
-}
-
-.shimmer::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(
-    105deg,
-    transparent 32%,
-    color-mix(in srgb, var(--color-blue-200) 65%, var(--color-violet-200)) 50%,
-    transparent 68%
-  );
-  background-size: 220% 100%;
-  animation: handoff-shimmer 1400ms linear infinite;
-}
-
-.veil {
-  position: absolute;
-  inset: 0;
-  background: var(--color-opacity-black-400);
-  pointer-events: none;
+.stage section {
+  animation: handoff-drop 420ms ease-out;
 }
 
 /* 전환 패널은 민선 컴포넌트를 그대로 쓴다.
-   역할 칩은 시안처럼 가운데, 긴 활동 이름은 칸 안에서 자른다. */
+   역할 칩은 가운데, 긴 활동 이름은 칸 안에서 자른다.
+   아치 선은 민선 파트라 여기서는 숨긴다. */
 .stage section > header {
   justify-content: center !important;
   padding-left: 0 !important;
@@ -55,76 +27,22 @@
   text-overflow: ellipsis;
 }
 
-.lineWide,
-.lineMid,
-.lineShort,
-.block,
-.circle,
-.pill {
-  position: relative;
-  display: block;
-  border-radius: var(--radius-control);
-  background: var(--color-gray-300);
+.stage section > div:nth-of-type(5) {
+  display: none !important;
 }
 
-.lineWide {
-  width: 68%;
-  height: var(--padding-control-y);
-  margin-top: var(--gap-lg);
-}
-
-.lineMid {
-  width: 54%;
-  height: var(--padding-control-y);
-}
-
-.lineShort {
-  width: 36%;
-  height: var(--padding-control-y);
-}
-
-.block {
-  width: 100%;
-  height: 18%;
-  border-radius: var(--radius-card-md);
-}
-
-.row {
-  display: flex;
-  align-items: center;
-  gap: var(--gap-md);
-}
-
-.circle {
-  width: calc(var(--padding-700) + var(--padding-700));
-  height: calc(var(--padding-700) + var(--padding-700));
-  border-radius: var(--radius-999);
-}
-
-.stack {
-  display: flex;
-  flex: 1;
-  flex-direction: column;
-  gap: var(--gap-sm);
-}
-
-.pill {
-  width: 100%;
-  height: var(--padding-700);
-}
-
-@keyframes handoff-shimmer {
+@keyframes handoff-drop {
   from {
-    background-position: 120% 0;
+    transform: translateY(-100%);
   }
 
   to {
-    background-position: -120% 0;
+    transform: translateY(0);
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .shimmer::after {
+  .stage section {
     animation: none;
   }
 }
