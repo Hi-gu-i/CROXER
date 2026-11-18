@@ -7,11 +7,11 @@
     { "id": "role-runner", "name": "러닝 크루장", "label": "러닝 크루장" }
   ],
   "activities": [
-    { "id": "activity-research", "roleId": "role-leader", "name": "지역 활성화 사례 리서치 검토", "isReorderable": true },
-    { "id": "activity-shoot", "roleId": "role-editor", "name": "강변 촬영", "isReorderable": true },
-    { "id": "activity-run", "roleId": "role-runner", "name": "한강 러닝", "isReorderable": true },
-    { "id": "activity-gpt-renewal", "roleId": "role-leader", "name": "ChatGPT 구독 연장하기", "isReorderable": false },
-    { "id": "activity-team-meeting", "roleId": "role-leader", "name": "팀플회의 / 교양 팀장 녹음", "isReorderable": false }
+    { "id": "activity-research", "roleId": "role-leader", "name": "지역 활성화 사례 리서치 검토", "summary": "어제 밤 정리한 자료 확인하기", "isReorderable": true },
+    { "id": "activity-shoot", "roleId": "role-editor", "name": "강변 촬영", "summary": "촬영 방향과 참고 자료 준비됨", "isReorderable": true },
+    { "id": "activity-run", "roleId": "role-runner", "name": "한강 러닝", "summary": "반복 문의와 공지 정리됨", "isReorderable": true },
+    { "id": "activity-gpt-renewal", "roleId": "role-leader", "name": "ChatGPT 구독 연장하기", "summary": "AI 구독 연장 제안", "isReorderable": false },
+    { "id": "activity-team-meeting", "roleId": "role-leader", "name": "팀플회의 / 교양 팀장 녹음", "summary": "이전 회의 내용과 자료 준비됨", "isReorderable": false }
   ],
   "schedules": [
     { "id": "schedule-research", "activityId": "activity-research", "startsAt": "2026-11-14T13:00:00+09:00", "status": "waiting" },
