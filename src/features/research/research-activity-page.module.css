@@ -1,0 +1,361 @@
+/* Task 4 리서치 검토 · Figma `홈에서 파일 나오기-Task 4` 기준 */
+
+.page {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: var(--gap-md);
+  min-height: 0;
+}
+
+/* 상단: 왼쪽(뒤로) · 가운데(역할 또는 제목) · 오른쪽(닫기) */
+.header {
+  display: grid;
+  grid-template-columns: 48px minmax(0, 1fr) 48px;
+  align-items: center;
+  min-height: 48px;
+}
+
+.headerStart {
+  grid-column: 1;
+}
+
+.headerCenter {
+  grid-column: 2;
+  justify-self: center;
+}
+
+.headerEnd {
+  grid-column: 3;
+}
+
+.headerTitle {
+  overflow: hidden;
+  max-width: 100%;
+  margin: 0;
+  font: var(--type-ios-body-strong-font);
+  letter-spacing: var(--type-ios-body-strong-tracking);
+  color: var(--color-text-primary);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.iconButton {
+  display: grid;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-control);
+  background: transparent;
+  color: var(--color-icon-default);
+  cursor: pointer;
+}
+
+.iconButton:focus-visible,
+.folderButton:focus-visible,
+.thumbButton:focus-visible {
+  outline: 2px solid var(--color-border-color);
+  outline-offset: 2px;
+}
+
+/* 폴더 목록 (2열) */
+.folderGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 127px);
+  justify-content: center;
+  column-gap: var(--gap-800);
+  row-gap: var(--gap-600);
+  margin: 0;
+  padding: var(--padding-600) 0 0;
+  list-style: none;
+}
+
+.folderButton {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--gap-300);
+  width: 100%;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+}
+
+.folderImage {
+  display: block;
+  transition: transform 160ms ease;
+}
+
+.folderButton:active .folderImage {
+  transform: scale(0.96);
+}
+
+.folderText {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.folderTitle {
+  font: var(--type-ios-body-medium-font);
+  letter-spacing: var(--type-ios-body-medium-tracking);
+  color: var(--color-text-primary);
+}
+
+.folderCount {
+  font: var(--type-ios-body-small-font);
+  letter-spacing: var(--type-ios-body-small-tracking);
+  color: var(--color-text-tertiary);
+}
+
+/* 폴더 열림 */
+.folderDetail {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-700);
+  padding-top: var(--padding-600);
+}
+
+.folderHero {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--gap-100);
+}
+
+.folderHeroImage {
+  display: block;
+  animation: folder-pop 520ms cubic-bezier(0.34, 1.4, 0.64, 1) both;
+}
+
+.groupList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-400);
+}
+
+.group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-050);
+  animation: rise-in 360ms ease-out both;
+}
+
+.group:nth-child(1) {
+  animation-delay: 120ms;
+}
+
+.group:nth-child(2) {
+  animation-delay: 200ms;
+}
+
+.group:nth-child(n + 3) {
+  animation-delay: 280ms;
+}
+
+.groupHeader {
+  display: flex;
+  align-items: center;
+  gap: var(--gap-200);
+}
+
+.sourceTile {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 35px;
+  height: 35px;
+  border-radius: var(--radius-200);
+  background: var(--color-surface-muted);
+}
+
+.sourceTile img {
+  display: block;
+}
+
+.groupText {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.groupTitle {
+  font: var(--type-ios-body-medium-font);
+  letter-spacing: var(--type-ios-body-medium-tracking);
+  color: var(--color-text-primary);
+}
+
+.groupSubtitle {
+  font: var(--type-ios-body-small-font);
+  letter-spacing: var(--type-ios-body-small-tracking);
+  color: var(--color-text-tertiary);
+}
+
+/* 문서 미리보기 (종이 모양, 오른쪽 위 접힘) */
+.thumbList {
+  display: flex;
+  gap: var(--gap-150);
+  margin: 0;
+  padding: var(--padding-150) 0;
+  list-style: none;
+}
+
+.thumbButton {
+  position: relative;
+  display: block;
+  width: 108px;
+  height: 152px;
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-150);
+  background: var(--color-surface-document);
+  clip-path: polygon(0 0, calc(100% - 27px) 0, 100% 25px, 100% 100%, 0 100%);
+  cursor: pointer;
+  transition: transform 160ms ease;
+}
+
+.thumbButton:active {
+  transform: scale(0.97);
+}
+
+.thumbViewport {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  text-align: left;
+}
+
+.thumbFold {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 27px;
+  height: 25px;
+  background: var(--color-surface-document-fold);
+  clip-path: polygon(0 0, 0 100%, 100% 100%);
+}
+
+/* 문서 한 장: 미리보기는 같은 구성을 360px로 그린 뒤 0.3배로 줄인다 */
+.pageThumb,
+.pageFull {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-100);
+  margin: 0;
+}
+
+.pageThumb {
+  width: 360px;
+  padding: var(--padding-500);
+  transform: scale(0.3);
+  transform-origin: top left;
+  pointer-events: none;
+}
+
+.pageFull {
+  padding: var(--padding-card-lg);
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-card-sm);
+  background: var(--color-surface-default);
+}
+
+.pageLabel {
+  margin: 0;
+  font: var(--type-ios-caption-medium-font);
+  letter-spacing: var(--type-ios-caption-medium-tracking);
+  color: var(--color-brand-light);
+  white-space: pre;
+}
+
+.pageTitle {
+  margin: 0;
+  font: var(--type-ios-title-medium-font);
+  letter-spacing: var(--type-ios-title-medium-tracking);
+  color: var(--color-text-secondary);
+}
+
+.pageLead {
+  margin: 0;
+  font: var(--type-ios-body-small-font);
+  letter-spacing: var(--type-ios-body-small-tracking);
+  color: var(--color-text-tertiary);
+}
+
+.pageSection {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-050);
+  margin-top: var(--gap-100);
+}
+
+.pageHeading {
+  margin: 0;
+  font: var(--type-ios-body-accent-font);
+  letter-spacing: var(--type-ios-body-accent-tracking);
+  color: var(--color-text-secondary);
+}
+
+.pageText {
+  margin: 0;
+  font: var(--type-ios-body-medium-font);
+  letter-spacing: var(--type-ios-body-medium-tracking);
+  color: var(--color-text-primary);
+  white-space: pre-line;
+}
+
+/* 본문 화면 */
+.documentView {
+  animation: rise-in 280ms ease-out both;
+}
+
+/* 검토 마침: 내용이 길어도 하단 탭 바로 위에 붙어 보이게 한다 */
+.footer {
+  position: sticky;
+  bottom: 0;
+  margin-top: auto;
+  padding-top: var(--padding-300);
+}
+
+@keyframes folder-pop {
+  0% {
+    transform: translateY(24px) scale(0.9);
+    opacity: 0;
+  }
+  70% {
+    transform: translateY(0) scale(1.04);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes rise-in {
+  from {
+    transform: translateY(8px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .folderHeroImage,
+  .group,
+  .documentView {
+    animation: none;
+  }
+
+  .folderImage,
+  .thumbButton {
+    transition: none;
+  }
+}
