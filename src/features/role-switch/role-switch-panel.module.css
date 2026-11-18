@@ -1,103 +1,24 @@
-.scrim {
+.stage {
   position: absolute;
   inset: 0;
   z-index: 5;
-  background: var(--color-opacity-black-400);
-}
-
-.sheet {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  box-sizing: border-box;
-  min-height: 52%;
-  padding: var(--padding-500) var(--padding-ios-x) var(--padding-card-lg);
-  border-radius: 0 0 var(--radius-card-md) var(--radius-card-md);
-  background-color: color-mix(
-    in srgb,
-    var(--color-blue-400) calc(var(--handoff-mix) * 100%),
-    var(--handoff-from)
-  );
-  background-image: linear-gradient(
-    180deg,
-    var(--color-bg-default) 0%,
-    color-mix(in srgb, var(--color-bg-default) 40%, transparent) 28%,
-    transparent 52%
-  );
-  animation: handoff-drop 320ms ease;
-}
-
-.header,
-.count,
-.caption,
-.task,
-.keep {
-  position: relative;
-  z-index: 1;
-}
-
-.header {
   display: flex;
   justify-content: center;
-}
-
-.count {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: var(--gap-xs);
-  margin: var(--gap-lg) 0 0;
-}
-
-.countNumber {
-  color: var(--color-text-primary);
-  font: var(--type-ios-display-large-font);
-  letter-spacing: var(--type-ios-display-large-tracking);
-}
-
-.countSuffix {
-  color: var(--color-text-secondary);
-  font: var(--type-ios-body-small-font);
-  letter-spacing: var(--type-ios-body-small-tracking);
-}
-
-.caption {
-  margin: var(--gap-lg) 0 0;
-  color: var(--color-text-tertiary);
-  font: var(--type-ios-body-small-font);
-  letter-spacing: var(--type-ios-body-small-tracking);
-}
-
-.task {
-  margin: var(--gap-xs) 0 0;
-  color: var(--color-text-primary);
-  font: var(--type-ios-title-small-font);
-  letter-spacing: var(--type-ios-title-small-tracking);
-  text-align: center;
-}
-
-.keep {
-  margin-top: auto;
-  padding: var(--padding-control-y) var(--padding-control-x);
-  border: 0;
-  background: transparent;
-  color: var(--color-text-inverse);
-  font: var(--type-ios-body-strong-font);
-  letter-spacing: var(--type-ios-body-strong-tracking);
-  cursor: pointer;
+  align-items: flex-start;
 }
 
 .shimmer {
   position: absolute;
   inset: 0;
-  z-index: 5;
   display: flex;
   flex-direction: column;
   gap: var(--gap-md);
   box-sizing: border-box;
   padding: var(--padding-700) var(--padding-ios-x) var(--padding-card-lg);
   background: var(--color-surface-subtle);
+  opacity: var(--back-mix);
   overflow: hidden;
+  pointer-events: none;
 }
 
 .shimmer::after {
@@ -106,13 +27,32 @@
   inset: 0;
   background: linear-gradient(
     105deg,
-    transparent 30%,
-    color-mix(in srgb, var(--color-blue-200) 70%, var(--color-violet-200)) 50%,
-    transparent 70%
+    transparent 32%,
+    color-mix(in srgb, var(--color-blue-200) 65%, var(--color-violet-200)) 50%,
+    transparent 68%
   );
   background-size: 220% 100%;
-  animation: handoff-shimmer 1100ms linear;
+  animation: handoff-shimmer 1400ms linear infinite;
+}
+
+.veil {
+  position: absolute;
+  inset: 0;
+  background: var(--color-opacity-black-400);
   pointer-events: none;
+}
+
+/* 전환 패널은 민선 컴포넌트를 그대로 쓴다.
+   역할 칩은 시안처럼 가운데, 긴 활동 이름은 칸 안에서 자른다. */
+.stage section > header {
+  justify-content: center !important;
+  padding-left: 0 !important;
+}
+
+.stage section > div:nth-of-type(4) > span {
+  max-width: calc(var(--padding-700) * 4);
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .lineWide,
@@ -120,12 +60,11 @@
 .lineShort,
 .block,
 .circle,
-.pill,
-.stack {
+.pill {
   position: relative;
   display: block;
   border-radius: var(--radius-control);
-  background: var(--color-surface-muted);
+  background: var(--color-gray-300);
 }
 
 .lineWide {
@@ -146,7 +85,7 @@
 
 .block {
   width: 100%;
-  height: 22%;
+  height: 18%;
   border-radius: var(--radius-card-md);
 }
 
@@ -167,23 +106,11 @@
   flex: 1;
   flex-direction: column;
   gap: var(--gap-sm);
-  background: transparent;
 }
 
 .pill {
   width: 100%;
   height: var(--padding-700);
-  border-radius: var(--radius-control);
-}
-
-@keyframes handoff-drop {
-  from {
-    transform: translateY(-100%);
-  }
-
-  to {
-    transform: translateY(0);
-  }
 }
 
 @keyframes handoff-shimmer {
@@ -197,7 +124,6 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .sheet,
   .shimmer::after {
     animation: none;
   }

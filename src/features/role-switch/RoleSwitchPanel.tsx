@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, type CSSProperties } from 'react'
-import { ToggleCategory } from '../../components'
+import { RoleTransitionPanel } from '../../components'
 import type { ToggleCategoryTone } from '../../components/ToggleCategory'
 import type { ActivityId, RoleId } from '../../data/types'
 import { getActivity, getCurrentActivityId, getRole } from '../../data/utStore'
@@ -19,56 +19,77 @@ const toneByRole: Record<RoleId, ToggleCategoryTone> = {
   'role-runner': 'mint',
 }
 
-/** 역할 막대에서 맞춘 명도. 토큰에 없는 색이라 이 전환에만 적는다. */
-const colorByRole: Record<RoleId, string> = {
-  'role-leader': '#d1bb72',
-  'role-editor': '#a899c0',
-  'role-runner': '#83b1af',
+const countdownStart = 5
+
+/** 아치 위 점. 패널 좌표. 5초에서 왼쪽, 1초에서 오른쪽. */
+const arcPoints: Array<[number, number]> = [
+  [33, 321],
+  [69, 299],
+  [109, 282],
+  [152, 272],
+  [197, 268],
+  [241, 272],
+  [284, 282],
+  [324, 299],
+  [360, 321],
+]
+
+function arcCell(mix: number) {
+  const scaled = Math.min(1, Math.max(0, mix)) * (arcPoints.length - 1)
+  const index = Math.floor(scaled)
+  const next = Math.min(arcPoints.length - 1, index + 1)
+  const t = scaled - index
+  const [x0, y0] = arcPoints[index]
+  const [x1, y1] = arcPoints[next]
+  return {
+    cellX: x0 + (x1 - x0) * t,
+    cellY: y0 + (y1 - y0) * t,
+  }
 }
 
-const countdownStart = 5
-const shimmerMs = 1100
-
 /**
- * 활동을 마친 뒤 위에서 내려오는 전환.
- * 5초 동안 역할 색이 파랑으로 번지고, 그대로 두면 쉬머를 지나 다음 화면으로 넘어간다.
+ * 활동 전환 패널은 그대로 두고, 뒤 배경만 쉬머로 바뀐다.
+ * 5초를 그대로 두면 다음 활동으로 넘어가고, 유지하기는 지금 화면에 남긴다.
  */
 export default function RoleSwitchPanel({ nextActivityId, onSwitch, onKeep }: RoleSwitchPanelProps) {
   const onSwitchRef = useRef(onSwitch)
   const [left, setLeft] = useState(countdownStart)
-  const [phase, setPhase] = useState<'count' | 'shimmer'>('count')
+  const [holding, setHolding] = useState(false)
   const current = getActivity(getCurrentActivityId() ?? nextActivityId)
+  const next = getActivity(nextActivityId)
   const role = getRole(current.roleId)
-  const mix = phase === 'shimmer' ? 1 : (countdownStart - left) / (countdownStart - 1)
+  const backMix = (countdownStart - left) / (countdownStart - 1)
+  const { cellX, cellY } = arcCell(backMix)
 
   useEffect(() => {
     onSwitchRef.current = onSwitch
   }, [onSwitch])
 
   useEffect(() => {
-    if (phase !== 'count') return
+    if (holding) {
+      const timer = window.setTimeout(() => onSwitchRef.current(), 900)
+      return () => window.clearTimeout(timer)
+    }
     const timer = window.setInterval(() => {
       setLeft((currentLeft) => {
         if (currentLeft <= 1) {
           window.clearInterval(timer)
-          setPhase('shimmer')
-          return 0
+          setHolding(true)
+          return 1
         }
         return currentLeft - 1
       })
     }, 1000)
     return () => window.clearInterval(timer)
-  }, [phase])
+  }, [holding])
 
-  useEffect(() => {
-    if (phase !== 'shimmer') return
-    const timer = window.setTimeout(() => onSwitchRef.current(), shimmerMs)
-    return () => window.clearTimeout(timer)
-  }, [phase])
-
-  if (phase === 'shimmer') {
-    return (
-      <div className={styles.shimmer} role="status" aria-live="polite" aria-label="다음 화면으로 넘어가는 중">
+  return (
+    <div className={styles.stage}>
+      <div
+        className={styles.shimmer}
+        style={{ '--back-mix': String(backMix) } as CSSProperties}
+        aria-hidden="true"
+      >
         <span className={styles.lineWide} />
         <span className={styles.lineMid} />
         <span className={styles.lineShort} />
@@ -83,33 +104,18 @@ export default function RoleSwitchPanel({ nextActivityId, onSwitch, onKeep }: Ro
         <span className={styles.block} />
         <span className={styles.pill} />
       </div>
-    )
-  }
-
-  return (
-    <div className={styles.scrim}>
-      <section
-        className={styles.sheet}
-        style={{ '--handoff-from': colorByRole[current.roleId], '--handoff-mix': String(mix) } as CSSProperties}
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby="role-switch-title"
-      >
-        <div className={styles.header}>
-          <ToggleCategory tone={toneByRole[role.id]}>{role.label}</ToggleCategory>
-        </div>
-        <p className={styles.count} aria-live="polite">
-          <span className={styles.countNumber}>{left}</span>
-          <span className={styles.countSuffix}>초 후에 자동으로 전환됩니다</span>
-        </p>
-        <p className={styles.caption}>현재 활동</p>
-        <h2 id="role-switch-title" className={styles.task}>
-          {current.name}
-        </h2>
-        <button type="button" className={styles.keep} onClick={onKeep}>
-          유지하기
-        </button>
-      </section>
+      <div className={styles.veil} />
+      <RoleTransitionPanel
+        phase="before"
+        roleLabel={role.label}
+        roleTone={toneByRole[role.id]}
+        count={left}
+        fromActivity={current.name}
+        toActivity={next.name}
+        cellX={cellX}
+        cellY={cellY}
+        onKeep={onKeep}
+      />
     </div>
   )
 }
