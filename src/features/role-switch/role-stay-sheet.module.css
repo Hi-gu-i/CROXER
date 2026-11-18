@@ -21,16 +21,30 @@
   animation: role-stay-drop 320ms ease;
 }
 
+/* Section 22 러닝: 위는 하얗게 걷히고, 유지하기가 앉는 아래는 역할 색이 그대로다. */
+.yellow,
+.violet,
+.mint {
+  background-color: var(--role-stay-color);
+  background-image: linear-gradient(
+    180deg,
+    var(--color-bg-default) 0%,
+    var(--color-bg-default) 46%,
+    color-mix(in srgb, var(--color-bg-default) 55%, transparent) 66%,
+    transparent 82%
+  );
+}
+
 .yellow {
-  background-color: color-mix(in srgb, var(--color-yellow-200) 60%, transparent);
+  --role-stay-color: var(--color-yellow-200);
 }
 
 .violet {
-  background-color: color-mix(in srgb, var(--color-violet-200) 60%, transparent);
+  --role-stay-color: var(--color-violet-200);
 }
 
 .mint {
-  background-color: color-mix(in srgb, var(--color-mint-200) 60%, transparent);
+  --role-stay-color: var(--color-mint-200);
 }
 
 .header,
@@ -81,14 +95,14 @@
   padding: var(--padding-control-y) var(--padding-control-x);
   border: 0;
   background: transparent;
-  color: var(--color-text-secondary);
+  color: var(--color-opacity-white-600);
   font: var(--type-ios-body-strong-font);
   letter-spacing: var(--type-ios-body-strong-tracking);
   cursor: pointer;
 }
 
 .keep:active {
-  color: var(--color-text-primary);
+  color: var(--color-text-inverse);
 }
 
 @keyframes role-stay-drop {
