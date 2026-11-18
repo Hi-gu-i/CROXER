@@ -172,16 +172,6 @@ export default function BriefingPage({ onConfirm }: BriefingPageProps) {
   )
 }
 
-// 카드 아래 설명 한 줄. Figma `01 · 브리핑 final` 문구를 따른다.
-// 화면 문구라 데이터에 넣지 않았다. 스케줄 화면에서도 쓰게 되면 활동 데이터 필드로 옮긴다.
-const activitySummary: Record<ActivityId, string> = {
-  'activity-research': '어제 정리한 사례 3가지 확인하기',
-  'activity-shoot': '촬영 방향과 참고 자료 준비됨',
-  'activity-run': '반복 문의와 공지 정리됨',
-  'activity-gpt-renewal': 'AI 구독 연장 제안',
-  'activity-team-meeting': '이전 회의 내용과 자료 준비됨',
-}
-
 interface BriefingRowProps {
   item: ScheduleView
   isFirst: boolean
@@ -214,7 +204,7 @@ function BriefingRow({ item, isFirst, isLast, cardShift, children }: BriefingRow
             <span className={styles.roleTag}>{item.role.label}</span>
             <div className={styles.cardText}>
               <p className={styles.activityName}>{item.activity.name}</p>
-              <p className={styles.summary}>{activitySummary[item.activity.id]}</p>
+              <p className={styles.summary}>{item.activity.summary}</p>
             </div>
           </div>
           {children}

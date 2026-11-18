@@ -8,7 +8,7 @@
 import type { ReactNode } from 'react'
 import { Tag } from '../../components'
 import type { TagTone } from '../../components/Tag'
-import type { ActivityId, AiJob, AiJobStatus, RoleId, ScheduleStatus, ScheduleView } from '../../data/types'
+import type { AiJob, AiJobStatus, RoleId, ScheduleStatus, ScheduleView } from '../../data/types'
 import { getActivity, getRole, getScheduleSections, getToday, isUtFlowFinished } from '../../data/utStore'
 import { useUtSession } from '../../data/useUtSession'
 import { IconAi, IconCheck, IconComplete, IconNoti, IconTime, IconToggle } from '../../icons'
@@ -56,16 +56,6 @@ export default function SchedulePage() {
       />
     </section>
   )
-}
-
-// 카드 아래 설명 한 줄. 브리핑과 같은 문구다.
-// 두 화면이 함께 쓰므로 활동 데이터 필드로 옮길 예정(UT 담당 베이스라인 변경 필요). 그때까지 화면 상수로 둔다
-const activitySummary: Record<ActivityId, string> = {
-  'activity-research': '어제 정리한 사례 3가지 확인하기',
-  'activity-shoot': '촬영 방향과 참고 자료 준비됨',
-  'activity-run': '반복 문의와 공지 정리됨',
-  'activity-gpt-renewal': 'AI 구독 연장 제안',
-  'activity-team-meeting': '이전 회의 내용과 자료 준비됨',
 }
 
 // 역할별 태그 색. 시안의 학생(노랑)·편집자(보라)·러닝 크루장(민트)을 따른다
@@ -129,7 +119,7 @@ function ScheduleRow({ item, isFinished = false }: { item: ScheduleView; isFinis
         tone={roleTone[item.role.id]}
         tag={item.role.label}
         title={item.activity.name}
-        description={activitySummary[item.activity.id]}
+        description={item.activity.summary}
         status={
           <>
             {status === 'done' && <IconComplete size={14} />}
