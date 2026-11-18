@@ -1,4 +1,4 @@
-import { useState, type ComponentType, type ReactNode } from 'react'
+import { useEffect, useState, type ComponentType, type ReactNode } from 'react'
 import styles from './app.module.css'
 import type { ActivityId, ScheduleStatus } from './data/types'
 import { useUtSession } from './data/useUtSession'
@@ -12,8 +12,10 @@ import {
   getRole,
   getScheduleByActivity,
   isBriefingConfirmed,
+  UT_STORAGE_KEY,
 } from './data/utStore'
 import BriefingPage from './features/briefing/BriefingPage'
+import { FacilitatorPanel } from './features/facilitator'
 import HomeScreen from './features/home/HomeScreen'
 import RoleSwitchPanel from './features/role-switch/RoleSwitchPanel'
 import { ResearchActivityPage } from './features/research'
@@ -71,6 +73,43 @@ export default function App() {
   const [screen, setScreen] = useState<Screen>({ name: 'home' })
   const [switchTargetId, setSwitchTargetId] = useState<ActivityId | null>(null)
 
+  useEffect(() => {
+    function onStorage(event: StorageEvent) {
+      if (event.key !== UT_STORAGE_KEY || !event.newValue) return
+      let next: { isBriefingConfirmed?: boolean; currentActivityId?: ActivityId | null }
+      let prev: { isBriefingConfirmed?: boolean; currentActivityId?: ActivityId | null }
+      try {
+        next = JSON.parse(event.newValue)
+        prev = event.oldValue ? JSON.parse(event.oldValue) : {}
+      } catch {
+        return
+      }
+      const briefingChanged = Boolean(next.isBriefingConfirmed) !== Boolean(prev.isBriefingConfirmed)
+      const activityChanged = (next.currentActivityId ?? null) !== (prev.currentActivityId ?? null)
+      if (!briefingChanged && !activityChanged) return
+      setSwitchTargetId(null)
+      if (!next.isBriefingConfirmed || briefingChanged) {
+        setScreen({ name: 'home' })
+        return
+      }
+      setScreen(
+        next.currentActivityId ? { name: 'activity', activityId: next.currentActivityId } : { name: 'schedule' },
+      )
+    }
+    window.addEventListener('storage', onStorage)
+    return () => window.removeEventListener('storage', onStorage)
+  }, [])
+
+  function handleFacilitatorActivity(activityId: ActivityId | null) {
+    setSwitchTargetId(null)
+    setScreen(activityId ? { name: 'activity', activityId } : { name: 'schedule' })
+  }
+
+  function handleFacilitatorReset() {
+    setSwitchTargetId(null)
+    setScreen({ name: 'home' })
+  }
+
   if (!isBriefingConfirmed()) {
     return (
       <Frame>
@@ -80,6 +119,7 @@ export default function App() {
             setScreen({ name: 'home' })
           }}
         />
+        <FacilitatorPanel onActivityChange={handleFacilitatorActivity} onReset={handleFacilitatorReset} />
       </Frame>
     )
   }
@@ -166,6 +206,7 @@ export default function App() {
           onKeep={() => setSwitchTargetId(null)}
         />
       )}
+      <FacilitatorPanel onActivityChange={handleFacilitatorActivity} onReset={handleFacilitatorReset} />
     </Frame>
   )
 }
