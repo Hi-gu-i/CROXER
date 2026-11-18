@@ -8,7 +8,7 @@
 
 body {
   margin: 0;
-  background: var(--color-gray-075);
+  background: var(--color-bg-subtle);
   color: var(--color-text-primary);
   font: var(--type-ios-body-medium-font);
   letter-spacing: var(--type-ios-body-medium-tracking);
