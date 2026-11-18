@@ -1,0 +1,141 @@
+.scrim {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  background: var(--color-opacity-black-400);
+}
+
+.sheet {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-sizing: border-box;
+  min-height: 48%;
+  padding: var(--padding-500) var(--padding-ios-x) var(--padding-card-lg);
+  border-radius: 0 0 var(--radius-card-md) var(--radius-card-md);
+  overflow: hidden;
+  animation: role-stay-drop 320ms ease;
+}
+
+.sheet::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    180deg,
+    var(--color-bg-default) 0%,
+    var(--color-bg-default) 46%,
+    transparent 82%
+  );
+  pointer-events: none;
+}
+
+.yellow {
+  background: linear-gradient(180deg, var(--color-bg-default) 0%, var(--color-yellow-200) 100%);
+}
+
+.violet {
+  background: linear-gradient(180deg, var(--color-bg-default) 0%, var(--color-violet-200) 100%);
+}
+
+.mint {
+  background: linear-gradient(180deg, var(--color-bg-default) 0%, var(--color-mint-200) 100%);
+}
+
+.header,
+.time,
+.caption,
+.task,
+.arc,
+.keep {
+  position: relative;
+  z-index: 1;
+}
+
+.header {
+  display: flex;
+  justify-content: center;
+}
+
+.chip svg {
+  transform: rotate(180deg);
+}
+
+.time {
+  display: flex;
+  align-items: center;
+  gap: var(--gap-sm);
+  margin: var(--gap-md) 0 0;
+  color: var(--color-text-secondary);
+  font: var(--type-ios-body-small-font);
+  letter-spacing: var(--type-ios-body-small-tracking);
+}
+
+.caption {
+  margin: var(--gap-lg) 0 0;
+  color: var(--color-text-tertiary);
+  font: var(--type-ios-body-small-font);
+  letter-spacing: var(--type-ios-body-small-tracking);
+}
+
+.task {
+  margin: var(--gap-xs) 0 0;
+  color: var(--color-text-primary);
+  font: var(--type-ios-title-small-font);
+  letter-spacing: var(--type-ios-title-small-tracking);
+  text-align: center;
+}
+
+.arc {
+  width: 100%;
+  margin-top: auto;
+  color: var(--color-text-inverse);
+}
+
+.arc svg {
+  display: block;
+  width: 100%;
+  height: var(--padding-800);
+}
+
+.arc path {
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+}
+
+.arc circle {
+  fill: currentColor;
+}
+
+.keep {
+  margin-top: var(--gap-md);
+  padding: var(--padding-control-y) var(--padding-control-x);
+  border: 0;
+  background: transparent;
+  color: var(--color-opacity-white-600);
+  font: var(--type-ios-body-strong-font);
+  letter-spacing: var(--type-ios-body-strong-tracking);
+  cursor: pointer;
+}
+
+.keep:active {
+  color: var(--color-text-inverse);
+}
+
+@keyframes role-stay-drop {
+  from {
+    transform: translateY(-100%);
+  }
+
+  to {
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sheet {
+    animation: none;
+  }
+}
