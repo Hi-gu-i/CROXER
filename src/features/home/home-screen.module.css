@@ -129,7 +129,7 @@
 }
 
 .resourceCurrent {
-  background: var(--color-blue-100);
+  background: var(--color-bg-brand-subtle);
   color: var(--color-text-brand);
 }
 
@@ -163,7 +163,7 @@
 }
 
 .tabActive {
-  background: var(--color-blue-200);
+  background: var(--color-bg-brand-soft);
   color: var(--color-text-primary);
 }
 
@@ -214,11 +214,6 @@
   box-shadow: var(--shadow-card);
   color: inherit;
   text-align: left;
-  cursor: pointer;
-}
-
-.listCard:active {
-  background: var(--color-surface-subtle);
 }
 
 .listCaption {

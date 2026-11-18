@@ -105,11 +105,7 @@ export default function HomeScreen({ onOpenActivity, onOpenSchedule }: HomeScree
           ) : (
             listed.map((item) => (
               <li key={item.activity.id}>
-                <button
-                  type="button"
-                  className={styles.listCard}
-                  onClick={() => onOpenActivity(item.activity.id)}
-                >
+                <div className={styles.listCard}>
                   <span className={styles.listCaption}>
                     <Tag tone={roleTone[item.role.id]}>{item.role.label}</Tag>
                     <span className={styles.time}>{formatSlotTime(item.schedule.startsAt)}</span>
@@ -117,7 +113,7 @@ export default function HomeScreen({ onOpenActivity, onOpenSchedule }: HomeScree
                   </span>
                   <span className={styles.listTitle}>{item.activity.name}</span>
                   <span className={styles.listSummary}>{item.activity.summary}</span>
-                </button>
+                </div>
               </li>
             ))
           )}

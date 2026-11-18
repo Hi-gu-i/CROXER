@@ -126,6 +126,8 @@ Semantic은 Primitive를 가리킨다. 브랜드 색이 바뀌면 `--color-brand
 | --- | --- | --- |
 | `--color-bg-default` | `#ffffff` | 페이지 기본 배경 |
 | `--color-bg-subtle` | `#f3f6ff` | 옅은 브랜드 배경, 구분되는 섹션 |
+| `--color-bg-brand-subtle` | `#d7e1ff` | 선택된 목록 항목처럼 한 단계 진한 브랜드 배경 |
+| `--color-bg-brand-soft` | `#b2c5ff` | 선택된 탭·필 배경 |
 | `--color-bg-brand` | `#5165fe` | 브랜드 배경 |
 | `--color-surface-default` | `#ffffff` | 카드, 시트, 입력 표면 |
 | `--color-surface-subtle` | `#f8f9fa` | 표면 안의 보조 영역 |
@@ -417,7 +419,7 @@ CROXER 화면을 만들 때는 tokens/design-tokens.css의 커스텀 프로퍼�
 - 토큰은 src/index.css에서 이미 불러온다. 기능 CSS에서 다시 불러오지 않는다. Wanted Sans 웹폰트도 토큰 파일이 불러오므로 폰트 링크나 @font-face를 따로 추가하지 않는다.
 - 색, padding, gap, radius, font, letter-spacing에 hex, rgb, 임의 px를 쓰지 않는다.
 - 화면 CSS에는 semantic 토큰만 쓴다. --color-blue-600, --padding-300, --radius-200 같은 primitive는 새 semantic을 정의할 때만 쓴다.
-- 배경은 --color-bg-default, --color-bg-subtle, --color-bg-brand. 카드 표면은 --color-surface-*. 글자는 --color-text-*, 선은 --color-border-*, 아이콘은 --color-icon-*, 브랜드 채움은 --color-brand-*, 성공·경고·오류는 --color-status-* 를 쓴다.
+- 배경은 --color-bg-default, --color-bg-subtle, --color-bg-brand-subtle, --color-bg-brand-soft, --color-bg-brand. 카드 표면은 --color-surface-*. 글자는 --color-text-*, 선은 --color-border-*, 아이콘은 --color-icon-*, 브랜드 채움은 --color-brand-*, 성공·경고·오류는 --color-status-* 를 쓴다.
 - 성공은 mint, 경고는 yellow, 오류는 red다. lime 색과 red-500, red-700은 없다.
 - 반투명 오버레이는 --color-opacity-white-*, --color-opacity-black-*, --color-opacity-color-500 만 쓴다.
 - 간격은 --gap-xs|sm|md|lg|xl|section, 카드 여백은 --padding-card-sm|md|lg, 버튼 여백은 --padding-control-x|y, 둥글기는 --radius-control, --radius-control-sm 또는 --radius-card-sm|md|lg 를 쓴다. 카드의 padding과 radius는 같은 크기 단계를 짝으로 쓴다. 체크박스·브리핑 번호 배지처럼 4px 모서리는 --radius-control-sm 을 쓴다.
@@ -445,6 +447,7 @@ semantic이 역할을 표현하지 못할 때만 `tokens/design-tokens.css`의 s
 
 | 버전 | 날짜 | 수정자 | 수정 내용과 이유 |
 | --- | --- | --- | --- |
+| 1.3 | 2026-11-18 | Cursor AI · 지유 요청 | 홈의 선택 목록·선택 탭 배경용 `--color-bg-brand-subtle`, `--color-bg-brand-soft` 추가. 화면 CSS가 blue primitive를 직접 쓰지 않게 함 |
 | 1.2 | 2026-11-18 | Cursor AI · 김민선 요청 | `Tag`를 시안 12/16·높이 24에 맞추고, 작은 조작용 `--radius-control-sm`(4px)을 추가 |
 | 1.1 | 2026-11-16 | Cursor AI · 김민선 요청 | Task 6·8·9용 공통 부품·Icons·ResImg 기준을 `src/components/` 등에 등록. 앱 전환은 ① `RoleSwitchPanel`, DS `RoleTransitionPanel`은 보관. 화면 CSS hex는 semantic 토큰으로 맞춤 |
 | 1.0 | 2026-11-11 | Cursor AI · 김민선 요청 | MYA 디자인 시스템 토큰의 사용 기준 등록. 협업 가이드가 디자인 기준으로 참조하는 `docs/ui-guide.md` 경로에 두고, CROXER 전역 CSS 연결 방법과 팀 이름 규칙에 맞춘 예시 반영 |
