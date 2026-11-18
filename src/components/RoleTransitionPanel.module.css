@@ -231,12 +231,12 @@
   width: var(--rtp-cell-size);
   height: var(--rtp-cell-size);
   border-radius: var(--rtp-cell-radius);
-  background: #fff;
+  background: var(--color-surface-default);
   box-shadow:
-    0 0 10px #fff,
-    0 0 4px #fff,
-    0 0 4px rgba(255, 255, 255, 0.2),
-    0 0 1px #fff;
+    0 0 10px var(--color-surface-default),
+    0 0 4px var(--color-surface-default),
+    0 0 4px var(--color-opacity-white-200),
+    0 0 1px var(--color-surface-default);
 }
 
 .keep {
