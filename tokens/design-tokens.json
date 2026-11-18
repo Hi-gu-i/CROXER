@@ -91,7 +91,10 @@
       },
       "surface": {
         "default": { "$value": "{color.primitive.base.000}" },
-        "subtle": { "$value": "{color.primitive.gray.050}" }
+        "subtle": { "$value": "{color.primitive.gray.050}" },
+        "muted": { "$value": "{color.primitive.gray.100}" },
+        "document": { "$value": "{color.primitive.gray.200}" },
+        "document-fold": { "$value": "{color.primitive.gray.300}" }
       },
       "text": {
         "primary": { "$value": "{color.primitive.gray.900}" },
