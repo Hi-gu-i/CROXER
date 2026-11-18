@@ -32,7 +32,7 @@ type HomeTab = 'waiting' | 'running'
 export default function HomeScreen({ onOpenActivity, onOpenSchedule }: HomeScreenProps) {
   useUtSession()
   const activityId = getNextActivityId()
-  const [aiExpanded, setAiExpanded] = useState(false)
+  const [expanded, setExpanded] = useState(false)
   const [homeTab, setHomeTab] = useState<HomeTab>('waiting')
 
   useEffect(() => {
@@ -50,14 +50,9 @@ export default function HomeScreen({ onOpenActivity, onOpenSchedule }: HomeScree
     <div className={styles.page}>
       <header className={styles.header}>
         <AiAlertCapsule
-          expanded={aiExpanded}
-          onExpandedChange={(next) => {
-            if (aiExpanded && !next) {
-              onOpenSchedule()
-              return
-            }
-            setAiExpanded(next)
-          }}
+          expanded={expanded}
+          title="오늘의 스케줄을 확인해 보세요"
+          onExpandedChange={setExpanded}
         />
         {/* 알림 버튼은 시안 모양만 둔다. 알림 목록은 첫 UT 범위 밖 */}
         <span className={styles.noti} aria-hidden="true">
