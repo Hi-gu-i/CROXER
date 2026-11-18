@@ -200,8 +200,7 @@
   block-size: calc(1lh - var(--gap-xs));
   box-sizing: border-box;
   border: 1.6px solid var(--color-border-color);
-  /* 시안은 4px 둥근 네모인데 맞는 semantic 둥글기 토큰이 없어 카드 작은 둥글기(16px)의 1/4로 만든다 */
-  border-radius: calc(var(--radius-card-sm) / 4);
+  border-radius: var(--radius-control-sm);
   background: var(--color-surface-default);
 }
 
@@ -216,7 +215,7 @@
   place-items: center;
   inline-size: calc(1lh - var(--gap-xs));
   block-size: calc(1lh - var(--gap-xs));
-  border-radius: calc(var(--radius-card-sm) / 4);
+  border-radius: var(--radius-control-sm);
   background: var(--color-brand-light);
   color: var(--color-icon-brand);
 }
