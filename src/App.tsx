@@ -1,13 +1,12 @@
 import { useEffect, useState, type ComponentType, type ReactNode } from 'react'
 import styles from './app.module.css'
-import type { ActivityId, ScheduleStatus } from './data/types'
+import type { ActivityId } from './data/types'
 import { useUtSession } from './data/useUtSession'
 import {
   completeActivity,
   enterActivity,
   getActiveRoleId,
   getActivity,
-  getBriefingItems,
   getCurrentActivityId,
   getRole,
   getScheduleByActivity,
@@ -18,6 +17,7 @@ import BriefingPage from './features/briefing/BriefingPage'
 import { FacilitatorPanel } from './features/facilitator'
 import HomeScreen from './features/home/HomeScreen'
 import RoleSwitchPanel from './features/role-switch/RoleSwitchPanel'
+import SchedulePage from './features/schedule/SchedulePage'
 import { ResearchActivityPage } from './features/research'
 import { RunActivityPage } from './features/run'
 import { ShootActivityPage } from './features/shoot'
@@ -167,8 +167,7 @@ export default function App() {
             onFinish={() => finishActivity(screen.activityId)}
           />
         )}
-        {/* 연결 지점: 스케줄 화면(src/features/schedule) */}
-        {screen.name === 'schedule' && <TempScheduleScreen />}
+        {screen.name === 'schedule' && <SchedulePage />}
         {screen.name === 'report' && <TempPlaceholderScreen title="리포트" />}
         {screen.name === 'settings' && <TempPlaceholderScreen title="설정" />}
       </main>
@@ -219,16 +218,6 @@ function Frame({ children }: { children: ReactNode }) {
   )
 }
 
-const scheduleStatusLabel: Record<ScheduleStatus, string> = {
-  waiting: '진행 전',
-  in_progress: '진행 중',
-  done: '완료',
-}
-
-function formatStartTime(startsAt: string) {
-  return startsAt.slice(11, 16)
-}
-
 // 아래 Temp* 화면은 담당 화면이 합쳐지면 위의 연결 지점에서 교체하고 지운다.
 
 function TempActivityScreen({ activityId, onFinish }: ActivityScreenProps) {
@@ -252,29 +241,6 @@ function TempActivityScreen({ activityId, onFinish }: ActivityScreenProps) {
           활동 마치기 (임시)
         </button>
       )}
-    </>
-  )
-}
-
-function TempScheduleScreen() {
-  const items = getBriefingItems()
-  return (
-    <>
-      <h1 className={styles.tempTitle}>스케줄</h1>
-      <p className={styles.tempNotice}>임시 스케줄 화면입니다. 담당 화면이 연결되면 교체됩니다.</p>
-      <ul className={styles.tempList}>
-        {items.map((item) => (
-          <li key={item.schedule.id} className={styles.tempItem}>
-            <span className={styles.tempItemText}>
-              <span className={styles.tempItemName}>{item.activity.name}</span>
-              <span className={styles.tempItemMeta}>
-                {item.role.label} · {formatStartTime(item.schedule.startsAt)} ·{' '}
-                {scheduleStatusLabel[item.schedule.status]}
-              </span>
-            </span>
-          </li>
-        ))}
-      </ul>
     </>
   )
 }
