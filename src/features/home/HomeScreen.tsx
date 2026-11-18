@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { AiAlertCapsule, Tag } from '../../components'
+import { Tag } from '../../components'
 import type { TagTone } from '../../components/Tag'
 import type { ActivityId, RoleId } from '../../data/types'
 import { useUtSession } from '../../data/useUtSession'
@@ -12,7 +12,7 @@ import {
   getScheduleByActivity,
   markActivityShown,
 } from '../../data/utStore'
-import { IconDocument, IconMore, IconNoti, IconVerti } from '../../icons'
+import { IconAi, IconDocument, IconMore, IconNoti, IconVerti } from '../../icons'
 import { ResImgCamera, ResImgCard, ResImgFile } from '../../res-img'
 import styles from './home-screen.module.css'
 
@@ -32,7 +32,7 @@ type HomeTab = 'waiting' | 'running'
 export default function HomeScreen({ onOpenActivity, onOpenSchedule }: HomeScreenProps) {
   useUtSession()
   const activityId = getNextActivityId()
-  const [aiExpanded, setAiExpanded] = useState(false)
+  const [expanded, setExpanded] = useState(false)
   const [homeTab, setHomeTab] = useState<HomeTab>('waiting')
 
   useEffect(() => {
@@ -49,16 +49,16 @@ export default function HomeScreen({ onOpenActivity, onOpenSchedule }: HomeScree
   return (
     <div className={styles.page}>
       <header className={styles.header}>
-        <AiAlertCapsule
-          expanded={aiExpanded}
-          onExpandedChange={(next) => {
-            if (aiExpanded && !next) {
-              onOpenSchedule()
-              return
-            }
-            setAiExpanded(next)
-          }}
-        />
+        <button
+          type="button"
+          className={expanded ? `${styles.aiButton} ${styles.aiButtonExpanded}` : styles.aiButton}
+          aria-expanded={expanded}
+          aria-label={expanded ? '오늘의 스케줄을 확인해 보세요' : 'AI 알림 펼치기'}
+          onClick={() => setExpanded((open) => !open)}
+        >
+          <IconAi size={24} />
+          {expanded ? <span className={styles.aiTitle}>오늘의 스케줄을 확인해 보세요</span> : null}
+        </button>
         {/* 알림 버튼은 시안 모양만 둔다. 알림 목록은 첫 UT 범위 밖 */}
         <span className={styles.noti} aria-hidden="true">
           <IconNoti size={24} />
