@@ -1,5 +1,7 @@
-import type { ActivityId } from '../../data/types'
-import { getActivity, getRole } from '../../data/utStore'
+import { useEffect, useRef, useState } from 'react'
+import { RoleTransitionPanel, type ToggleCategoryTone } from '../../components'
+import type { ActivityId, RoleId } from '../../data/types'
+import { getActivity, getCurrentActivityId, getRole } from '../../data/utStore'
 import styles from './role-switch-panel.module.css'
 
 interface RoleSwitchPanelProps {
@@ -8,39 +10,53 @@ interface RoleSwitchPanelProps {
   onKeep: () => void
 }
 
-export default function RoleSwitchPanel({ nextActivityId, onSwitch, onKeep }: RoleSwitchPanelProps) {
-  const activity = getActivity(nextActivityId)
-  const role = getRole(activity.roleId)
+const ROLE_TONE: Record<RoleId, ToggleCategoryTone> = {
+  'role-leader': 'yellow',
+  'role-editor': 'violet',
+  'role-runner': 'mint',
+}
+
+const COUNTDOWN_SEC = 3
+
+/**
+ * 앱 연결용 전환 패널.
+ * UI는 ④ `RoleTransitionPanel`을 쓰고, onSwitch/onKeep 연결만 여기서 맡는다.
+ */
+export default function RoleSwitchPanel({
+  nextActivityId,
+  onSwitch,
+  onKeep,
+}: RoleSwitchPanelProps) {
+  const currentId = getCurrentActivityId()
+  const current = currentId ? getActivity(currentId) : null
+  const next = getActivity(nextActivityId)
+  const role = getRole(next.roleId)
+  const [count, setCount] = useState(COUNTDOWN_SEC)
+  const switchedRef = useRef(false)
+
+  useEffect(() => {
+    if (count > 0) {
+      const timer = window.setTimeout(() => setCount((value) => value - 1), 1000)
+      return () => window.clearTimeout(timer)
+    }
+
+    if (!switchedRef.current) {
+      switchedRef.current = true
+      onSwitch()
+    }
+  }, [count, onSwitch])
 
   return (
     <div className={styles.scrim}>
-      <section
-        className={styles.panel}
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby="role-switch-title"
-      >
-        <h2 id="role-switch-title" className={styles.title}>
-          {withDirectionParticle(role.name)} 전환할까요?
-        </h2>
-        <p className={styles.nextActivity}>다음 활동 · {activity.name}</p>
-        <div className={styles.actions}>
-          <button type="button" className={styles.keepButton} onClick={onKeep}>
-            유지하기
-          </button>
-          <button type="button" className={styles.switchButton} onClick={onSwitch}>
-            전환하기
-          </button>
-        </div>
-      </section>
+      <RoleTransitionPanel
+        phase="before"
+        roleLabel={role.name}
+        roleTone={ROLE_TONE[next.roleId]}
+        count={String(Math.max(count, 0))}
+        fromActivity={current?.name ?? '현재 활동'}
+        toActivity={next.name}
+        onKeep={onKeep}
+      />
     </div>
   )
-}
-
-/** 받침이 있으면(ㄹ 제외) '으로', 없으면 '로'를 붙인다. 예: 편집자로, 러닝 크루장으로 */
-function withDirectionParticle(word: string) {
-  const code = word.charCodeAt(word.length - 1) - 0xac00
-  if (code < 0 || code > 11171) return `${word}(으)로`
-  const finalConsonant = code % 28
-  return finalConsonant === 0 || finalConsonant === 8 ? `${word}로` : `${word}으로`
 }

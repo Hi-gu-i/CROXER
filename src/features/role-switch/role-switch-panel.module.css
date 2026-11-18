@@ -3,69 +3,8 @@
   inset: 0;
   z-index: 1;
   display: flex;
-  align-items: flex-start;
-  padding: var(--padding-section) var(--padding-ios-x);
+  align-items: flex-end;
+  justify-content: center;
   background: var(--color-opacity-black-200);
-}
-
-.panel {
-  display: flex;
-  flex-direction: column;
-  gap: var(--gap-sm);
-  width: 100%;
-  padding: var(--padding-card-lg);
-  border-radius: var(--radius-card-lg);
-  background: var(--color-surface-default);
-  box-shadow: var(--shadow-glass);
-}
-
-.title {
-  margin: 0;
-  color: var(--color-text-primary);
-  font: var(--type-ios-title-small-font);
-  letter-spacing: var(--type-ios-title-small-tracking);
-}
-
-.nextActivity {
-  margin: 0;
-  color: var(--color-text-secondary);
-  font: var(--type-ios-body-medium-font);
-  letter-spacing: var(--type-ios-body-medium-tracking);
-}
-
-.actions {
-  display: flex;
-  gap: var(--gap-sm);
-  margin-top: var(--gap-sm);
-}
-
-.keepButton,
-.switchButton {
-  flex: 1;
-  padding: var(--padding-control-y) var(--padding-control-x);
-  border-radius: var(--radius-control);
-  font: var(--type-ios-body-strong-font);
-  letter-spacing: var(--type-ios-body-strong-tracking);
-  cursor: pointer;
-}
-
-.keepButton {
-  border: 1px solid var(--color-border-default);
-  background: var(--color-surface-default);
-  color: var(--color-text-primary);
-}
-
-.keepButton:active {
-  background: var(--color-surface-subtle);
-}
-
-.switchButton {
-  border: 1px solid var(--color-brand-default);
-  background: var(--color-brand-default);
-  color: var(--color-text-inverse);
-}
-
-.switchButton:active {
-  border-color: var(--color-brand-pressed);
-  background: var(--color-brand-pressed);
+  pointer-events: auto;
 }
