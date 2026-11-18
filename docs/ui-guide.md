@@ -17,7 +17,6 @@ CROXER 화면의 색, 간격, 둥글기, 글자, 그림자를 MYA 디자인 토�
 | `Tag` | `Tag.tsx` | DS `Tag`. 일정 카드 역할 라벨. 패딩 4×12, 13/18. `tone`=neutral/yellow/violet/blue/mint |
 | `ContextChip` | `ContextChip.tsx` | 활동 본문 맥락 칩(채널·자료명 등). `tone=brand`/`muted`. `Tag`·`ToggleCategory`와 별개 |
 | `ToggleCategory` | `ToggleCategory.tsx` | **활동 화면 상단** 역할 토글. `01 · 편집자 자료` 기준. `tone`=yellow(교양/학생)/violet(편집자)/mint(러닝 크루장). Label+Assets `IconToggle` |
-| `RoleTransitionPanel` | `RoleTransitionPanel.tsx` | **활동 전환** 패널(393×406). `phase=before`(전환전·하강 직후) / `countdown`(전환 테스트). Count·활동명·Keep·역할칩 props. Track cell은 `progress` |)
 | `ScheduleListCard` | `ScheduleListCard.tsx` | 브리핑·스케줄·리포트 일정/리스트 카드(315×102). `trailing=handle\|status`, `tag`/`title`/`description`/`status` 교체. Assets `CardScheCompa`와 별개 |
 | `ChatBubble` | `ChatBubble.tsx` | 04 장소 제안 · 05 일정 조정 대화 말풍선. `role=ai\|user`, `shape=bubble\|pill`. 문구는 children으로 교체 |
 | `ChatInput` | `ChatInput.tsx` | 같은 채팅 입력창. `placeholder`/`value` 교체. 보내기는 Assets `IconArrowU` |
@@ -37,7 +36,7 @@ CROXER 화면의 색, 간격, 둥글기, 글자, 그림자를 MYA 디자인 토�
 | `RunMeter` | `RunMeter.tsx` | 러닝 측정 패널. `time`/`distance`/`pace`/`avgPace`/`bpm`/`phase`/`progress`. Task 9 원본 |
 | `AiJobToast` | `AiJobToast.tsx` | AI 작업 상태 토스트. `tone=ack\|done`, `message`/`actionLabel`. Task 9 원본 |
 
-홈 전용 큰 카드(`CardMain`)·일정 비교 카드(`CardScheCompa`) 등은 화면 전용 조합이므로 공통 폴더에 두지 않는다.
+홈 전용 큰 카드(`CardMain`)·일정 비교 카드(`CardScheCompa`) 등은 화면 전용 조합이므로 공통 폴더에 두지 않는다. 활동 전환 패널은 통합 담당의 `src/features/role-switch/RoleSwitchPanel`을 쓴다.
 
 ## Assets (Icons)
 
@@ -444,22 +443,5 @@ semantic이 역할을 표현하지 못할 때만 `tokens/design-tokens.css`의 s
 
 | 버전 | 날짜 | 수정자 | 수정 내용과 이유 |
 | --- | --- | --- | --- |
-| 2.8 | 2026-11-16 | Cursor AI · 김민선 요청 | Task 9 빠진 부품 `RunMeter`·`AiJobToast` 추가. 러닝 측정·작업 상태 토스트 |
-| 2.7 | 2026-11-16 | Cursor AI · 김민선 요청 | Resource ResImg 카메라·파일·카드·전송·달력 Assets 등록(64×56). `StatusResult` 기본 아이콘=`ResImgSend` |
-| 2.6 | 2026-11-16 | Cursor AI · 김민선 요청 | Task 8 빠진 부품 `SectionIntro`·`StatusResult` 추가. 코스/공지 인트로·전송 완료 |
-| 2.5 | 2026-11-16 | Cursor AI · 김민선 요청 | Task 6 빠진 부품 `ResourceSetCard`·`ResourceNoteCard`·`ShotPoint`·`InsightTableCard` 추가. Icons Assets 등록·인라인 교체 반영 |
-| 2.4 | 2026-11-16 | Cursor AI · 김민선 요청 | 활동 전환 `RoleTransitionPanel` 추가. before/countdown 공통 레이어·TEXT props. 원본 12 전환전/전환 테스트 |
-| 2.3 | 2026-11-16 | Cursor AI · 김민선 요청 | 활동 상단 역할 토글 `ToggleCategory`(yellow/violet/mint) 추가. 01 편집자 자료 기준 |
-| 2.2 | 2026-11-16 | Cursor AI · 김민선 요청 | 활동 상단 맥락 칩 `ContextChip`(brand/muted) 추가. Tag와 용도·규격 분리 |
-| 2.1 | 2026-11-16 | Cursor AI · 김민선 요청 | `Tag` 높이 FIXED 100 버그 수정(HUG≈26). ScheduleListCard를 Tag 인스턴스로 연결. React 동기화 |
-| 2.0 | 2026-11-16 | Cursor AI · 김민선 요청 | 08 레퍼런스 AI 작업 카드 `AiJobCard` 추가. 작업 카드 원본 기준, steps·저장 경로 props |
-| 1.9 | 2026-11-16 | Cursor AI · 김민선 요청 | 러닝 문의·AI 판단 `InquiryCard`·`AiAssessmentCard` 추가. 01·02 원본 기준 |
-| 1.8 | 2026-11-16 | Cursor AI · 김민선 요청 | 러닝 공지 초안 `AnnouncementDraftCard` 추가. 05 원본 기준 |
-| 1.7 | 2026-11-16 | Cursor AI · 김민선 요청 | 러닝 A/B `CourseSelectCard` 추가. selected/unselected 색·이펙트 반영 |
-| 1.6 | 2026-11-16 | Cursor AI · 김민선 요청 | 04·05 채팅 단위 `ChatBubble`·`ChatInput` 추가. 문구는 props로 수정 |
-| 1.5 | 2026-11-16 | Cursor AI · 김민선 요청 | 브리핑·스케줄 `ScheduleListCard` 공통 부품 추가. 잘못된 `CellLine` 제거 |
-| 1.4 | 2026-11-16 | Cursor AI · 김민선 요청 | 활동 AI 펼침을 시나리오 복제 대신 공통 카드+텍스트 속성으로 통일 |
-| 1.3 | 2026-11-16 | Cursor AI · 김민선 요청 | 활동 화면용 `ActivityAiAlert`(signal/expanded) 분리. 홈 `AiAlertCapsule`과 구분 |
-| 1.2 | 2026-11-16 | Cursor AI · 김민선 요청 | `AiAlertCapsule`을 홈 `04`/`05` AI 알림 레이어 기준으로 수정 |
-| 1.1 | 2026-11-16 | Cursor AI · 김민선 요청 | `src/components/` 공통 부품(Button, Card, Tag, CellLine, AiAlertCapsule) 기준을 추가 |
+| 1.1 | 2026-11-16 | Cursor AI · 김민선 요청 | Task 6·8·9용 공통 부품·Icons·ResImg 기준을 `src/components/` 등에 등록. 활동 전환은 ① `RoleSwitchPanel`을 쓰고, 화면 CSS hex는 semantic 토큰으로 맞춤 |
 | 1.0 | 2026-11-11 | Cursor AI · 김민선 요청 | MYA 디자인 시스템 토큰의 사용 기준 등록. 협업 가이드가 디자인 기준으로 참조하는 `docs/ui-guide.md` 경로에 두고, CROXER 전역 CSS 연결 방법과 팀 이름 규칙에 맞춘 예시 반영 |

@@ -28,9 +28,21 @@ function SelectIcon({
         <svg viewBox="0 0 18 18" width="20" height="20" focusable="false">
           <defs>
             <radialGradient id={gradId} cx="45%" cy="45%" r="70%">
-              <stop offset="0%" stopColor="#4146fd" stopOpacity="0.9" />
-              <stop offset="71%" stopColor="#5185fe" stopOpacity="0.9" />
-              <stop offset="100%" stopColor="#7fb2ff" stopOpacity="0.88" />
+              <stop
+                offset="0%"
+                stopColor="var(--color-blue-600)"
+                stopOpacity="0.9"
+              />
+              <stop
+                offset="71%"
+                stopColor="var(--color-blue-500)"
+                stopOpacity="0.9"
+              />
+              <stop
+                offset="100%"
+                stopColor="var(--color-blue-200)"
+                stopOpacity="0.88"
+              />
             </radialGradient>
           </defs>
           <path

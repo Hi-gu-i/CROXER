@@ -6,14 +6,12 @@ import {
   ChatInput,
   ToggleCategory,
 } from "../../components";
+import type { ActivityId } from "../../data/types";
 import {
-  completeActivity,
-  enterActivity,
   findKeywordReply,
   fireAlert,
   getAlert,
   getFallbackChoices,
-  getFiredAlerts,
   getResources,
   isAlertFired,
   markAlertRead,
@@ -21,12 +19,11 @@ import {
 import { useUtSession } from "../../data/useUtSession";
 import styles from "./shoot-activity-page.module.css";
 
-const ACTIVITY_ID = "activity-shoot" as const;
 const ALERT_ID = "alert-shoot-rain";
 /** UT 베이스라인: 촬영 자료 진입 후 기본 10초 */
 const RAIN_ALERT_DELAY_MS = 10_000;
 
-type ShootStep = "materials" | "resource" | "chat" | "done";
+type ShootStep = "materials" | "resource" | "chat";
 
 type ChatMessage = {
   id: string;
@@ -34,12 +31,21 @@ type ChatMessage = {
   text: string;
 };
 
+type ShootActivityPageProps = {
+  activityId: ActivityId;
+  /** 활동의 UT 흐름을 마쳤을 때 한 번 부른다. 완료 처리와 전환 패널은 App이 맡는다 */
+  onFinish: () => void;
+};
+
 /**
  * Task 6 강변 촬영.
  * 원본 `03 · 촬영·AI 알림` → `04 · 장소 제안` 흐름.
  * 일정 교체(§05)는 첫 UT 제외.
  */
-export function ShootActivityPage() {
+export function ShootActivityPage({
+  activityId,
+  onFinish,
+}: ShootActivityPageProps) {
   useUtSession();
 
   const [step, setStep] = useState<ShootStep>("materials");
@@ -52,21 +58,16 @@ export function ShootActivityPage() {
   const timerRef = useRef<number | null>(null);
 
   useEffect(() => {
-    enterActivity(ACTIVITY_ID);
-  }, []);
-
-  useEffect(() => {
     return () => {
       if (timerRef.current !== null) window.clearTimeout(timerRef.current);
     };
   }, []);
 
-  const resources = getResources(ACTIVITY_ID);
+  const resources = getResources(activityId);
   const selected = resources.find((item) => item.id === resourceId) ?? null;
   const alertFired = isAlertFired(ALERT_ID);
   const alert = getAlert(ALERT_ID);
-  const firedAlerts = getFiredAlerts(ACTIVITY_ID);
-  const fallbacks = getFallbackChoices(ACTIVITY_ID);
+  const fallbacks = getFallbackChoices(activityId);
 
   function clearRainTimer() {
     if (timerRef.current !== null) {
@@ -137,7 +138,7 @@ export function ShootActivityPage() {
     const text = draft.trim();
     if (!text) return;
 
-    const hit = findKeywordReply(ACTIVITY_ID, text);
+    const hit = findKeywordReply(activityId, text);
     if (hit) {
       handleResolved(text, hit.reply);
       return;
@@ -153,11 +154,6 @@ export function ShootActivityPage() {
 
   function handleFallback(label: string, reply: string) {
     handleResolved(label, reply);
-  }
-
-  function handleComplete() {
-    completeActivity(ACTIVITY_ID);
-    setStep("done");
   }
 
   function onChatSubmit(event: FormEvent) {
@@ -286,7 +282,7 @@ export function ShootActivityPage() {
 
           {resolved ? (
             <div className={styles.footer}>
-              <Button fullWidth onClick={handleComplete}>
+              <Button fullWidth onClick={onFinish}>
                 촬영 흐름 마치기
               </Button>
             </div>
@@ -301,16 +297,6 @@ export function ShootActivityPage() {
             </form>
           )}
         </>
-      ) : null}
-
-      {step === "done" ? (
-        <div className={styles.done}>
-          <p>강변 촬영 흐름을 마쳤어요.</p>
-          <p className={styles.doneMeta}>
-            알림 {firedAlerts.length > 0 ? "확인함" : "없음"} · 다음 활동은
-            전환 패널에서 이어집니다.
-          </p>
-        </div>
       ) : null}
     </main>
   );

@@ -23,4 +23,3 @@ export { ShotPoint } from "./ShotPoint";
 export { StatusResult } from "./StatusResult";
 export { Tag } from "./Tag";
 export { ToggleCategory } from "./ToggleCategory";
-export { RoleTransitionPanel } from "./RoleTransitionPanel";

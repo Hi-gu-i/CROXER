@@ -12,9 +12,8 @@ import {
   RunMeter,
   ToggleCategory,
 } from "../../components";
+import type { ActivityId } from "../../data/types";
 import {
-  completeActivity,
-  enterActivity,
   findKeywordReply,
   fireInquiry,
   getAiAssessment,
@@ -33,7 +32,6 @@ import {
 import { useUtSession } from "../../data/useUtSession";
 import styles from "./run-activity-page.module.css";
 
-const ACTIVITY_ID = "activity-run" as const;
 const INQUIRY_ID = "inquiry-run-weather";
 const JOB_ID = "job-shoot-extra";
 const ANNOUNCEMENT_ID = "announcement-run-course";
@@ -81,11 +79,20 @@ const COURSE_VIEW: Record<
   },
 };
 
+type RunActivityPageProps = {
+  activityId: ActivityId;
+  /** 활동의 UT 흐름을 마쳤을 때 한 번 부른다. 완료 처리와 전환 패널은 App이 맡는다 */
+  onFinish: () => void;
+};
+
 /**
  * Task 8(문의·코스·공지) → Task 9(러닝 중 레퍼런스 요청) 조립 화면.
- * App 연결은 통합 담당(예은) 범위. 미리보기용으로 App에서 잠시 마운트할 수 있다.
+ * App의 activityScreens에 등록하면 된다. 마치기는 onFinish만 부른다.
  */
-export function RunActivityPage() {
+export function RunActivityPage({
+  activityId,
+  onFinish,
+}: RunActivityPageProps) {
   useUtSession();
 
   const [step, setStep] = useState<RunStep>("inquiry");
@@ -100,20 +107,19 @@ export function RunActivityPage() {
   const [showFallback, setShowFallback] = useState(false);
 
   useEffect(() => {
-    enterActivity(ACTIVITY_ID);
     fireInquiry(INQUIRY_ID);
   }, []);
 
-  const inquiries = getFiredInquiries(ACTIVITY_ID);
+  const inquiries = getFiredInquiries(activityId);
   const inquiry = inquiries[0] ?? null;
   const assessment = inquiry ? getAiAssessment(inquiry.id) : null;
-  const courses = getCourses(ACTIVITY_ID);
+  const courses = getCourses(activityId);
   const selectedCourseId = getSelectedCourseId();
-  const announcement = getAnnouncement(ACTIVITY_ID);
+  const announcement = getAnnouncement(activityId);
   const selectedCourse = courses.find((c) => c.id === selectedCourseId) ?? null;
   const job = getAiJob(JOB_ID);
   const jobRequested = isAiJobRequested(JOB_ID);
-  const fallbacks = getFallbackChoices(ACTIVITY_ID);
+  const fallbacks = getFallbackChoices(activityId);
 
   function goCourses() {
     setStep("courses");
@@ -162,7 +168,7 @@ export function RunActivityPage() {
     const text = draft.trim();
     if (!text) return;
 
-    const hit = findKeywordReply(ACTIVITY_ID, text);
+    const hit = findKeywordReply(activityId, text);
     if (hit) {
       handleReferenceRequest(text, hit.reply);
       return;
@@ -178,10 +184,6 @@ export function RunActivityPage() {
 
   function handleFallback(label: string, reply: string) {
     handleReferenceRequest(label, reply);
-  }
-
-  function handleComplete() {
-    completeActivity(ACTIVITY_ID);
   }
 
   function onChatSubmit(event: FormEvent) {
@@ -382,7 +384,7 @@ export function RunActivityPage() {
             </form>
           ) : (
             <div className={styles.footer}>
-              <Button fullWidth onClick={handleComplete}>
+              <Button fullWidth onClick={onFinish}>
                 러닝 마치기
               </Button>
             </div>

@@ -34,18 +34,18 @@
   color: currentColor;
 }
 
-/* 활동 화면 역할 톤 — 01 편집자 / 러닝 / 교양 원본 */
+/* 활동 화면 역할 톤 — Tag와 같은 semantic 계열 */
 .yellow {
   background: var(--color-yellow-100);
-  color: #cd5500;
+  color: var(--color-yellow-600);
 }
 
 .violet {
   background: var(--color-violet-100);
-  color: #7d00db;
+  color: var(--color-violet-600);
 }
 
 .mint {
   background: var(--color-mint-100);
-  color: #006b5b;
+  color: var(--color-mint-600);
 }

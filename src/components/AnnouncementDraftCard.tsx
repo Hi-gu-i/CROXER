@@ -24,7 +24,7 @@ function KakaoMark() {
     <span className={styles.kakaoMark} aria-hidden="true">
       <svg viewBox="0 0 24 24" width="14" height="14" focusable="false">
         <path
-          fill="#3C1E1E"
+          fill="currentColor"
           d="M12 4C7.03 4 3 7.14 3 11c0 2.45 1.61 4.6 4.04 5.84-.13.48-.84 3.06-.87 3.25 0 0-.07.2.11.27.18.08.28.03.28.03.37-.05 4.27-2.82 4.94-3.3.49.07 1 .1 1.5.1 4.97 0 9-3.14 9-7s-4.03-7-9-7z"
         />
       </svg>
