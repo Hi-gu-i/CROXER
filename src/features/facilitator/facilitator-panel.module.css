@@ -1,0 +1,257 @@
+/* 진행자 패널 · 참가자 화면과 구분되는 도구 화면 */
+
+/* 화면 맨 위 왼쪽 여백(본문 패딩 영역)에 깔린 숨은 탭 영역 */
+.secretArea {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 30;
+  width: 48px;
+  height: var(--padding-ios-x);
+  padding: 0;
+  border: 0;
+  background: transparent;
+  opacity: 0;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.scrim {
+  position: absolute;
+  inset: 0;
+  z-index: 30;
+  display: flex;
+  align-items: flex-end;
+  background: var(--color-opacity-black-400);
+}
+
+.standalone {
+  position: absolute;
+  inset: 0;
+  z-index: 30;
+  overflow-y: auto;
+  background: var(--color-surface-subtle);
+}
+
+.panel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-lg);
+  width: 100%;
+  max-height: 92%;
+  overflow-y: auto;
+  padding: var(--padding-card-lg) var(--padding-ios-x) var(--padding-section);
+  border-radius: var(--radius-card-lg) var(--radius-card-lg) 0 0;
+  background: var(--color-surface-default);
+  box-shadow: var(--shadow-glass);
+}
+
+.standalone .panel {
+  max-height: none;
+  min-height: 100%;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+.header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--gap-md);
+}
+
+.title {
+  margin: 0;
+  font: var(--type-ios-title-small-font);
+  letter-spacing: var(--type-ios-title-small-tracking);
+  color: var(--color-text-primary);
+}
+
+.caption {
+  margin: 0;
+  font: var(--type-ios-body-small-font);
+  letter-spacing: var(--type-ios-body-small-tracking);
+  color: var(--color-text-tertiary);
+}
+
+.closeButton,
+.textButton {
+  flex: none;
+  padding: var(--padding-control-y) var(--padding-200);
+  border: 0;
+  border-radius: var(--radius-control);
+  background: transparent;
+  color: var(--color-text-brand);
+  font: var(--type-ios-body-accent-font);
+  letter-spacing: var(--type-ios-body-accent-tracking);
+  cursor: pointer;
+}
+
+.textButton:disabled {
+  color: var(--color-text-disabled);
+  cursor: default;
+}
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-sm);
+  padding-top: var(--padding-300);
+  border-top: 1px solid var(--color-border-subtle);
+}
+
+.sectionTitle {
+  margin: 0;
+  font: var(--type-ios-body-strong-font);
+  letter-spacing: var(--type-ios-body-strong-tracking);
+  color: var(--color-text-primary);
+}
+
+.help {
+  margin: 0;
+  font: var(--type-ios-body-small-font);
+  letter-spacing: var(--type-ios-body-small-tracking);
+  color: var(--color-text-secondary);
+}
+
+.statusList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-xs);
+  margin: 0;
+}
+
+.statusRow {
+  display: grid;
+  grid-template-columns: 88px minmax(0, 1fr);
+  gap: var(--gap-sm);
+  font: var(--type-ios-body-small-font);
+  letter-spacing: var(--type-ios-body-small-tracking);
+}
+
+.statusRow dt {
+  color: var(--color-text-tertiary);
+}
+
+.statusRow dd {
+  margin: 0;
+  color: var(--color-text-primary);
+}
+
+.scheduleList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-xs);
+  margin: 0;
+  padding: var(--padding-200);
+  border-radius: var(--radius-card-sm);
+  background: var(--color-surface-subtle);
+  list-style: none;
+}
+
+.scheduleRow {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  gap: var(--gap-sm);
+  align-items: center;
+  font: var(--type-ios-body-small-font);
+  letter-spacing: var(--type-ios-body-small-tracking);
+}
+
+.scheduleIndex {
+  color: var(--color-text-tertiary);
+}
+
+.scheduleName {
+  overflow: hidden;
+  color: var(--color-text-primary);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.scheduleStatus {
+  color: var(--color-text-tertiary);
+}
+
+.scheduleStatus[data-status='in_progress'] {
+  color: var(--color-text-brand);
+}
+
+.scheduleStatus[data-status='done'] {
+  color: var(--color-text-secondary);
+}
+
+.actionRow {
+  display: flex;
+  gap: var(--gap-sm);
+}
+
+.actionButton {
+  flex: 1;
+  padding: var(--padding-control-y) var(--padding-control-x);
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-control);
+  background: var(--color-surface-default);
+  color: var(--color-text-primary);
+  font: var(--type-ios-body-strong-font);
+  letter-spacing: var(--type-ios-body-strong-tracking);
+  cursor: pointer;
+}
+
+.actionButton:active:not(:disabled) {
+  background: var(--color-surface-subtle);
+}
+
+.actionButton:disabled {
+  color: var(--color-text-disabled);
+  cursor: default;
+}
+
+.danger {
+  border-color: var(--color-status-danger);
+  background: var(--color-status-danger);
+  color: var(--color-text-inverse);
+}
+
+.danger:active:not(:disabled) {
+  background: var(--color-status-danger-strong);
+}
+
+.logHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.logList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-xs);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.logRow {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: var(--gap-sm);
+  font: var(--type-ios-body-small-font);
+  letter-spacing: var(--type-ios-body-small-tracking);
+  color: var(--color-text-primary);
+}
+
+.logTime {
+  color: var(--color-text-tertiary);
+  font-variant-numeric: tabular-nums;
+}
+
+.logContext {
+  color: var(--color-text-tertiary);
+}
+
+.actionButton:focus-visible,
+.closeButton:focus-visible,
+.textButton:focus-visible {
+  outline: 2px solid var(--color-border-color);
+  outline-offset: 2px;
+}
