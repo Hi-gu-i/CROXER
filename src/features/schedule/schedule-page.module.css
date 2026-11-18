@@ -1,0 +1,293 @@
+/* 스케줄 화면. Figma `02 · 스케줄 final` 배치를 따르고, 값은 모두 디자인 토큰(docs/ui-guide.md)을 쓴다 */
+
+/* 앱 틀(App의 고정 높이 프레임) 안을 채우고, 넘치면 이 안에서 스크롤한다 */
+.schedulePage {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  /* 시안: 영역 끝 카드와 다음 영역 제목 사이 30px */
+  gap: calc(var(--gap-xl) + var(--gap-xs));
+  min-height: 0;
+  overflow-y: auto;
+  padding: var(--padding-card-sm) var(--padding-card-lg) var(--padding-section);
+  background: var(--color-bg-subtle);
+  color: var(--color-text-primary);
+}
+
+/* 시안 머리 영역은 화면 가장자리에서 16px. 목록(20px)보다 조금 바깥으로 낸다 */
+.header {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-lg);
+  margin-inline: calc(var(--padding-ios-x) - var(--padding-card-lg));
+}
+
+.headerRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.title {
+  display: flex;
+  align-items: center;
+  gap: var(--gap-xs);
+  margin: 0;
+  font: var(--type-ios-title-small-font);
+  letter-spacing: var(--type-ios-title-small-tracking);
+}
+
+.titleIcon {
+  color: var(--color-icon-default);
+}
+
+/* 시안: 40px 동그란 흰 버튼 */
+.notiButton {
+  display: grid;
+  place-items: center;
+  inline-size: calc(var(--padding-card-sm) * 2 + 1lh);
+  block-size: calc(var(--padding-card-sm) * 2 + 1lh);
+  box-sizing: border-box;
+  padding: var(--gap-sm);
+  border-radius: var(--radius-control);
+  background: var(--color-surface-default);
+  box-shadow: var(--shadow-card);
+  color: var(--color-icon-default);
+  font: var(--type-ios-caption-medium-font);
+}
+
+/* 날짜 칸: 흰 칸 7개, 오늘만 브랜드 색으로 조금 크게 */
+.days {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--gap-sm);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.day {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-inline-size: calc(var(--padding-card-sm) * 2 + var(--gap-md));
+  padding: calc(var(--gap-xs) * 1.5) var(--gap-sm);
+  border-radius: var(--radius-card-sm);
+  background: var(--color-surface-default);
+  box-shadow: var(--shadow-card);
+}
+
+.dayToday {
+  min-inline-size: calc(var(--padding-card-sm) * 2 + var(--gap-md) + var(--gap-md) - var(--gap-xs) / 2);
+  padding: var(--gap-sm);
+  background: var(--color-bg-brand);
+}
+
+.dayNumber {
+  color: var(--color-text-secondary);
+  font: var(--type-ios-body-medium-font);
+  letter-spacing: var(--type-ios-body-medium-tracking);
+}
+
+.dayWeekday {
+  color: var(--color-text-tertiary);
+  font: var(--type-ios-caption-medium-font);
+  letter-spacing: var(--type-ios-caption-medium-tracking);
+}
+
+.dayToday .dayNumber {
+  color: var(--color-text-inverse);
+}
+
+.dayToday .dayWeekday {
+  color: var(--color-border-default);
+}
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-md);
+}
+
+.sectionTitle {
+  margin: 0;
+  padding-left: var(--gap-xs);
+  font: var(--type-ios-body-strong-font);
+  letter-spacing: var(--type-ios-body-strong-tracking);
+}
+
+.empty {
+  margin: 0;
+  padding-left: var(--gap-xs);
+  color: var(--color-text-tertiary);
+  font: var(--type-ios-caption-large-font);
+  letter-spacing: var(--type-ios-caption-large-tracking);
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* 한 줄 = [표시 | 시각] / [표시 | 카드] / [표시 | 줄 사이 여백]. 시안: 시각↔카드 5px, 카드↔다음 시각 12px */
+.item {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  grid-template-rows: auto auto calc(var(--padding-card-sm) - var(--gap-xs));
+  column-gap: var(--gap-lg);
+  row-gap: var(--gap-xs);
+}
+
+.item:last-child {
+  grid-template-rows: auto auto;
+}
+
+/* 시각 글자와 같은 글꼴이라 표시 칸(railHead) 높이가 시각 줄 높이(1lh)와 같다 */
+.rail {
+  position: relative;
+  grid-row: 1 / -1;
+  grid-column: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font: var(--type-ios-body-small-font);
+}
+
+/*
+ * 세로선: 체크 아래에서 시작해 다음 체크 바로 앞에서 끊긴다(시안처럼 체크 위아래에 틈).
+ * 마친 활동은 브랜드 색, 진행 중은 위쪽만 브랜드 색, 나머지는 옅은 선. 영역 끝 줄은 카드 아래까지 조금 더 내려간다
+ */
+.rail::before {
+  content: '';
+  position: absolute;
+  top: calc(1lh + var(--gap-xs) / 2);
+  bottom: calc(var(--gap-xs) / 2);
+  left: 50%;
+  width: 1px;
+  background: var(--color-border-color);
+}
+
+.item:last-child .rail::before {
+  bottom: calc(var(--gap-sm) * -1);
+}
+
+.lineDone .rail::before {
+  background: var(--color-brand-light);
+}
+
+.lineProgress .rail::before {
+  background: linear-gradient(var(--color-brand-light) 40%, var(--color-border-color) 40%);
+}
+
+.railHead {
+  position: relative;
+  display: grid;
+  place-items: center;
+  block-size: 1lh;
+}
+
+/* 상태 표시용 체크(누를 수 없음). 시안: 18px 네모, 시작한 활동은 채움 */
+.check {
+  display: grid;
+  place-items: center;
+  inline-size: calc(1lh - var(--gap-xs));
+  block-size: calc(1lh - var(--gap-xs));
+  box-sizing: border-box;
+  border: 1.6px solid var(--color-border-color);
+  /* 시안은 4px 둥근 네모인데 맞는 semantic 둥글기 토큰이 없어 카드 작은 둥글기(16px)의 1/4로 만든다 */
+  border-radius: calc(var(--radius-card-sm) / 4);
+  background: var(--color-surface-default);
+}
+
+.checkDone {
+  border: 0;
+  background: linear-gradient(135deg, var(--color-brand-light), var(--color-bg-brand));
+  color: var(--color-icon-inverse);
+}
+
+.aiMarker {
+  display: grid;
+  place-items: center;
+  inline-size: calc(1lh - var(--gap-xs));
+  block-size: calc(1lh - var(--gap-xs));
+  border-radius: calc(var(--radius-card-sm) / 4);
+  background: var(--color-brand-light);
+  color: var(--color-icon-brand);
+}
+
+.time {
+  grid-row: 1;
+  grid-column: 2;
+  margin: 0;
+  color: var(--color-text-secondary);
+  font: var(--type-ios-body-small-font);
+  letter-spacing: var(--type-ios-body-small-tracking);
+}
+
+.timeCurrent {
+  color: var(--color-text-brand);
+}
+
+.cardSlot {
+  grid-row: 2;
+  grid-column: 2;
+  min-width: 0;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-md);
+  padding: var(--padding-card-sm) var(--padding-card-sm) var(--padding-card-sm) calc(var(--padding-card-sm) + var(--gap-xs));
+  border-radius: var(--radius-card-md);
+  background: var(--color-surface-default);
+  box-shadow: var(--shadow-card);
+}
+
+.cardTop {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--gap-sm);
+}
+
+.status {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  gap: calc(var(--gap-xs) * 1.5);
+  padding: var(--gap-xs) calc(var(--gap-xs) * 1.5);
+  border-radius: var(--radius-control);
+  background: var(--color-bg-subtle);
+  color: var(--color-text-tertiary);
+  font: var(--type-ios-caption-medium-font);
+  letter-spacing: var(--type-ios-caption-medium-tracking);
+  white-space: nowrap;
+}
+
+.statusCurrent {
+  color: var(--color-text-brand);
+}
+
+.cardText {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.activityName {
+  margin: 0;
+  font: var(--type-ios-body-small-font);
+  letter-spacing: var(--type-ios-body-small-tracking);
+}
+
+.description {
+  margin: 0;
+  color: var(--color-text-tertiary);
+  font: var(--type-ios-caption-medium-font);
+  letter-spacing: var(--type-ios-caption-medium-tracking);
+}
