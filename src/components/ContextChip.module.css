@@ -1,0 +1,33 @@
+.chip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  width: fit-content;
+  max-width: 100%;
+  padding-left: var(--padding-150);
+  padding-right: var(--padding-150);
+  border-radius: var(--radius-300);
+  background: rgb(94 125 255 / 10%);
+  font-family: var(--font-family-sans);
+  font-weight: var(--font-weight-regular);
+  white-space: nowrap;
+}
+
+.brand {
+  padding-top: var(--padding-050);
+  padding-bottom: var(--padding-050);
+  font-size: var(--font-size-150);
+  line-height: var(--line-height-150);
+  letter-spacing: 0;
+  color: var(--color-blue-600);
+}
+
+.muted {
+  padding-top: 6px;
+  padding-bottom: 6px;
+  font-size: var(--font-size-200);
+  line-height: 22px;
+  letter-spacing: -0.3px;
+  color: var(--color-gray-700);
+}

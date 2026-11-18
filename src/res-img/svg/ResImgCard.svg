@@ -1,0 +1,22 @@
+<svg width="64" height="56" viewBox="0 0 64 56" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="ResImgCard_ResImgCard">
+<g id="ResImgCard___236___185___180___235___147___156_">
+<g id="ResImgCard_Group_2085666705">
+<path id="ResImgCard_Rectangle_240652333" d="M0 10.5376C0 9.06096 1.19702 7.86395 2.67362 7.86395L61.3262 7.86395C62.8028 7.86395 63.9998 9.06097 63.9998 10.5376V45.4618C63.9998 46.9384 62.8028 48.1354 61.3262 48.1354L2.67362 48.1354C1.19702 48.1354 0 46.9384 0 45.4618L0 10.5376Z" fill="#5165FE"/>
+<rect id="ResImgCard_Rectangle_240652326" y="16.6368" width="63.9998" height="6.34985" fill="#728DFF"/>
+</g>
+<g id="ResImgCard_Group_2085666704">
+<path id="ResImgCard_Rectangle_240652331" d="M0.000183105 10.5382C0.000183105 9.06163 1.1972 7.86461 2.67381 7.86461H61.3264C62.803 7.86461 64 9.06163 64 10.5382V45.4624C64 46.939 62.803 48.136 61.3264 48.136H2.6738C1.1972 48.136 0.000183105 46.939 0.000183105 45.4624V10.5382Z" fill="url(#ResImgCard_paint0_linear_138_322)" fill-opacity="0.8"/>
+<path id="ResImgCard_Rectangle_240652332" d="M6.51709 21.3998H16.0419V30.0055H6.51709V21.3998Z" fill="#B2C5FF"/>
+<circle id="ResImgCard_Ellipse_5494" cx="52.3865" cy="41.7862" r="4.26109" fill="#D7E1FF" fill-opacity="0.4"/>
+<circle id="ResImgCard_Ellipse_5495" cx="57.4831" cy="41.7862" r="4.26109" fill="#D7E1FF" fill-opacity="0.4"/>
+</g>
+</g>
+</g>
+<defs>
+<linearGradient id="ResImgCard_paint0_linear_138_322" x1="0.000183305" y1="47.9689" x2="64.1671" y2="7.86461" gradientUnits="userSpaceOnUse">
+<stop stop-color="#6E7FFF"/>
+<stop offset="1" stop-color="#A3B7FF"/>
+</linearGradient>
+</defs>
+</svg>

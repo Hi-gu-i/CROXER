@@ -1,0 +1,30 @@
+/* 원본 Frame 2085668325/8328: VERTICAL · gap 2 · width FIXED · height HUG */
+.root {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--gap-025);
+  width: 100%;
+  max-width: 361px;
+  box-sizing: border-box;
+}
+
+/* 20 SemiBold / 30 */
+.title {
+  margin: 0;
+  width: 100%;
+  font: var(--type-ios-title-small-font);
+  letter-spacing: var(--type-ios-title-small-tracking);
+  color: var(--color-gray-900);
+  white-space: pre-wrap;
+}
+
+/* 14 Regular / 22 · gray-700 */
+.description {
+  margin: 0;
+  width: 100%;
+  font: var(--type-ios-body-small-font);
+  letter-spacing: var(--type-ios-body-small-tracking);
+  color: var(--color-gray-700);
+  white-space: pre-wrap;
+}

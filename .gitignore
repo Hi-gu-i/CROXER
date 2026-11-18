@@ -7,3 +7,8 @@ dist-ssr/
 *.local
 *.log
 .DS_Store
+
+# 민선 로컬 전용 부품 미리보기 (예은 App과 충돌 방지 · push 안 함)
+src/App.preview.tsx
+src/App.preview.module.css
+.tmp-catalog/

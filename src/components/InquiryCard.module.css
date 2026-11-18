@@ -1,0 +1,298 @@
+/* 02 · 러닝 문의 원본 InquiryCard */
+.root {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--gap-300);
+  width: 100%;
+  max-width: 361px;
+  box-sizing: border-box;
+}
+
+.stack,
+.stackFlat {
+  position: relative;
+  width: 100%;
+  min-height: 125px;
+}
+
+.stackFlat {
+  min-height: 0;
+}
+
+.layerBack,
+.layerMid {
+  position: absolute;
+  display: block;
+  border-radius: var(--radius-card-md);
+  background: var(--color-surface-default);
+  box-shadow: 0 0 4px 0 var(--color-gray-200);
+  pointer-events: none;
+}
+
+.layerBack {
+  left: 12px;
+  right: 12px;
+  top: 27px;
+  height: 111px;
+}
+
+.layerMid {
+  left: 6px;
+  right: 6px;
+  top: 16px;
+  height: 116px;
+}
+
+.front {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: flex-start;
+  gap: 40px;
+  width: 100%;
+  min-height: 125px;
+  padding: var(--padding-300);
+  border-radius: var(--radius-card-md);
+  background: var(--color-surface-default);
+  box-shadow: 0 0 4px 0 var(--color-gray-200);
+  box-sizing: border-box;
+}
+
+.stackFlat .front {
+  min-height: 0;
+}
+
+.main {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 15px;
+  min-width: 0;
+  max-width: 242px;
+}
+
+.channelRow {
+  display: flex;
+  align-items: center;
+  gap: var(--gap-150);
+  width: fit-content;
+  max-width: 100%;
+}
+
+.kakaoMark {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: var(--radius-control);
+  background: var(--color-status-warning-strong);
+  color: var(--color-text-primary);
+  overflow: hidden;
+}
+
+.question {
+  margin: 0;
+  font: var(--font-weight-semibold) var(--font-size-350) / 26px
+    var(--font-family-sans);
+  letter-spacing: 0;
+  color: var(--color-gray-900);
+  white-space: pre-line;
+}
+
+.time {
+  flex-shrink: 0;
+  margin-left: auto;
+  font: var(--font-weight-regular) var(--font-size-100) / 20px
+    var(--font-family-sans);
+  letter-spacing: 0;
+  color: var(--color-blue-600);
+  white-space: nowrap;
+}
+
+.original {
+  margin: 0;
+  padding: 0;
+  border: none;
+  background: transparent;
+  font: var(--font-weight-regular) var(--font-size-200) / auto
+    var(--font-family-sans);
+  letter-spacing: 0;
+  color: var(--color-gray-900);
+  cursor: default;
+}
+
+button.original {
+  cursor: pointer;
+}
+
+button.original:focus-visible {
+  outline: 2px solid var(--color-blue-500);
+  outline-offset: 2px;
+}
+
+/* 01 · 러닝 문의 AI 판단 카드 */
+.assessment {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-400);
+  width: 100%;
+  max-width: 337px;
+  padding: var(--padding-400) 14px 14px;
+  overflow: hidden;
+  border: 1px solid transparent;
+  border-radius: var(--radius-card-md);
+  background:
+    linear-gradient(var(--color-surface-default), var(--color-surface-default))
+      padding-box,
+    linear-gradient(
+        180deg,
+        var(--color-surface-default) 0%,
+        var(--color-blue-300) 100%
+      )
+      border-box;
+  box-shadow:
+    0 0 20px 0 rgb(94 199 255 / 30%),
+    0 0 20px 0 rgb(33 30 52 / 20%);
+  box-sizing: border-box;
+}
+
+.assessment::before {
+  content: "";
+  position: absolute;
+  inset: -40% -20% auto;
+  height: 140%;
+  background: radial-gradient(
+    circle at 30% 20%,
+    rgb(127 178 255 / 35%),
+    transparent 55%
+  );
+  pointer-events: none;
+}
+
+.assessmentHeader {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding-left: 6px;
+  padding-right: 4px;
+  box-sizing: border-box;
+}
+
+.aiOrb {
+  flex-shrink: 0;
+  width: 22px;
+  height: 22px;
+  border-radius: var(--radius-control);
+  background: linear-gradient(
+    135deg,
+    var(--color-blue-400),
+    var(--color-blue-600)
+  );
+  box-shadow: inset 0 0 0 1px var(--color-opacity-white-200);
+}
+
+.close {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: var(--color-icon-default);
+  cursor: pointer;
+}
+
+.assessmentBody {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-400);
+  padding-left: 6px;
+  box-sizing: border-box;
+}
+
+.assessmentTitle {
+  margin: 0;
+  font: var(--font-weight-semibold) var(--font-size-350) / 26px
+    var(--font-family-sans);
+  letter-spacing: 0;
+  color: var(--color-gray-900);
+  white-space: pre-line;
+}
+
+.assessmentBlock {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-100);
+  width: 100%;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: fit-content;
+  min-height: 26px;
+  padding: 4px 10px;
+  border-radius: var(--radius-control);
+  background: rgb(94 125 255 / 10%);
+  font: var(--font-weight-regular) var(--font-size-150) / var(--line-height-150)
+    var(--font-family-sans);
+  letter-spacing: 0;
+  color: var(--color-blue-600);
+}
+
+.assessmentDescription {
+  margin: 0;
+  font: var(--font-weight-regular) var(--font-size-200) / 22px
+    var(--font-family-sans);
+  letter-spacing: 0;
+  color: var(--color-gray-700);
+  white-space: pre-line;
+}
+
+.action {
+  position: relative;
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 42px;
+  padding: var(--padding-150);
+  border: none;
+  border-radius: var(--radius-100);
+  background: radial-gradient(
+    circle at 20% 0%,
+    rgb(127 178 255 / 88%),
+    rgb(81 133 254 / 90%) 55%,
+    rgb(65 70 253 / 90%)
+  );
+  color: var(--color-text-inverse);
+  font: var(--font-weight-regular) var(--font-size-200) / 22px
+    var(--font-family-sans);
+  letter-spacing: 0;
+  box-shadow: inset 0 1px 4px 0 rgb(152 210 255 / 45%);
+  cursor: pointer;
+}
+
+.action:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.action:focus-visible {
+  outline: 2px solid var(--color-blue-500);
+  outline-offset: 2px;
+}

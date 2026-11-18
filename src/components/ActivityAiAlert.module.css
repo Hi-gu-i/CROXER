@@ -1,0 +1,169 @@
+/* 활동 화면 AI 알림
+ * signal  ← 03 · 강변 촬영 / ai 알림 신호
+ * expanded ← 원본 ai 알림(효과·그라데이션·IconClose·FILL)
+ */
+
+.signal {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  padding: 0;
+  border: none;
+  border-radius: var(--radius-control);
+  background: var(--color-opacity-white-600);
+  box-shadow: var(--shadow-glass);
+  backdrop-filter: var(--effect-glass-background-backdrop);
+  -webkit-backdrop-filter: var(--effect-glass-background-backdrop);
+  cursor: pointer;
+}
+
+.panel {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-200);
+  width: min(100%, 337px);
+  /* 원본: 텍스트/메타 좌우 20, CTA 좌우 14, 상단 20 */
+  padding: var(--padding-400) 14px 14px;
+  overflow: hidden;
+  border-radius: var(--radius-card-md);
+  background: var(--color-surface-default);
+  box-shadow:
+    0 0 20px 0 rgb(94 199 255 / 30%),
+    0 0 20px 0 rgb(33 30 52 / 20%);
+  box-sizing: border-box;
+}
+
+.panel::before {
+  content: "";
+  position: absolute;
+  inset: -40% -20% auto;
+  height: 140%;
+  background:
+    radial-gradient(
+      circle at 30% 20%,
+      rgb(127 178 255 / 35%),
+      transparent 55%
+    );
+  pointer-events: none;
+}
+
+.header {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding-left: 13px; /* 14+13=27, 원본 AI 아이콘 x */
+  padding-right: 10px; /* 14+10=24, 원본 IconClose 우측 여백 */
+}
+
+.orb {
+  flex-shrink: 0;
+  width: 22px;
+  height: 22px;
+  border-radius: var(--radius-control);
+  background:
+    linear-gradient(
+      135deg,
+      var(--color-blue-400),
+      var(--color-brand-default)
+    );
+  box-shadow: inset 0 0 0 1px var(--color-opacity-white-200);
+}
+
+.close {
+  position: relative;
+  z-index: 1;
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: var(--color-icon-default);
+  cursor: pointer;
+}
+
+.close svg {
+  width: 16px;
+  height: 16px;
+  fill: currentColor;
+}
+
+.meta {
+  position: relative;
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  width: fit-content;
+  max-width: 100%;
+  margin: 0;
+  margin-left: 6px; /* 14+6=20 */
+  padding: var(--padding-050) var(--padding-150);
+  border-radius: var(--radius-300);
+  background: rgb(94 125 255 / 10%);
+  font: var(--type-ios-caption-large-font);
+  letter-spacing: var(--type-ios-caption-large-tracking);
+  color: var(--color-text-brand);
+}
+
+.title {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  margin: 0;
+  padding-left: 6px; /* 14+6=20 */
+  box-sizing: border-box;
+  font: var(--type-ios-body-strong-font);
+  letter-spacing: var(--type-ios-body-strong-tracking);
+  color: var(--color-text-primary);
+  white-space: pre-line;
+}
+
+.description {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  margin: 0;
+  padding-left: 6px; /* 14+6=20 */
+  box-sizing: border-box;
+  font: var(--type-ios-body-small-font);
+  letter-spacing: var(--type-ios-body-small-tracking);
+  color: var(--color-text-secondary);
+  white-space: pre-line;
+}
+
+.action {
+  position: relative;
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%; /* 좌우 14 패딩 기준 FILL */
+  min-height: 42px;
+  margin-top: var(--gap-xs);
+  padding: var(--padding-150) var(--padding-300);
+  border: none;
+  border-radius: var(--radius-100);
+  background:
+    radial-gradient(
+      circle at 20% 0%,
+      rgb(127 178 255 / 88%),
+      rgb(81 133 254 / 90%) 55%,
+      rgb(65 70 253 / 90%)
+    );
+  color: var(--color-text-inverse);
+  font: var(--type-ios-body-small-font);
+  letter-spacing: var(--type-ios-body-small-tracking);
+  box-shadow: inset 0 1px 4px 0 rgb(152 210 255 / 45%);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  cursor: pointer;
+}
