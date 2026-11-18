@@ -87,7 +87,9 @@
       "background": {
         "default": { "$value": "{color.primitive.base.000}" },
         "subtle": { "$value": "{color.primitive.blue.050}" },
-        "brand": { "$value": "{color.primitive.blue.500}" }
+        "brand": { "$value": "{color.primitive.blue.500}" },
+        "brand-subtle": { "$value": "{color.primitive.blue.100}" },
+        "brand-soft": { "$value": "{color.primitive.blue.200}" }
       },
       "surface": {
         "default": { "$value": "{color.primitive.base.000}" },

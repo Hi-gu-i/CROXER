@@ -62,6 +62,8 @@
   --color-bg-default: var(--color-base-000);
   --color-bg-subtle: var(--color-blue-050);
   --color-bg-brand: var(--color-blue-500);
+  --color-bg-brand-subtle: var(--color-blue-100);
+  --color-bg-brand-soft: var(--color-blue-200);
   --color-surface-default: var(--color-base-000);
   --color-surface-subtle: var(--color-gray-050);
   --color-surface-muted: var(--color-gray-100);

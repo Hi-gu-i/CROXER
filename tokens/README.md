@@ -50,4 +50,5 @@ Figma 변수 이름 `Weight/weignt-*`에는 오타가 있다. 토큰 경로는 `
 
 | 버전 | 날짜 | 수정자 | 수정 내용과 이유 |
 | --- | --- | --- | --- |
+| 1.1 | 2026-11-18 | Cursor AI · 지유 요청 | 홈 선택 배경용 semantic `--color-bg-brand-subtle`(blue-100), `--color-bg-brand-soft`(blue-200)를 JSON·CSS에 추가 |
 | 1.0 | 2026-11-11 | Cursor AI · 김민선 요청 | MYA 디자인 토큰의 출처, 변환 규칙, 웹폰트, 수정 절차 등록. 팀 문서 규칙에 맞춰 한국어로 작성하고 사용 기준은 `docs/ui-guide.md`로 분리 |
