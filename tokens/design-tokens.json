@@ -98,6 +98,13 @@
         "document": { "$value": "{color.primitive.gray.200}" },
         "document-fold": { "$value": "{color.primitive.gray.300}" }
       },
+      "chart": {
+        "strong": { "$value": "{color.primitive.blue.900}" },
+        "muted": { "$value": "{color.primitive.gray.200}" }
+      },
+      "control": {
+        "off": { "$value": "{color.primitive.gray.300}" }
+      },
       "text": {
         "primary": { "$value": "{color.primitive.gray.900}" },
         "secondary": { "$value": "{color.primitive.gray.700}" },

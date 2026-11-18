@@ -22,6 +22,8 @@ import {
   skipToNextActivity,
 } from '../../data/utStore'
 import { useUtSession } from '../../data/useUtSession'
+import { ReportPage } from '../report'
+import { NotificationSettingsPage } from '../setup'
 import styles from './facilitator-panel.module.css'
 
 const RAIN_ALERT_ID = 'alert-shoot-rain'
@@ -45,6 +47,13 @@ const aiJobLabel: Record<AiJobStatus, string> = {
   queued: '요청됨',
   running: '실행 중',
   completed: '완료',
+}
+
+type PreviewId = 'notifications' | 'report'
+
+const previewTitle: Record<PreviewId, string> = {
+  notifications: '알림 설정',
+  report: '리포트',
 }
 
 interface LogEntry {
@@ -86,6 +95,7 @@ export function FacilitatorPanel({ onActivityChange, onReset }: FacilitatorPanel
   const [confirmingReset, setConfirmingReset] = useState(false)
   const [log, setLog] = useState<LogEntry[]>([])
   const [copied, setCopied] = useState(false)
+  const [preview, setPreview] = useState<PreviewId | null>(null)
   const taps = useRef<number[]>([])
   const nextLogId = useRef(1)
 
@@ -312,6 +322,21 @@ export function FacilitatorPanel({ onActivityChange, onReset }: FacilitatorPanel
           )}
         </section>
 
+        <section className={styles.section} aria-labelledby="facilitator-preview">
+          <h3 id="facilitator-preview" className={styles.sectionTitle}>
+            첫 UT 범위 밖 화면 미리보기
+          </h3>
+          <p className={styles.help}>UT 흐름에는 없는 화면이에요. 참가자 진행 상태는 그대로 두고 열어 볼 수 있어요.</p>
+          <div className={styles.actionRow}>
+            <button type="button" className={styles.actionButton} onClick={() => setPreview('notifications')}>
+              알림 설정
+            </button>
+            <button type="button" className={styles.actionButton} onClick={() => setPreview('report')}>
+              리포트
+            </button>
+          </div>
+        </section>
+
         <section className={styles.section} aria-labelledby="facilitator-log">
           <div className={styles.logHeader}>
             <h3 id="facilitator-log" className={styles.sectionTitle}>
@@ -338,6 +363,18 @@ export function FacilitatorPanel({ onActivityChange, onReset }: FacilitatorPanel
           )}
         </section>
       </section>
+
+      {preview && (
+        <div className={styles.previewLayer} role="dialog" aria-modal="true" aria-label={`${previewTitle[preview]} 미리보기`}>
+          <div className={styles.previewBar}>
+            <span className={styles.previewTag}>미리보기 · {previewTitle[preview]}</span>
+            <button type="button" className={styles.closeButton} onClick={() => setPreview(null)}>
+              닫기
+            </button>
+          </div>
+          <div className={styles.previewBody}>{preview === 'notifications' ? <NotificationSettingsPage /> : <ReportPage />}</div>
+        </div>
+      )}
     </div>
   )
 }
