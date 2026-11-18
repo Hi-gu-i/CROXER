@@ -1,20 +1,22 @@
 /* 스케줄 화면. Figma `02 · 스케줄 final` 배치를 따르고, 값은 모두 디자인 토큰(docs/ui-guide.md)을 쓴다 */
 
-/* 앱 틀(App의 고정 높이 프레임) 안을 채우고, 넘치면 이 안에서 스크롤한다 */
+/*
+ * App의 화면 영역(main) 안에 들어간다. main이 이미 좌우·위 여백(padding-ios-x)과
+ * 탭바 아래 여백, 스크롤, 배경을 주므로 여기서는 시안과의 차이만 더한다.
+ * - 좌우: 목록은 화면 끝에서 20px → main 여백을 뺀 만큼만
+ * - 위: 시안은 12px → main 여백보다 좁은 만큼 끌어올린다
+ */
 .schedulePage {
   display: flex;
-  flex: 1;
   flex-direction: column;
   /* 시안: 영역 끝 카드와 다음 영역 제목 사이 30px */
   gap: calc(var(--gap-xl) + var(--gap-xs));
-  min-height: 0;
-  overflow-y: auto;
-  padding: var(--padding-card-sm) var(--padding-card-lg) var(--padding-section);
-  background: var(--color-bg-subtle);
+  margin-top: calc(var(--padding-card-sm) - var(--padding-ios-x));
+  padding-inline: calc(var(--padding-card-lg) - var(--padding-ios-x));
   color: var(--color-text-primary);
 }
 
-/* 시안 머리 영역은 화면 가장자리에서 16px. 목록(20px)보다 조금 바깥으로 낸다 */
+/* 시안 머리 영역은 화면 가장자리에서 16px(main 여백과 같음). 목록(20px)보다 조금 바깥으로 낸다 */
 .header {
   display: flex;
   flex-direction: column;

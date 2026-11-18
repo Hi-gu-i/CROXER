@@ -175,7 +175,7 @@ export default function BriefingPage({ onConfirm }: BriefingPageProps) {
 // 카드 아래 설명 한 줄. Figma `01 · 브리핑 final` 문구를 따른다.
 // 화면 문구라 데이터에 넣지 않았다. 스케줄 화면에서도 쓰게 되면 활동 데이터 필드로 옮긴다.
 const activitySummary: Record<ActivityId, string> = {
-  'activity-research': '어제 요청한 사례 5개 확인하기',
+  'activity-research': '어제 정리한 사례 3가지 확인하기',
   'activity-shoot': '촬영 방향과 참고 자료 준비됨',
   'activity-run': '반복 문의와 공지 정리됨',
   'activity-gpt-renewal': 'AI 구독 연장 제안',
