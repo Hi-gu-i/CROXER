@@ -16,6 +16,7 @@ import {
 import BriefingPage from './features/briefing/BriefingPage'
 import HomeScreen from './features/home/HomeScreen'
 import RoleSwitchPanel from './features/role-switch/RoleSwitchPanel'
+import { ResearchActivityPage } from './features/research'
 import { RunActivityPage } from './features/run'
 import { ShootActivityPage } from './features/shoot'
 
@@ -60,6 +61,7 @@ const tabs: { id: TabId; label: string; icon: ReactNode }[] = [
 // 활동 화면 연결 지점. 담당 화면이 준비되면 활동 ID에 맞춰 여기에 등록한다.
 // 등록하지 않은 활동은 임시 화면(TempActivityScreen)이 열린다.
 const activityScreens: Partial<Record<ActivityId, ComponentType<ActivityScreenProps>>> = {
+  'activity-research': ResearchActivityPage,
   'activity-shoot': ShootActivityPage,
   'activity-run': RunActivityPage,
 }
