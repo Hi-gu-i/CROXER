@@ -14,7 +14,7 @@ CROXER 화면의 색, 간격, 둥글기, 글자, 그림자를 MYA 디자인 토�
 | --- | --- | --- |
 | `Button` | `Button.tsx` | DS `Button`. `primary`는 `--color-bg-brand`, 높이·패딩은 `--padding-300`, 모서리는 `--radius-control` |
 | `Card` | `Card.tsx` | 표면 카드. 크기 `sm`/`md`/`lg`는 `--radius-card-*`, `--padding-card-*`, 그림자는 `--shadow-card` |
-| `Tag` | `Tag.tsx` | DS `Tag`. 일정 카드 역할 라벨. 패딩 4×12, 13/18. `tone`=neutral/yellow/violet/blue/mint |
+| `Tag` | `Tag.tsx` | DS `Tag`. 일정 카드 역할 라벨. 패딩 4×12, `--type-ios-caption-medium`(12/16), 높이 24. `tone`=neutral/yellow/violet/blue/mint |
 | `ContextChip` | `ContextChip.tsx` | 활동 본문 맥락 칩(채널·자료명 등). `tone=brand`/`muted`. `Tag`·`ToggleCategory`와 별개 |
 | `ToggleCategory` | `ToggleCategory.tsx` | **활동 화면 상단** 역할 토글. `01 · 편집자 자료` 기준. `tone`=yellow(교양/학생)/violet(편집자)/mint(러닝 크루장). Label+Assets `IconToggle` |
 | `RoleTransitionPanel` | `RoleTransitionPanel.tsx` | DS 원본 활동 전환 패널(보관). `phase=before`/`countdown`. **앱 셸에는 ① `RoleSwitchPanel`을 연결한다** |
@@ -215,6 +215,7 @@ Lime 스케일과 red 500·700, yellow의 이전 hex는 라이브러리에서 �
 | `--padding-ios-y` | `8px` | iOS 화면 상하 |
 | `--padding-screen-mac` | `64px` | Mac 화면 바깥 여백 |
 | `--radius-control` | `999px` | 버튼, 필, 칩 |
+| `--radius-control-sm` | `4px` | 체크박스·번호 배지 등 작은 조작·표시 |
 | `--radius-card-sm` | `16px` | 작은 카드 |
 | `--radius-card-md` | `24px` | 기본 카드 |
 | `--radius-card-lg` | `32px` | 큰 카드 |
@@ -419,7 +420,7 @@ CROXER 화면을 만들 때는 tokens/design-tokens.css의 커스텀 프로퍼�
 - 배경은 --color-bg-default, --color-bg-subtle, --color-bg-brand. 카드 표면은 --color-surface-*. 글자는 --color-text-*, 선은 --color-border-*, 아이콘은 --color-icon-*, 브랜드 채움은 --color-brand-*, 성공·경고·오류는 --color-status-* 를 쓴다.
 - 성공은 mint, 경고는 yellow, 오류는 red다. lime 색과 red-500, red-700은 없다.
 - 반투명 오버레이는 --color-opacity-white-*, --color-opacity-black-*, --color-opacity-color-500 만 쓴다.
-- 간격은 --gap-xs|sm|md|lg|xl|section, 카드 여백은 --padding-card-sm|md|lg, 버튼 여백은 --padding-control-x|y, 둥글기는 --radius-control 또는 --radius-card-sm|md|lg 를 쓴다. 카드의 padding과 radius는 같은 크기 단계를 짝으로 쓴다.
+- 간격은 --gap-xs|sm|md|lg|xl|section, 카드 여백은 --padding-card-sm|md|lg, 버튼 여백은 --padding-control-x|y, 둥글기는 --radius-control, --radius-control-sm 또는 --radius-card-sm|md|lg 를 쓴다. 카드의 padding과 radius는 같은 크기 단계를 짝으로 쓴다. 체크박스·브리핑 번호 배지처럼 4px 모서리는 --radius-control-sm 을 쓴다.
 - 모바일 글자는 --type-ios-*, 데스크톱 글자는 --type-mac-* 를 쓰고, font와 letter-spacing을 항상 같이 선언한다. iOS 작은 강조는 --type-ios-body-accent-* 다.
 - 그림자는 --shadow-card|line|glass, 유리·블러는 --effect-*-backdrop 을 backdrop-filter에 쓴다. 활성 유리는 --effect-glass-active-shadow 도 같이 쓴다. box-shadow 값을 직접 만들지 않는다.
 - 표에 없는 토큰이 필요하면 기존 primitive를 var()로 가리키는 semantic만 design-tokens.css에 추가한다. 새 색 값이나 새 px 스케일은 만들지 않는다.
@@ -444,5 +445,6 @@ semantic이 역할을 표현하지 못할 때만 `tokens/design-tokens.css`의 s
 
 | 버전 | 날짜 | 수정자 | 수정 내용과 이유 |
 | --- | --- | --- | --- |
+| 1.2 | 2026-11-18 | Cursor AI · 김민선 요청 | `Tag`를 시안 12/16·높이 24에 맞추고, 작은 조작용 `--radius-control-sm`(4px)을 추가 |
 | 1.1 | 2026-11-16 | Cursor AI · 김민선 요청 | Task 6·8·9용 공통 부품·Icons·ResImg 기준을 `src/components/` 등에 등록. 앱 전환은 ① `RoleSwitchPanel`, DS `RoleTransitionPanel`은 보관. 화면 CSS hex는 semantic 토큰으로 맞춤 |
 | 1.0 | 2026-11-11 | Cursor AI · 김민선 요청 | MYA 디자인 시스템 토큰의 사용 기준 등록. 협업 가이드가 디자인 기준으로 참조하는 `docs/ui-guide.md` 경로에 두고, CROXER 전역 CSS 연결 방법과 팀 이름 규칙에 맞춘 예시 반영 |
