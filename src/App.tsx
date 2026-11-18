@@ -225,7 +225,10 @@ export default function App() {
         <RoleSwitchPanel
           nextActivityId={switchTargetId}
           onSwitch={switchToNextActivity}
-          onKeep={() => setSwitchTargetId(null)}
+          onKeep={() => {
+            setSwitchTargetId(null)
+            setScreen({ name: 'home' })
+          }}
         />
       )}
       <FacilitatorPanel onActivityChange={handleFacilitatorActivity} onReset={handleFacilitatorReset} />

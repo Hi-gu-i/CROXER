@@ -21,7 +21,7 @@
   animation: role-stay-drop 320ms ease;
 }
 
-/* 위는 흰색. 유지하기가 앉는 아래만 요청한 명도다. 토큰에 없는 색이라 이 막대에만 적는다. 선은 없다. */
+/* 위는 흰색. 유지하기가 앉는 아래만 역할 색이다. 선은 없다. */
 .yellow,
 .violet,
 .mint {
@@ -36,15 +36,15 @@
 }
 
 .yellow {
-  --role-stay-color: #d1bb72;
+  --role-stay-color: var(--color-role-leader-strong);
 }
 
 .violet {
-  --role-stay-color: #a899c0;
+  --role-stay-color: var(--color-role-editor-strong);
 }
 
 .mint {
-  --role-stay-color: #83b1af;
+  --role-stay-color: var(--color-role-runner-strong);
 }
 
 .header,
