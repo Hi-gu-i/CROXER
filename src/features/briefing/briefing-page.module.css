@@ -113,14 +113,13 @@
   block-size: 1lh;
 }
 
-/* 순서 번호. 글자 줄 높이(1lh)만큼의 정사각형.
-   시안은 작은 둥근 사각형(4px)이지만 맞는 semantic 둥글기 토큰이 없어 동그라미로 둔다 */
+/* 순서 번호. 글자 줄 높이(1lh)만큼의 정사각형, 시안처럼 4px 둥근 네모 */
 .badge {
   display: grid;
   place-items: center;
   inline-size: 1lh;
   block-size: 1lh;
-  border-radius: var(--radius-control);
+  border-radius: var(--radius-control-sm);
   background: var(--color-brand-default);
   color: var(--color-text-inverse);
   font: var(--type-ios-caption-large-font);
