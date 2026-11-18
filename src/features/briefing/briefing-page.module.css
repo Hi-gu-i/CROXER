@@ -160,15 +160,6 @@
   min-width: 0;
 }
 
-.roleTag {
-  padding: var(--gap-xs) var(--padding-card-sm);
-  border-radius: var(--radius-control);
-  background: var(--color-bg-subtle);
-  color: var(--color-text-brand);
-  font: var(--type-ios-caption-medium-font);
-  letter-spacing: var(--type-ios-caption-medium-tracking);
-}
-
 .cardText {
   display: flex;
   flex-direction: column;

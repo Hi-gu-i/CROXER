@@ -4,7 +4,9 @@
 // - 확정하면 첫 활동으로 진입하고 onConfirm으로 그 활동 ID를 알린다(화면 이동은 통합 담당이 연결)
 import { useRef, useState } from 'react'
 import type { KeyboardEvent, PointerEvent, ReactNode } from 'react'
-import type { ActivityId, ReorderableScheduleId, ScheduleView } from '../../data/types'
+import { Tag } from '../../components'
+import type { TagTone } from '../../components/Tag'
+import type { ActivityId, ReorderableScheduleId, RoleId, ScheduleView } from '../../data/types'
 import {
   confirmBriefing,
   getBriefingItems,
@@ -200,8 +202,7 @@ function BriefingRow({ item, isFirst, isLast, cardShift, children }: BriefingRow
       <div className={styles.cardSlot} style={{ transform: `translateY(${cardShift}px)` }}>
         <div className={styles.card}>
           <div className={styles.cardBody}>
-            {/* 역할별 색 태그는 공통 Tag 부품(민선, PR #19)이 합쳐지면 교체한다 */}
-            <span className={styles.roleTag}>{item.role.label}</span>
+            <Tag tone={roleTone[item.role.id]}>{item.role.label}</Tag>
             <div className={styles.cardText}>
               <p className={styles.activityName}>{item.activity.name}</p>
               <p className={styles.summary}>{item.activity.summary}</p>
@@ -212,6 +213,13 @@ function BriefingRow({ item, isFirst, isLast, cardShift, children }: BriefingRow
       </div>
     </>
   )
+}
+
+// 역할별 태그 색. 스케줄 화면과 같이 시안의 학생(노랑)·편집자(보라)·러닝 크루장(민트)을 따른다
+const roleTone: Record<RoleId, TagTone> = {
+  'role-leader': 'yellow',
+  'role-editor': 'violet',
+  'role-runner': 'mint',
 }
 
 function HandleIcon() {
