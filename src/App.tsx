@@ -1,5 +1,6 @@
 import { useEffect, useState, type ComponentType, type ReactNode } from 'react'
 import styles from './app.module.css'
+import { IconHome, IconReport, IconSchedule, IconSet } from './icons'
 import type { ActivityId } from './data/types'
 import { useUtSession } from './data/useUtSession'
 import {
@@ -32,32 +33,11 @@ interface ActivityScreenProps {
   onFinish: () => void
 }
 
-const tabs: { id: TabId; label: string; icon: ReactNode }[] = [
-  {
-    id: 'home',
-    label: '홈',
-    icon: <path d="M4 11.5 12 5l8 6.5V19a1 1 0 0 1-1 1h-4v-5H9v5H5a1 1 0 0 1-1-1z" />,
-  },
-  {
-    id: 'schedule',
-    label: '스케줄',
-    icon: <path d="M7 3v3M17 3v3M4 8h16M5 5h14a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1z" />,
-  },
-  {
-    id: 'report',
-    label: '리포트',
-    icon: <path d="M5 20V10M12 20V4M19 20v-7" />,
-  },
-  {
-    id: 'settings',
-    label: '설정',
-    icon: (
-      <>
-        <circle cx="12" cy="12" r="3" />
-        <path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M18.4 5.6l-2.1 2.1M7.7 16.3l-2.1 2.1" />
-      </>
-    ),
-  },
+const tabs: { id: TabId; label: string; Icon: typeof IconHome }[] = [
+  { id: 'home', label: '홈', Icon: IconHome },
+  { id: 'schedule', label: '스케줄', Icon: IconSchedule },
+  { id: 'report', label: '리포트', Icon: IconReport },
+  { id: 'settings', label: '설정', Icon: IconSet },
 ]
 
 // 활동 화면 연결 지점. 담당 화면이 준비되면 활동 ID에 맞춰 여기에 등록한다.
@@ -147,13 +127,14 @@ export default function App() {
     setSwitchTargetId(null)
   }
 
+  const showTabBar = screen.name !== 'activity'
   const activeTab: TabId = screen.name === 'activity' ? 'home' : screen.name
   const ActivityScreen =
     screen.name === 'activity' ? (activityScreens[screen.activityId] ?? TempActivityScreen) : null
 
   return (
     <Frame>
-      <main className={`${styles.screen} ${styles.screenWithTabBar}`}>
+      <main className={showTabBar ? `${styles.screen} ${styles.screenWithTabBar}` : styles.screen}>
         {screen.name === 'home' && (
           <HomeScreen
             onOpenActivity={openActivity}
@@ -171,33 +152,24 @@ export default function App() {
         {screen.name === 'report' && <TempPlaceholderScreen title="리포트" />}
         {screen.name === 'settings' && <TempPlaceholderScreen title="설정" />}
       </main>
-      <nav className={styles.tabBar} aria-label="하단 탭">
-        {tabs.map((tab) => (
-          <button
-            key={tab.id}
-            type="button"
-            className={tab.id === activeTab ? `${styles.tab} ${styles.tabActive}` : styles.tab}
-            aria-current={tab.id === activeTab ? 'page' : undefined}
-            onClick={() => setScreen({ name: tab.id })}
-          >
-            <svg
-              className={styles.tabIcon}
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="1.75"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              aria-hidden="true"
+      {showTabBar && (
+        <nav className={styles.tabBar} aria-label="하단 탭">
+          {tabs.map((tab) => (
+            <button
+              key={tab.id}
+              type="button"
+              className={tab.id === activeTab ? `${styles.tab} ${styles.tabActive}` : styles.tab}
+              aria-current={tab.id === activeTab ? 'page' : undefined}
+              onClick={() => setScreen({ name: tab.id })}
             >
-              {tab.icon}
-            </svg>
-            <span className={tab.id === activeTab ? styles.tabLabel : styles.visuallyHidden}>
-              {tab.label}
-            </span>
-          </button>
-        ))}
-      </nav>
+              <tab.Icon className={styles.tabIcon} size={24} />
+              <span className={tab.id === activeTab ? styles.tabLabel : styles.visuallyHidden}>
+                {tab.label}
+              </span>
+            </button>
+          ))}
+        </nav>
+      )}
       {switchTargetId && (
         <RoleSwitchPanel
           nextActivityId={switchTargetId}
