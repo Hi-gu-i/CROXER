@@ -12,6 +12,37 @@
   width: 100%;
 }
 
+.aiButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  inline-size: var(--gap-800);
+  block-size: var(--gap-800);
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-control);
+  background: var(--color-opacity-white-600);
+  box-shadow: var(--shadow-glass);
+  backdrop-filter: var(--effect-glass-background-backdrop);
+  color: var(--color-icon-brand);
+  cursor: pointer;
+}
+
+.aiButtonExpanded {
+  inline-size: auto;
+  justify-content: flex-start;
+  padding: 0 var(--padding-200) 0 var(--padding-100);
+  gap: var(--gap-sm);
+}
+
+.aiTitle {
+  color: var(--color-text-primary);
+  font: var(--type-ios-body-small-font);
+  letter-spacing: var(--type-ios-body-small-tracking);
+  white-space: nowrap;
+}
+
 .noti {
   display: grid;
   place-items: center;
