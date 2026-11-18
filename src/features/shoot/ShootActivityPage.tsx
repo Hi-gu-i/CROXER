@@ -13,6 +13,7 @@ import {
   getAlert,
   getFallbackChoices,
   getResources,
+  getScheduleByActivity,
   isAlertFired,
   markAlertRead,
 } from "../../data/utStore";
@@ -22,6 +23,10 @@ import styles from "./shoot-activity-page.module.css";
 const ALERT_ID = "alert-shoot-rain";
 /** UT 베이스라인: 촬영 자료 진입 후 기본 10초 */
 const RAIN_ALERT_DELAY_MS = 10_000;
+
+function formatTodayTime(startsAt: string) {
+  return `오늘 ${startsAt.slice(11, 16)}`;
+}
 
 type ShootStep = "materials" | "resource" | "chat";
 
@@ -64,6 +69,7 @@ export function ShootActivityPage({
   }, []);
 
   const resources = getResources(activityId);
+  const startLabel = formatTodayTime(getScheduleByActivity(activityId).startsAt);
   const selected = resources.find((item) => item.id === resourceId) ?? null;
   const alertFired = isAlertFired(ALERT_ID);
   const alert = getAlert(ALERT_ID);
@@ -177,7 +183,7 @@ export function ShootActivityPage({
       {step === "materials" ? (
         <div className={styles.body}>
           <p className={styles.lead}>
-            오늘 16:00 강변 촬영에 쓸 자료를 확인하세요.
+            {startLabel} 강변 촬영에 쓸 자료를 확인하세요.
           </p>
           <ul className={styles.resourceList}>
             {resources.map((resource) => (

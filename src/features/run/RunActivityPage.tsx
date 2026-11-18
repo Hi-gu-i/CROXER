@@ -22,6 +22,7 @@ import {
   getCourses,
   getFallbackChoices,
   getFiredInquiries,
+  getScheduleByActivity,
   getSelectedCourseId,
   isAiJobRequested,
   markAiJobRunning,
@@ -35,6 +36,10 @@ import styles from "./run-activity-page.module.css";
 const INQUIRY_ID = "inquiry-run-weather";
 const JOB_ID = "job-shoot-extra";
 const ANNOUNCEMENT_ID = "announcement-run-course";
+
+function formatTodayTime(startsAt: string) {
+  return `오늘 ${startsAt.slice(11, 16)}`;
+}
 
 type RunStep =
   | "inquiry"
@@ -120,6 +125,7 @@ export function RunActivityPage({
   const job = getAiJob(JOB_ID);
   const jobRequested = isAiJobRequested(JOB_ID);
   const fallbacks = getFallbackChoices(activityId);
+  const startLabel = formatTodayTime(getScheduleByActivity(activityId).startsAt);
 
   function goCourses() {
     setStep("courses");
@@ -265,9 +271,9 @@ export function RunActivityPage({
             <h2 className={styles.sectionTitle}>변경 공지</h2>
             <AnnouncementDraftCard
               channel="카카오톡 • 크로싱 러닝크루"
-              title="오늘 19:00 러닝 코스 변경"
+              title={`${startLabel} 러닝 코스 변경`}
               body={announcement.body}
-              time="오늘 19:00"
+              time={startLabel}
               location={announcement.meetingPoint || "집결지 미정"}
               courseTitle={selectedCourse?.name ?? "선택한 코스"}
               courseMeta={
