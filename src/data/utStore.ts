@@ -279,12 +279,20 @@ export function completeActivity(activityId: ActivityId): ActivityId | null {
 /**
  * 진행자 패널 전용: 막힌 활동을 완료로 옮기고 다음 활동의 시작 상태로 진입한다.
  * 다음 활동 ID를 돌려준다. 남은 활동이 없으면 null.
+ *
+ * 남은 활동이 없으면 열린 활동(currentActivityId)을 비운다. 진행자가 다른 탭(#facilitator)에서
+ * 넘겨도 참가자 탭이 저장값 변화로 UT 종료를 알아채 스케줄로 이동할 수 있게 하기 위해서다.
+ * 현재 역할은 바꾸지 않는다.
  */
 export function skipToNextActivity(): ActivityId | null {
   const currentId = session.currentActivityId ?? getNextActivityId()
   if (!currentId) return null
   const nextId = completeActivity(currentId)
-  if (nextId) enterActivity(nextId)
+  if (nextId) {
+    enterActivity(nextId)
+  } else {
+    commit((current) => ({ ...current, currentActivityId: null }))
+  }
   return nextId
 }
 
