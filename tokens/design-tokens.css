@@ -69,6 +69,9 @@
   --color-surface-muted: var(--color-gray-100);
   --color-surface-document: var(--color-gray-200);
   --color-surface-document-fold: var(--color-gray-300);
+  --color-chart-strong: var(--color-blue-900);
+  --color-chart-muted: var(--color-gray-200);
+  --color-control-off: var(--color-gray-300);
   --color-text-primary: var(--color-gray-900);
   --color-text-secondary: var(--color-gray-700);
   --color-text-tertiary: var(--color-gray-500);
