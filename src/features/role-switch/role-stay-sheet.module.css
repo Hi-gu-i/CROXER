@@ -21,11 +21,11 @@
   animation: role-stay-drop 320ms ease;
 }
 
-/* Section 22 러닝: 위는 하얗게 걷히고, 유지하기가 앉는 아래는 역할 색이 그대로다. */
+/* 위쪽 글자 영역은 흰색으로 둔다. 색이 나오는 아래와 유지하기만 어두운 역할 색을 62%로 깐다. */
 .yellow,
 .violet,
 .mint {
-  background-color: var(--role-stay-color);
+  background-color: color-mix(in srgb, var(--role-stay-color) 62%, transparent);
   background-image: linear-gradient(
     180deg,
     var(--color-bg-default) 0%,
@@ -36,15 +36,15 @@
 }
 
 .yellow {
-  --role-stay-color: var(--color-yellow-200);
+  --role-stay-color: color-mix(in srgb, var(--color-yellow-200) 42%, var(--color-yellow-600));
 }
 
 .violet {
-  --role-stay-color: var(--color-violet-200);
+  --role-stay-color: color-mix(in srgb, var(--color-violet-200) 42%, var(--color-violet-600));
 }
 
 .mint {
-  --role-stay-color: var(--color-mint-200);
+  --role-stay-color: color-mix(in srgb, var(--color-mint-200) 42%, var(--color-mint-600));
 }
 
 .header,
