@@ -30,7 +30,7 @@
 | 활동 | `activity-research`, `activity-shoot`, `activity-run`, `activity-gpt-renewal`, `activity-team-meeting` |
 | 일정 | `schedule-research`, `schedule-shoot`, `schedule-run`, `schedule-gpt-renewal`, `schedule-team-meeting` |
 | AI 작업 | `job-shoot-extra` (Task 9의 레퍼런스 정리 요청) |
-| 자료 | `resource-research-cases`(활성화 사례), `resource-research-compare`(사례 비교 메모), `resource-research-agenda`(13:00 회의 안건), `resource-shoot-reference`(강변 촬영 참고 자료), `resource-shoot-memo`(촬영 메모), `resource-shoot-extra`(Task 9 결과, 작업 완료 전 숨김) |
+| 자료 | Task 4: `resource-research-cases`(지역 활성화 사례 3가지), `resource-research-space-culture`(빈 점포의 문화공간 전환), `resource-research-space-hub`(유휴공간의 커뮤니티 거점화), `resource-research-resident`(주민이 운영하는 지역 프로그램), `resource-research-compare`(사례 비교 메모), `resource-research-agenda`(팀 회의 안건). 폴더 배치(핵심 요약·활성화 사례·사례 비교·참고 자료)는 `src/features/research/researchFolders.ts`에 있다. 촬영: `resource-shoot-reference`(강변 촬영 참고 자료), `resource-shoot-memo`(촬영 메모), `resource-shoot-extra`(Task 9 결과, 작업 완료 전 숨김) |
 | 알림 | `alert-shoot-rain` (Task 6 비 예보) |
 | 문의·AI 판단 | `inquiry-run-weather`, `assessment-run-weather` (Task 8) |
 | 대체 코스 | `course-run-paved`(한강 포장 산책로 코스), `course-run-park`(여의도공원 순환 코스) |
@@ -90,6 +90,7 @@
 
 | 버전 | 날짜 | 수정자 | 수정 내용과 이유 |
 | --- | --- | --- | --- |
+| 2.4 | 2026-11-18 | Claude · 현지 요청 | Figma Task 4 시안의 ‘활성화 사례’ 폴더에 맞춰 리서치 자료 3개를 추가하고 자료 ID 표를 갱신 |
 | 2.3 | 2026-11-18 | Claude · 현지 요청 | Figma 브리핑 시안에 맞춰 번호·시각을 자리에 고정하고, 순서를 바꾸면 그 자리에 온 활동이 자리의 시각을 갖도록 브리핑·Task 6·파일럿 점검 3번을 수정(이슈 #21). 어느 순서에서도 문구가 맞도록 문구에 01~03의 시각을 쓰지 않는 규칙 추가 |
 | 2.2 | 2026-11-15 | Claude · 현지 요청 | 초기 데이터 파일을 추가하면서 ID를 확정하고 자료·알림·문의·코스·공지·키워드 ID를 표에 추가. 구독 연장·팀플회의 표시 시각(21:00·22:00)과 Task 9 문구 제안, 키워드 비교 순서 규칙을 기록 |
 | 2.1 | 2026-11-15 | Claude Code · 지유 요청 | 초기 데이터 파일의 전체 모양을 공용 타입 `UtBaseline`으로 확인하도록 안내 추가. UT 담당이 같은 모양으로 초기 데이터를 만들 수 있게 함 |

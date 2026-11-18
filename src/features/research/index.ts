@@ -1,0 +1,1 @@
+export { ResearchActivityPage } from './ResearchActivityPage'
