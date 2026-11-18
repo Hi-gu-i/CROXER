@@ -7,8 +7,8 @@
   max-width: 100%;
   padding: var(--padding-050) var(--padding-200);
   border-radius: var(--radius-control);
-  font: var(--type-ios-caption-large-font);
-  letter-spacing: var(--type-ios-caption-large-tracking);
+  font: var(--type-ios-caption-medium-font);
+  letter-spacing: var(--type-ios-caption-medium-tracking);
   white-space: nowrap;
 }
 

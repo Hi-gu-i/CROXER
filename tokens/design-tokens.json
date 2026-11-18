@@ -196,6 +196,7 @@
       },
       "radius": {
         "control": { "$value": "{layout.radius.999}" },
+        "control-sm": { "$value": "{layout.radius.050}" },
         "card-sm": { "$value": "{layout.radius.200}" },
         "card-md": { "$value": "{layout.radius.300}" },
         "card-lg": { "$value": "{layout.radius.400}" },

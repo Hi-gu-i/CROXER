@@ -145,6 +145,7 @@
   --padding-ios-y: var(--padding-100);
   --padding-screen-mac: var(--padding-900);
   --radius-control: var(--radius-999);
+  --radius-control-sm: var(--radius-050);
   --radius-card-sm: var(--radius-200);
   --radius-card-md: var(--radius-300);
   --radius-card-lg: var(--radius-400);
