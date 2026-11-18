@@ -507,8 +507,21 @@ function startSchedule(statuses: Record<ScheduleId, ScheduleStatus>, scheduleId:
     : statuses
 }
 
+/**
+ * 브리핑 자리별 시각. 초기 순서의 시각(13:00·16:00·19:00·21:00·22:00)을 자리에 고정하고,
+ * 순서를 바꾸면 그 자리에 온 활동이 자리의 시각을 갖는다(2026-11-18 지유 결정, Figma 브리핑 시안 기준)
+ */
+const slotStartsAt = baseline.briefingOrder.map(
+  (scheduleId) => findOrThrow(baseline.schedules, scheduleId, '일정').startsAt,
+)
+
 function withScheduleStatus(schedule: Schedule): Schedule {
-  return { ...schedule, status: session.scheduleStatus[schedule.id] ?? schedule.status }
+  const slotIndex = session.briefingOrder.indexOf(schedule.id)
+  return {
+    ...schedule,
+    startsAt: slotStartsAt[slotIndex] ?? schedule.startsAt,
+    status: session.scheduleStatus[schedule.id] ?? schedule.status,
+  }
 }
 
 function withAiJobStatus(job: AiJob): AiJob {

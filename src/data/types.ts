@@ -51,7 +51,10 @@ export interface Activity {
 export interface Schedule {
   id: ScheduleId
   activityId: ActivityId
-  /** ISO 8601, 한국 시간. 예: 2026-11-14T13:00:00+09:00. UT 중 바뀌지 않는다 */
+  /**
+   * ISO 8601, 한국 시간. 예: 2026-11-14T13:00:00+09:00.
+   * 브리핑 자리의 시각이다. 초기 데이터에는 초기 순서의 시각이 들어 있고, 조회 함수는 저장된 브리핑 순서의 자리에 맞춘 시각을 돌려준다
+   */
   startsAt: string
   status: ScheduleStatus
 }

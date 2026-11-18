@@ -1,0 +1,247 @@
+/* 오늘의 브리핑 화면. Figma `01 · 브리핑 final` 배치를 따르고, 값은 모두 디자인 토큰(docs/ui-guide.md)을 쓴다 */
+
+/* 앱 틀(App의 고정 높이 프레임) 안을 채우고, 넘치면 이 안에서 스크롤한다 */
+.briefingPage {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: var(--gap-lg);
+  min-height: 0;
+  overflow-y: auto;
+  padding: var(--padding-card-md) var(--padding-ios-x) 0;
+  background: var(--color-bg-subtle);
+  color: var(--color-text-primary);
+}
+
+.header {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-lg);
+}
+
+.title {
+  margin: 0;
+  font: var(--type-ios-title-small-font);
+  letter-spacing: var(--type-ios-title-small-tracking);
+}
+
+.description {
+  margin: 0;
+  color: var(--color-text-tertiary);
+  font: var(--type-ios-caption-large-font);
+  letter-spacing: var(--type-ios-caption-large-tracking);
+  text-align: center;
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/*
+ * 한 자리 = [타임라인 | 시각] / [타임라인 | 카드] / [타임라인 | 자리 사이 여백].
+ * 타임라인 칸이 자리 사이 여백까지 덮어서 세로선이 첫 번호부터 끝 번호까지 끊기지 않는다
+ */
+.item {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  grid-template-rows: auto auto var(--gap-md);
+  column-gap: var(--gap-lg);
+  row-gap: var(--gap-xs);
+}
+
+.item:last-child {
+  grid-template-rows: auto auto;
+}
+
+/* 끄는 동안 다른 카드는 부드럽게 자리를 비켜 준다. 번호·시각은 움직이지 않는다 */
+.isDragging .cardSlot {
+  transition: transform 160ms ease;
+}
+
+.isDragging .isActive .cardSlot {
+  position: relative;
+  z-index: 1;
+  transition: none;
+}
+
+.isDragging .isActive .card {
+  box-shadow: var(--shadow-glass);
+}
+
+/* 시각 글자와 같은 글꼴을 써서, 번호 칸(railHead) 높이가 시각 줄 높이(1lh)와 같아진다 */
+.rail {
+  position: relative;
+  grid-row: 1 / -1;
+  grid-column: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font: var(--type-ios-body-small-font);
+}
+
+/* 세로선: 칸 전체 높이로 그려 다음 자리의 선과 이어 붙인다. 첫 자리는 번호 가운데부터, 끝 자리는 번호 가운데까지 */
+.rail::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  border-left: 1px solid var(--color-border-color);
+}
+
+.railFirst::before {
+  top: 0.5lh;
+}
+
+.railLast::before {
+  bottom: auto;
+  height: 0.5lh;
+}
+
+.railFirst.railLast::before {
+  display: none;
+}
+
+.railHead {
+  position: relative;
+  display: grid;
+  place-items: center;
+  block-size: 1lh;
+}
+
+/* 순서 번호. 글자 줄 높이(1lh)만큼의 정사각형.
+   시안은 작은 둥근 사각형(4px)이지만 맞는 semantic 둥글기 토큰이 없어 동그라미로 둔다 */
+.badge {
+  display: grid;
+  place-items: center;
+  inline-size: 1lh;
+  block-size: 1lh;
+  border-radius: var(--radius-control);
+  background: var(--color-brand-default);
+  color: var(--color-text-inverse);
+  font: var(--type-ios-caption-large-font);
+  letter-spacing: var(--type-ios-caption-large-tracking);
+}
+
+.time {
+  grid-row: 1;
+  grid-column: 2;
+  margin: 0;
+  color: var(--color-text-secondary);
+  font: var(--type-ios-body-small-font);
+  letter-spacing: var(--type-ios-body-small-tracking);
+}
+
+.cardSlot {
+  grid-row: 2;
+  grid-column: 2;
+  min-width: 0;
+}
+
+.card {
+  display: flex;
+  align-items: center;
+  gap: var(--gap-sm);
+  padding: var(--padding-card-sm);
+  border-radius: var(--radius-card-md);
+  background: var(--color-surface-default);
+  box-shadow: var(--shadow-card);
+}
+
+.cardBody {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--gap-md);
+  min-width: 0;
+}
+
+.roleTag {
+  padding: var(--gap-xs) var(--padding-card-sm);
+  border-radius: var(--radius-control);
+  background: var(--color-bg-subtle);
+  color: var(--color-text-brand);
+  font: var(--type-ios-caption-medium-font);
+  letter-spacing: var(--type-ios-caption-medium-tracking);
+}
+
+.cardText {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.activityName {
+  margin: 0;
+  font: var(--type-ios-body-accent-font);
+  letter-spacing: var(--type-ios-body-accent-tracking);
+}
+
+.summary {
+  margin: 0;
+  color: var(--color-text-tertiary);
+  font: var(--type-ios-caption-medium-font);
+  letter-spacing: var(--type-ios-caption-medium-tracking);
+}
+
+.handle {
+  display: grid;
+  flex-shrink: 0;
+  place-items: center;
+  /* 아이콘 + 사방 여백으로 손가락 터치 영역을 만든다 */
+  padding: var(--padding-card-sm);
+  border: 0;
+  border-radius: var(--radius-card-sm);
+  background: transparent;
+  color: var(--color-text-tertiary);
+  cursor: grab;
+  touch-action: none;
+}
+
+.handle:active {
+  cursor: grabbing;
+  background: var(--color-bg-subtle);
+}
+
+.handle:focus-visible {
+  outline: 2px solid var(--color-brand-default);
+}
+
+/* 화면에는 안 보이고 스크린 리더만 읽는 글자 */
+.visuallyHidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.footer {
+  position: sticky;
+  bottom: 0;
+  margin-top: auto;
+  padding: var(--padding-card-md) 0 var(--padding-section);
+  background: var(--color-bg-subtle);
+}
+
+.confirmButton {
+  width: 100%;
+  padding: var(--padding-card-sm) var(--padding-control-x);
+  border: 0;
+  border-radius: var(--radius-control);
+  background: var(--color-brand-default);
+  color: var(--color-text-inverse);
+  font: var(--type-ios-body-strong-font);
+  letter-spacing: var(--type-ios-body-strong-tracking);
+  cursor: pointer;
+}
+
+.confirmButton:active {
+  background: var(--color-brand-pressed);
+}
