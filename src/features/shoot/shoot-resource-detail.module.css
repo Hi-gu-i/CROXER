@@ -71,7 +71,7 @@
   justify-content: center;
   width: 100%;
   padding: var(--padding-300) var(--padding-ios-x) var(--padding-section);
-  background: var(--color-blue-050);
+  background: var(--color-bg-subtle);
   box-sizing: border-box;
 }
 

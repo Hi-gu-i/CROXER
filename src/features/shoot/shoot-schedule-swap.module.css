@@ -34,7 +34,7 @@
 .swapRegion {
   width: 100%;
   padding: var(--padding-200) var(--padding-ios-x) var(--padding-300);
-  background: var(--color-blue-050);
+  background: var(--color-bg-subtle);
   box-sizing: border-box;
 }
 
@@ -105,7 +105,7 @@
   max-width: 100%;
   padding: var(--padding-050) 6px;
   border-radius: var(--radius-control);
-  background: rgb(218 224 229 / 30%);
+  background: color-mix(in srgb, var(--color-border-default) 30%, transparent);
   font: var(--type-ios-caption-medium-font);
   letter-spacing: var(--type-ios-caption-medium-tracking);
   color: var(--color-text-secondary);

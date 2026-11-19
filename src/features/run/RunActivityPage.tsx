@@ -34,7 +34,7 @@ import {
 } from "../../data/utStore";
 import { useUtSession } from "../../data/useUtSession";
 import { IconAi } from "../../icons";
-import chatBgGradient from "./assets/chat-bg-gradient.png";
+import chatBgGradient from "../../assets/chat-bg-gradient.png";
 import courseExpandIcon from "./assets/course-expand-icon.svg?url";
 import courseMapBase from "./assets/course-map-base.png";
 import courseMarker from "./assets/course-marker.svg?url";
@@ -576,7 +576,7 @@ export function RunActivityPage({
                         <path
                           d={route.path}
                           fill="none"
-                          stroke="#5165FE"
+                          stroke="var(--color-bg-brand)"
                           strokeWidth="2.2"
                           strokeLinecap="round"
                           strokeLinejoin="round"
@@ -688,7 +688,7 @@ export function RunActivityPage({
                       <path
                         d={selectedRoute.path}
                         fill="none"
-                        stroke="#5165FE"
+                        stroke="var(--color-bg-brand)"
                         strokeWidth="2.2"
                         strokeLinecap="round"
                         strokeLinejoin="round"

@@ -22,7 +22,7 @@ import {
 } from "../../data/utStore";
 import { useUtSession } from "../../data/useUtSession";
 import { IconAi } from "../../icons";
-import chatBgGradient from "./assets/chat-bg-gradient.png";
+import chatBgGradient from "../../assets/chat-bg-gradient.png";
 import extraA from "./assets/extra-a.png";
 import extraB from "./assets/extra-b.jpg";
 import extraC from "./assets/extra-c.jpg";

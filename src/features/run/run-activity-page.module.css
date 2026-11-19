@@ -16,9 +16,9 @@
   background: var(--color-bg-default);
 }
 
-/* 시안 `01 · 러닝` · 전체 blue-050 (메트릭 흰 패널은 RunMeter) */
+/* 시안 `01 · 러닝` · 전체 bg-subtle (메트릭 흰 패널은 RunMeter) */
 .pageRunning {
-  background: var(--color-blue-050);
+  background: var(--color-bg-subtle);
 }
 
 /* 시안 `08 · 러닝·AI 업무 요청` · 촬영 채팅과 동일 배경 에셋 */
@@ -52,7 +52,7 @@
   inset: 0;
   background: linear-gradient(
     to bottom,
-    rgb(243 246 255 / 0%) 0%,
+    transparent 0%,
     var(--color-bg-subtle) 80%
   );
 }

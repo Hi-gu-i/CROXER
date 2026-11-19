@@ -82,6 +82,6 @@
 }
 
 .chipAccent {
-  background: var(--color-blue-050);
+  background: var(--color-bg-subtle);
   color: var(--color-bg-brand);
 }
