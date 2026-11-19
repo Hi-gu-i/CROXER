@@ -1,71 +1,50 @@
-.scrim {
+.stage {
   position: absolute;
   inset: 0;
-  z-index: 1;
+  z-index: 5;
   display: flex;
+  justify-content: center;
   align-items: flex-start;
-  padding: var(--padding-section) var(--padding-ios-x);
-  background: var(--color-opacity-black-200);
+  /* 유지하기 글자는 흰색 60%라 흰 표면만으로는 안 보인다.
+     빈 표면 위에 가장 진한 딤을 올려 글자는 읽고, 활동 화면은 비치지 않게 한다. */
+  background-color: var(--color-surface-default);
+  background-image: linear-gradient(var(--color-opacity-black-600), var(--color-opacity-black-600));
 }
 
-.panel {
-  display: flex;
-  flex-direction: column;
-  gap: var(--gap-sm);
-  width: 100%;
-  padding: var(--padding-card-lg);
-  border-radius: var(--radius-card-lg);
-  background: var(--color-surface-default);
-  box-shadow: var(--shadow-glass);
+.stage section {
+  animation: handoff-drop 420ms ease-out;
 }
 
-.title {
-  margin: 0;
-  color: var(--color-text-primary);
-  font: var(--type-ios-title-small-font);
-  letter-spacing: var(--type-ios-title-small-tracking);
+/* 전환 패널은 민선 컴포넌트를 그대로 쓴다.
+   역할 칩은 가운데, 긴 활동 이름은 칸 안에서 자른다.
+   아치 선은 민선 파트라 여기서는 숨긴다. */
+.stage section > header {
+  justify-content: center !important;
+  padding-left: 0 !important;
 }
 
-.nextActivity {
-  margin: 0;
-  color: var(--color-text-secondary);
-  font: var(--type-ios-body-medium-font);
-  letter-spacing: var(--type-ios-body-medium-tracking);
+.stage section > div:nth-of-type(4) > span {
+  max-width: calc(var(--padding-700) * 4);
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-.actions {
-  display: flex;
-  gap: var(--gap-sm);
-  margin-top: var(--gap-sm);
+.stage section > div:nth-of-type(5) {
+  display: none !important;
 }
 
-.keepButton,
-.switchButton {
-  flex: 1;
-  padding: var(--padding-control-y) var(--padding-control-x);
-  border-radius: var(--radius-control);
-  font: var(--type-ios-body-strong-font);
-  letter-spacing: var(--type-ios-body-strong-tracking);
-  cursor: pointer;
+@keyframes handoff-drop {
+  from {
+    transform: translateY(-100%);
+  }
+
+  to {
+    transform: translateY(0);
+  }
 }
 
-.keepButton {
-  border: 1px solid var(--color-border-default);
-  background: var(--color-surface-default);
-  color: var(--color-text-primary);
-}
-
-.keepButton:active {
-  background: var(--color-surface-subtle);
-}
-
-.switchButton {
-  border: 1px solid var(--color-brand-default);
-  background: var(--color-brand-default);
-  color: var(--color-text-inverse);
-}
-
-.switchButton:active {
-  border-color: var(--color-brand-pressed);
-  background: var(--color-brand-pressed);
+@media (prefers-reduced-motion: reduce) {
+  .stage section {
+    animation: none;
+  }
 }
