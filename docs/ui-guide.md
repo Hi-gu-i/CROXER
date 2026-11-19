@@ -18,6 +18,7 @@ CROXER 화면의 색, 간격, 둥글기, 글자, 그림자를 MYA 디자인 토�
 | `ContextChip` | `ContextChip.tsx` | 활동 본문 맥락 칩(채널·자료명 등). `tone=brand`/`muted`. `Tag`·`ToggleCategory`와 별개 |
 | `ToggleCategory` | `ToggleCategory.tsx` | **활동 화면 상단** 역할 토글. `01 · 편집자 자료` 기준. `tone`=yellow(교양/학생)/violet(편집자)/mint(러닝 크루장). Label+Assets `IconToggle` |
 | `RoleTransitionPanel` | `RoleTransitionPanel.tsx` | DS 원본 활동 전환 패널(보관). `phase=before`/`countdown`. **앱 셸에는 ① `RoleSwitchPanel`을 연결한다** |
+| `RoleTrack` | `RoleTrack.tsx` | 역할 막대 하단 아치 곡선 + 세포(점). Figma `역할 막대` Ellipse 5490. `color`/`width`/`height`/`cellX`/`cellY`. 문구·역할 색 없음. ①이 `RoleStaySheet` 하단에 배치 |
 | `ScheduleListCard` | `ScheduleListCard.tsx` | 브리핑·스케줄·리포트 일정/리스트 카드(315×102). `trailing=handle\|status`, `tag`/`title`/`description`/`status` 교체. Assets `CardScheCompa`와 별개 |
 | `ChatBubble` | `ChatBubble.tsx` | 04 장소 제안 · 05 일정 조정 대화 말풍선. `role=ai\|user`, `shape=bubble\|pill`. 문구는 children으로 교체 |
 | `ChatInput` | `ChatInput.tsx` | 같은 채팅 입력창. `placeholder`/`value` 교체. 보내기는 Assets `IconArrowU` |
@@ -451,6 +452,7 @@ semantic이 역할을 표현하지 못할 때만 `tokens/design-tokens.css`의 s
 
 | 버전 | 날짜 | 수정자 | 수정 내용과 이유 |
 | --- | --- | --- | --- |
+| 1.5 | 2026-11-19 | Cursor AI · 김민선 요청 | `RoleTrack` 추가. Figma `역할 막대` 공통 아치 곡선·세포. #56 |
 | 1.4 | 2026-11-19 | Cursor AI · 예은 요청 | 역할 막대 색 `--color-role-leader-strong`, `--color-role-editor-strong`, `--color-role-runner-strong` 추가. 팔레트에 없는 명도라 primitive를 같이 두고 화면은 semantic만 쓰게 함 |
 | 1.3 | 2026-11-18 | Cursor AI · 지유 요청 | 홈의 선택 목록·선택 탭 배경용 `--color-bg-brand-subtle`, `--color-bg-brand-soft` 추가. 화면 CSS가 blue primitive를 직접 쓰지 않게 함 |
 | 1.2 | 2026-11-18 | Cursor AI · 김민선 요청 | `Tag`를 시안 12/16·높이 24에 맞추고, 작은 조작용 `--radius-control-sm`(4px)을 추가 |

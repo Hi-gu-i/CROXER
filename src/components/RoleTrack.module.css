@@ -1,0 +1,48 @@
+/* RoleTrack — Figma 역할 막대 Ellipse 5490 + cell (553×276, 세포 8×8) */
+
+.track {
+  --role-track-width: 553px;
+  --role-track-height: 276px;
+  --role-track-stroke: 3px;
+  --role-track-color: var(--color-surface-default);
+  --role-track-cell-size: 8px;
+  --role-track-cell-radius: 3px;
+  --role-track-cell-x: 151px;
+  --role-track-cell-y: 24px;
+
+  position: relative;
+  box-sizing: border-box;
+  width: var(--role-track-width);
+  height: var(--role-track-height);
+  pointer-events: none;
+}
+
+.curve {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.curve path {
+  fill: none;
+  stroke-width: var(--role-track-stroke);
+  stroke-linecap: butt;
+  stroke-linejoin: miter;
+}
+
+.cell {
+  position: absolute;
+  /* cellX/Y = 트랙 박스 기준 세포 왼쪽 위 (시안 71,260 → 트랙 상대 151,24) */
+  left: var(--role-track-cell-x);
+  top: var(--role-track-cell-y);
+  width: var(--role-track-cell-size);
+  height: var(--role-track-cell-size);
+  border-radius: var(--role-track-cell-radius);
+  background: var(--role-track-color);
+  box-shadow:
+    0 0 10px var(--role-track-color),
+    0 0 4px var(--role-track-color),
+    0 0 4px var(--color-opacity-white-200),
+    0 0 1px var(--role-track-color);
+}
