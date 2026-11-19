@@ -26,6 +26,11 @@ type RoleTransitionPanelProps = {
   /** countdown에선 중앙 단일 활동명으로 사용 */
   toActivity?: ReactNode;
   keepLabel?: ReactNode;
+  /**
+   * 아치 선(트랙)과 선 위 cell 점 표시.
+   * 활동 전환 패널에서는 false. 시안·데모는 기본 true.
+   */
+  showTrack?: boolean;
   /** Cell 위치 덮어쓰기 (panel 좌표 px). 기본 원본 351,314 */
   cellX?: number;
   cellY?: number;
@@ -62,6 +67,7 @@ export function RoleTransitionPanel({
   fromActivity = "구독 연장",
   toActivity = "한강 러닝",
   keepLabel = "유지하기",
+  showTrack = true,
   cellX = 351,
   cellY = 314,
   onKeep,
@@ -118,44 +124,46 @@ export function RoleTransitionPanel({
         <span className={styles.toActivity}>{toActivity}</span>
       </div>
 
-      <div className={styles.track} aria-hidden="true">
-        <svg
-          className={styles.curve}
-          viewBox="0 0 553 276"
-          width="553"
-          height="276"
-          focusable="false"
-        >
-          <defs>
-            <linearGradient
-              id={gradId}
-              x1="0%"
-              y1="0%"
-              x2="100%"
-              y2="0%"
-              gradientUnits="objectBoundingBox"
-            >
-              <stop
-                offset="20%"
-                stopColor="var(--color-surface-default)"
-                stopOpacity="0"
-              />
-              <stop
-                offset="50%"
-                stopColor="var(--color-surface-default)"
-                stopOpacity="1"
-              />
-              <stop
-                offset="80%"
-                stopColor="var(--color-surface-default)"
-                stopOpacity="0"
-              />
-            </linearGradient>
-          </defs>
-          <path d={LINE_PATH} stroke={`url(#${gradId})`} />
-        </svg>
-        <span className={styles.cell} />
-      </div>
+      {showTrack ? (
+        <div className={styles.track} aria-hidden="true">
+          <svg
+            className={styles.curve}
+            viewBox="0 0 553 276"
+            width="553"
+            height="276"
+            focusable="false"
+          >
+            <defs>
+              <linearGradient
+                id={gradId}
+                x1="0%"
+                y1="0%"
+                x2="100%"
+                y2="0%"
+                gradientUnits="objectBoundingBox"
+              >
+                <stop
+                  offset="20%"
+                  stopColor="var(--color-surface-default)"
+                  stopOpacity="0"
+                />
+                <stop
+                  offset="50%"
+                  stopColor="var(--color-surface-default)"
+                  stopOpacity="1"
+                />
+                <stop
+                  offset="80%"
+                  stopColor="var(--color-surface-default)"
+                  stopOpacity="0"
+                />
+              </linearGradient>
+            </defs>
+            <path d={LINE_PATH} stroke={`url(#${gradId})`} />
+          </svg>
+          <span className={styles.cell} />
+        </div>
+      ) : null}
 
       <button type="button" className={styles.keep} onClick={onKeep}>
         {keepLabel}
