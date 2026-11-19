@@ -154,6 +154,9 @@ Semantic은 Primitive를 가리킨다. 브랜드 색이 바뀌면 `--color-brand
 | `--color-status-warning-strong` | `#fbc205` | 강한 경고 |
 | `--color-status-danger` | `#f15863` | 오류, 삭제 |
 | `--color-status-danger-strong` | `#a9040b` | 강한 오류 |
+| `--color-role-leader-strong` | `#d1bb72` | 팀장 역할 막대 |
+| `--color-role-editor-strong` | `#a899c0` | 편집자 역할 막대 |
+| `--color-role-runner-strong` | `#83b1af` | 러닝 크루장 역할 막대 |
 
 배경·표면·글자·테두리·아이콘은 역할 토큰을 쓴다. 브랜드 버튼의 채움은 `--color-brand-*`, 버튼 위 글자와 아이콘은 `--color-text-inverse`, `--color-icon-inverse`다.
 
@@ -171,6 +174,7 @@ Semantic은 Primitive를 가리킨다. 브랜드 색이 바뀌면 `--color-brand
 | `--color-red-400` `600` `800` | `#f15863` `#d0293c` `#a9040b` |
 | `--color-yellow-050` `100` `200` `300` `400` `600` | `#fffbe7` `#fbecb2` `#fcd658` `#fbc205` `#eba300` `#985907` |
 | `--color-muted-800` | `#272c6d` |
+| `--color-role-leader` `#d1bb72` · `--color-role-editor` `#a899c0` · `--color-role-runner` `#83b1af` | 역할 막대 색. 화면은 semantic `--color-role-*-strong`만 쓴다 |
 
 Lime 스케일과 red 500·700, yellow의 이전 hex는 라이브러리에서 빠졌다. 성공은 mint, 오류는 red 400/800, 경고는 yellow 200/300이다.
 
@@ -447,6 +451,7 @@ semantic이 역할을 표현하지 못할 때만 `tokens/design-tokens.css`의 s
 
 | 버전 | 날짜 | 수정자 | 수정 내용과 이유 |
 | --- | --- | --- | --- |
+| 1.4 | 2026-11-19 | Cursor AI · 예은 요청 | 역할 막대 색 `--color-role-leader-strong`, `--color-role-editor-strong`, `--color-role-runner-strong` 추가. 팔레트에 없는 명도라 primitive를 같이 두고 화면은 semantic만 쓰게 함 |
 | 1.3 | 2026-11-18 | Cursor AI · 지유 요청 | 홈의 선택 목록·선택 탭 배경용 `--color-bg-brand-subtle`, `--color-bg-brand-soft` 추가. 화면 CSS가 blue primitive를 직접 쓰지 않게 함 |
 | 1.2 | 2026-11-18 | Cursor AI · 김민선 요청 | `Tag`를 시안 12/16·높이 24에 맞추고, 작은 조작용 `--radius-control-sm`(4px)을 추가 |
 | 1.1 | 2026-11-16 | Cursor AI · 김민선 요청 | Task 6·8·9용 공통 부품·Icons·ResImg 기준을 `src/components/` 등에 등록. 앱 전환은 ① `RoleSwitchPanel`, DS `RoleTransitionPanel`은 보관. 화면 CSS hex는 semantic 토큰으로 맞춤 |
