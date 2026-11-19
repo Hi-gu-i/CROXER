@@ -355,12 +355,26 @@ export function requestAiJob(jobId: string): boolean {
   return true
 }
 
-/** 요청한 AI 작업을 실행 중으로 바꾼다. 첫 UT에서는 completed로 바꾸는 함수가 없다 */
+/** 요청한 AI 작업을 실행 중으로 바꾼다 */
 export function markAiJobRunning(jobId: string) {
   if (!isAiJobRequested(jobId) || session.aiJobStatus[jobId] !== 'queued') return
   commit((current) => ({
     ...current,
     aiJobStatus: { ...current.aiJobStatus, [jobId]: 'running' },
+  }))
+}
+
+/**
+ * 요청한 AI 작업을 완료로 바꾼다. 결과 자료(ai_result)가 getResources에 보이기 시작한다.
+ * queued·running에서만 적용한다.
+ */
+export function markAiJobCompleted(jobId: string) {
+  if (!isAiJobRequested(jobId)) return
+  const status = session.aiJobStatus[jobId]
+  if (status !== 'queued' && status !== 'running') return
+  commit((current) => ({
+    ...current,
+    aiJobStatus: { ...current.aiJobStatus, [jobId]: 'completed' },
   }))
 }
 

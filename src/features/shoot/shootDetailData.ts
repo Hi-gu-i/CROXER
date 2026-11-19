@@ -1,5 +1,8 @@
 import type { InsightTableRow } from "../../components";
 import detail1 from "./assets/detail-1.png";
+import extraA from "./assets/extra-a.png";
+import extraB from "./assets/extra-b.jpg";
+import extraC from "./assets/extra-c.jpg";
 import set1B from "./assets/set1-b.png";
 import set1C from "./assets/set1-c.png";
 import set2A from "./assets/set2-a.png";
@@ -8,6 +11,7 @@ import set2C from "./assets/set2-c.png";
 
 export const REFERENCE_ID = "resource-shoot-reference";
 export const MEMO_ID = "resource-shoot-memo";
+export const EXTRA_ID = "resource-shoot-extra";
 
 export type ShootDetailSlide = {
   image: string;
@@ -130,6 +134,60 @@ export const SHOOT_DETAIL_SETS: Record<string, ShootDetailSet> = {
           { label: "구도", value: "위에서 내려다보는 평면 구도" },
           { label: "움직임", value: "무리의 흐름이 지나갈 때까지" },
           { label: "분위기", value: "색감이 돋보이는 고요한 수면" },
+        ],
+      },
+    ],
+  },
+  /** 러닝 AI 작업 결과 · 노을진 풍경 */
+  [EXTRA_ID]: {
+    headerTitle: "노을진 풍경",
+    slides: [
+      {
+        image: extraA,
+        title: "바다 너머로 지는 노을",
+        description: "비 온 뒤 반사광과 빛줄기를 살린 광활한 수면 컷",
+        noteSource: "AI 작업 결과",
+        noteDate: "오늘",
+        noteTitle: "편집 레퍼런스",
+        noteBody:
+          "비 온 뒤 강변의 반사광을 살린 영상 구성\n수평선을 낮게 두고 하늘 빛줄기를 길게 받기",
+        insightTitle: "편집 포인트",
+        insightRows: [
+          { label: "구도", value: "수평선을 낮게, 하늘 비중을 크게" },
+          { label: "빛", value: "반사광과 빛줄기 대비를 유지" },
+          { label: "분위기", value: "비 온 뒤의 차분한 톤" },
+        ],
+      },
+      {
+        image: extraB,
+        title: "다리 사이로 지는 해",
+        description: "강과 다리를 한 프레임에 담아 도시의 하루를 마무리",
+        noteSource: "AI 작업 결과",
+        noteDate: "오늘",
+        noteTitle: "편집 레퍼런스",
+        noteBody:
+          "산책로 장면을 길게 이어 붙이는 컷 편집 방식\n수면 반사를 세로로 이어 리듬을 만들기",
+        insightTitle: "편집 포인트",
+        insightRows: [
+          { label: "구도", value: "다리 실루엣을 중앙에" },
+          { label: "리듬", value: "수면 반사를 세로로 잇기" },
+          { label: "분위기", value: "하루가 저무는 고요한 톤" },
+        ],
+      },
+      {
+        image: extraC,
+        title: "풀밭에서 바라본 강변",
+        description: "인물 실루엣과 노을 강변을 함께 담은 여유로운 장면",
+        noteSource: "AI 작업 결과",
+        noteDate: "오늘",
+        noteTitle: "편집 레퍼런스",
+        noteBody:
+          "비 오는 날의 차분한 톤을 살리는 색 보정 예시\n인물은 작게, 강과 다리 빛을 배경에 두기",
+        insightTitle: "편집 포인트",
+        insightRows: [
+          { label: "구도", value: "인물을 하단에, 강·다리를 배경에" },
+          { label: "색", value: "따뜻한 골드 톤을 유지" },
+          { label: "분위기", value: "여유롭고 가까운 관찰감" },
         ],
       },
     ],

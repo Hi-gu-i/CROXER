@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState, type PointerEvent } from "react";
 import { ResourceNoteCard, ShotPoint } from "../../components";
+import { getResource } from "../../data/utStore";
 import {
   SHOOT_DETAIL_SETS,
   type ShootDetailSlide,
@@ -39,7 +40,7 @@ export function ShootResourceDetail({ resourceId }: ShootResourceDetailProps) {
 
   useEffect(() => {
     const el = scrollerRef.current;
-    if (!el) return;
+    if (!el || !detail) return;
 
     function measure() {
       const pad =
@@ -172,5 +173,8 @@ export function ShootResourceDetail({ resourceId }: ShootResourceDetailProps) {
 }
 
 export function getShootDetailHeaderTitle(resourceId: string) {
-  return SHOOT_DETAIL_SETS[resourceId]?.headerTitle ?? "촬영 자료";
+  if (SHOOT_DETAIL_SETS[resourceId]?.headerTitle) {
+    return SHOOT_DETAIL_SETS[resourceId].headerTitle;
+  }
+  return getResource(resourceId)?.title ?? "촬영 자료";
 }

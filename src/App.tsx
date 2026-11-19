@@ -25,7 +25,18 @@ import { ShootActivityPage } from './features/shoot'
 
 type TabId = 'home' | 'schedule' | 'report' | 'settings'
 
-type Screen = { name: TabId } | { name: 'activity'; activityId: ActivityId }
+type Screen =
+  | { name: TabId }
+  | {
+      name: 'activity'
+      activityId: ActivityId
+      /** 진입 직후 바로 열 자료(예: AI 작업 결과) */
+      openResourceId?: string
+    }
+
+type OpenActivityOptions = {
+  openResourceId?: string
+}
 
 interface ActivityScreenProps {
   activityId: ActivityId
@@ -33,6 +44,10 @@ interface ActivityScreenProps {
   onFinish: () => void
   /** Header 홈. 넘기지 않으면 활동 화면이 홈 동작을 생략할 수 있다 */
   onHome?: () => void
+  /** 다른 활동으로 바로 이동(예: 러닝 → 촬영 자료 확인) */
+  onOpenActivity?: (activityId: ActivityId, options?: OpenActivityOptions) => void
+  /** 진입 시 바로 열 자료 ID */
+  initialResourceId?: string
 }
 
 const tabs: { id: TabId; label: string; Icon: typeof IconHome }[] = [
@@ -106,10 +121,14 @@ export default function App() {
     )
   }
 
-  function openActivity(activityId: ActivityId) {
+  function openActivity(activityId: ActivityId, options?: OpenActivityOptions) {
     // 브리핑 확정(confirmBriefing)이 첫 활동 진입을 이미 처리했으므로 같은 활동이면 다시 시작하지 않는다.
     if (getCurrentActivityId() !== activityId) enterActivity(activityId)
-    setScreen({ name: 'activity', activityId })
+    setScreen({
+      name: 'activity',
+      activityId,
+      openResourceId: options?.openResourceId,
+    })
   }
 
   function finishActivity(activityId: ActivityId) {
@@ -134,14 +153,16 @@ export default function App() {
   const ActivityScreen =
     screen.name === 'activity' ? (activityScreens[screen.activityId] ?? TempActivityScreen) : null
 
-  // 촬영은 Status·Header가 셸 최상단에 붙어야 해서 패딩 없는 screenActivity를 쓴다.
-  // 다른 활동은 기존 screen 패딩을 유지한다(예은 셸 합의 전 임시).
-  const screenClass =
-    screen.name === 'activity' && screen.activityId === 'activity-shoot'
-      ? styles.screenActivity
-      : showTabBar
-        ? `${styles.screen} ${styles.screenWithTabBar}`
-        : styles.screen
+  // Status·Header가 셸 최상단에 붙는 활동은 패딩 없는 screenActivity.
+  // 그 외 활동은 기존 screen 패딩을 유지한다.
+  const flushActivity =
+    screen.name === 'activity' &&
+    (screen.activityId === 'activity-shoot' || screen.activityId === 'activity-run')
+  const screenClass = flushActivity
+    ? styles.screenActivity
+    : showTabBar
+      ? `${styles.screen} ${styles.screenWithTabBar}`
+      : styles.screen
 
   return (
     <Frame>
@@ -154,10 +175,12 @@ export default function App() {
         )}
         {screen.name === 'activity' && ActivityScreen && (
           <ActivityScreen
-            key={screen.activityId}
+            key={`${screen.activityId}:${screen.openResourceId ?? 'default'}`}
             activityId={screen.activityId}
             onFinish={() => finishActivity(screen.activityId)}
             onHome={() => setScreen({ name: 'home' })}
+            onOpenActivity={openActivity}
+            initialResourceId={screen.openResourceId}
           />
         )}
         {screen.name === 'schedule' && <SchedulePage />}

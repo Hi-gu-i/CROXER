@@ -1,65 +1,267 @@
+/* 원본 `03 · 러닝 문의` 외 · 393×852 */
 .page {
+  position: relative;
   display: flex;
+  flex: 1;
   flex-direction: column;
   width: 100%;
-  max-width: 100%;
   min-height: 0;
-  flex: 1;
-  margin: 0 auto;
-  background: var(--color-surface-default);
-  color: var(--color-gray-900);
+  background: var(--color-bg-subtle);
+  color: var(--color-text-primary);
   box-sizing: border-box;
 }
 
-.header {
+/* 시안 `06 · 변경된 코스 전송` · 흰 배경 */
+.pageSent {
+  background: var(--color-bg-default);
+}
+
+/* 시안 `01 · 러닝` · 전체 blue-050 (메트릭 흰 패널은 RunMeter) */
+.pageRunning {
+  background: var(--color-blue-050);
+}
+
+/* 시안 `08 · 러닝·AI 업무 요청` · 촬영 채팅과 동일 배경 에셋 */
+.pageChat {
+  background: var(--color-bg-subtle);
+}
+
+.chatBackground {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+/* Figma GradientImage: x -95 · w 585 on 393 frame · opacity 60% */
+.chatBgGradient {
+  position: absolute;
+  top: 0;
+  left: calc(100% * -95 / 393);
+  width: calc(100% * 585 / 393);
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  opacity: 0.6;
+}
+
+/* Figma GradientWhite: transparent → --color-bg-subtle at 80% */
+.chatBgWhite {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    rgb(243 246 255 / 0%) 0%,
+    var(--color-bg-subtle) 80%
+  );
+}
+
+.pageChat > :not(.chatBackground) {
+  position: relative;
+  z-index: 1;
+}
+
+/*
+ * 시안 `06` · Status+Header(120) 아래 전송 그룹 y=305 → padding-top 185.
+ * StatusResult(ResImgSend) · 세로 중앙 정렬 대신 시안 좌표에 맞춤.
+ */
+.sentBody {
   display: flex;
+  flex: 1;
+  flex-direction: column;
   align-items: center;
-  justify-content: space-between;
-  gap: var(--gap-200);
-  padding: var(--padding-200) var(--padding-300);
+  justify-content: flex-start;
+  min-height: 0;
+  padding: 185px var(--padding-ios-x) var(--padding-section);
   box-sizing: border-box;
 }
 
-.headerTitle {
-  margin: 0;
-  font: var(--type-ios-title-small-font);
-  letter-spacing: var(--type-ios-title-small-tracking);
-  color: var(--color-gray-900);
+.sentResult {
+  max-width: 242px;
 }
 
 .body {
   display: flex;
   flex: 1;
   flex-direction: column;
-  gap: var(--gap-300);
-  padding: 0 var(--padding-300) var(--padding-300);
-  box-sizing: border-box;
+  gap: var(--gap-md);
+  min-height: 0;
+  padding: var(--gap-md) var(--padding-ios-x) var(--padding-section);
   overflow: auto;
+  box-sizing: border-box;
 }
 
+/* 시안 `모임 문의` · 17/26 Regular · Status+Header(120) 아래 y≈136 */
 .sectionTitle {
   margin: 0;
-  font: var(--type-ios-body-strong-font);
-  letter-spacing: var(--type-ios-body-strong-tracking);
-  color: var(--color-gray-900);
+  font: var(--font-weight-regular) var(--font-size-350) / var(--line-height-350)
+    var(--font-family-sans);
+  letter-spacing: var(--letter-spacing-000);
+  color: var(--color-text-primary);
 }
 
 .stack {
   display: flex;
   flex-direction: column;
-  gap: var(--gap-300);
+  align-items: center;
+  gap: var(--gap-lg);
+  width: 100%;
+}
+
+/* 시안 `01 · 러닝 문의` Rectangle overlay · 중앙 ai 알림 */
+.alertOverlay {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--padding-ios-x);
+  background: var(--color-opacity-black-400);
+  box-sizing: border-box;
+}
+
+/* 시안 `04` Content · 스크롤 · 좌우 16 */
+.courseBody {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: var(--gap-md);
+  min-height: 0;
+  padding: var(--gap-md) var(--padding-ios-x) var(--padding-section);
+  overflow: auto;
+  box-sizing: border-box;
+}
+
+.courseIntro {
+  max-width: 100%;
+}
+
+/* 시안 `05` 공지 카드 · 지도·루트·마커 동일 레이어(코스 바 아래) */
+.announceMap {
+  position: relative;
+  z-index: 0;
+  isolation: isolate;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  border-radius: 0;
+}
+
+.announceMapBase {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: 0;
+  object-fit: cover;
+  object-position: center;
+  pointer-events: none;
+}
+
+.announceMapRoute {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.announceMapMarker {
+  position: absolute;
+  z-index: 0;
+  width: 8.5%;
+  height: auto;
+  aspect-ratio: 1;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+
+.courseMap {
+  position: relative;
+  z-index: 0;
+  isolation: isolate;
+  width: 100%;
+  max-width: 361px;
+  aspect-ratio: 361 / 256;
+  overflow: hidden;
+  border-radius: var(--radius-card-md);
+  background: var(--color-gray-075);
+  flex-shrink: 0;
+}
+
+.courseMapImg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  pointer-events: none;
+}
+
+/* 루트 선 */
+.courseRouteOverlay {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  overflow: visible;
+}
+
+/* 시안 마커 · 루트 선 위 */
+.courseMarker {
+  position: absolute;
+  z-index: 3;
+  width: 7.76%;
+  height: auto;
+  aspect-ratio: 1;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+
+/* 시안 펼치기 버튼 1개 · Figma Frame 2085668211 */
+.courseMapExpand {
+  position: absolute;
+  top: 10px;
+  right: 14px;
+  z-index: 2;
+  display: block;
+  width: 32px;
+  height: 32px;
+  pointer-events: none;
 }
 
 .courseList {
   display: flex;
   flex-direction: column;
-  gap: var(--gap-200);
+  gap: var(--gap-md);
+  width: 100%;
+  max-width: 361px;
+  min-width: 0;
+}
+
+.courseCard {
+  max-width: 100%;
+}
+
+/* 시안 `02 · 레퍼런스 · 대화 시작` · 메시지 영역 */
+.chatBody {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: var(--gap-md);
+  min-height: 0;
+  padding: var(--gap-md) var(--padding-ios-x) var(--padding-section);
+  overflow: auto;
+  box-sizing: border-box;
 }
 
 .chatList {
   display: flex;
   flex-direction: column;
-  gap: var(--gap-200);
+  gap: var(--gap-md);
   width: 100%;
 }
 
@@ -76,64 +278,83 @@
   justify-content: flex-end;
 }
 
+/* 시안 AI 말풍선 · 흰 버블 옆 IconAi (촬영 채팅과 동일) */
+.chatAiBlock {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--gap-sm);
+  width: 100%;
+  max-width: 100%;
+}
+
+.chatAiAvatar {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-control);
+  background: var(--color-surface-default);
+  box-shadow: var(--shadow-card);
+  color: var(--color-icon-brand);
+}
+
+.chatAiAvatarSpacer {
+  flex-shrink: 0;
+  width: 36px;
+  height: 36px;
+}
+
 .fallback {
   display: flex;
   flex-direction: column;
-  gap: var(--gap-100);
+  gap: var(--gap-sm);
 }
 
 .fallbackLabel {
   margin: 0;
   font: var(--type-ios-caption-large-font);
   letter-spacing: var(--type-ios-caption-large-tracking);
-  color: var(--color-gray-500);
+  color: var(--color-text-tertiary);
 }
 
 .footer {
   display: flex;
   flex-direction: column;
-  gap: var(--gap-150);
-  padding: var(--padding-200) var(--padding-300) var(--padding-300);
+  gap: var(--gap-sm);
+  padding: var(--padding-ios-y) var(--padding-ios-x) var(--gap-md);
   box-sizing: border-box;
 }
 
-.runningHero {
-  display: flex;
-  flex: 1;
-  flex-direction: column;
+.chatFooter {
   align-items: center;
+  /* 시안 `07`: 토스트 y=423 · 입력 영역 y=488 → 간격 ≈ 20 */
+  gap: var(--gap-400);
+  padding-bottom: var(--padding-600);
+}
+
+/* 시안 `07` · 입력창 위 ack 토스트 · 폭 333 중앙 */
+.chatJobToast {
+  flex-shrink: 0;
+}
+
+/* 시안 `러닝 · 일시정지 및 작업 완료` · 토스트 y=752 → bottom 56 */
+.runJobToast {
+  position: absolute;
+  left: 50%;
+  bottom: 56px;
+  z-index: 3;
+  display: flex;
   justify-content: center;
-  gap: var(--gap-200);
-  text-align: center;
-  padding: var(--padding-400) var(--padding-300);
+  width: 100%;
+  padding: 0 var(--padding-ios-x);
+  box-sizing: border-box;
+  transform: translateX(-50%);
+  pointer-events: none;
 }
 
-.runningHero p {
-  margin: 0;
-  font: var(--type-ios-body-medium-font);
-  letter-spacing: var(--type-ios-body-medium-tracking);
-  color: var(--color-gray-700);
-}
-
-.metrics {
-  display: flex;
-  gap: var(--gap-300);
-  font: var(--type-ios-body-strong-font);
-  letter-spacing: var(--type-ios-body-strong-tracking);
-  color: var(--color-gray-900);
-}
-
-.metrics span {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  font: var(--type-ios-caption-medium-font);
-  letter-spacing: var(--type-ios-caption-medium-tracking);
-  color: var(--color-gray-500);
-}
-
-.metrics strong {
-  font: var(--type-ios-title-medium-font);
-  letter-spacing: var(--type-ios-title-medium-tracking);
-  color: var(--color-gray-900);
+.runJobToast > * {
+  pointer-events: auto;
+  margin-inline: auto;
 }

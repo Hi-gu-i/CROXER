@@ -17,13 +17,15 @@ import {
   getAlert,
   getFallbackChoices,
   getResources,
-  getScheduleByActivity,
   isAlertFired,
   markAlertRead,
 } from "../../data/utStore";
 import { useUtSession } from "../../data/useUtSession";
 import { IconAi } from "../../icons";
 import chatBgGradient from "./assets/chat-bg-gradient.png";
+import extraA from "./assets/extra-a.png";
+import extraB from "./assets/extra-b.jpg";
+import extraC from "./assets/extra-c.jpg";
 import set1A from "./assets/set1-a.png";
 import set1B from "./assets/set1-b.png";
 import set1C from "./assets/set1-c.png";
@@ -38,7 +40,7 @@ import {
 } from "./ShootResourceDetail";
 import { ShootScheduleDone } from "./ShootScheduleDone";
 import { ShootScheduleSwap } from "./ShootScheduleSwap";
-import { MEMO_ID, REFERENCE_ID } from "./shootDetailData";
+import { EXTRA_ID, MEMO_ID, REFERENCE_ID } from "./shootDetailData";
 import { SHOOT_PLACES } from "./shootPlaceData";
 import styles from "./shoot-activity-page.module.css";
 
@@ -120,6 +122,7 @@ type ScheduleChoicePhase = "both" | "tomorrow" | "done" | "reasonShown";
 const SET_IMAGES: Record<string, readonly [string, string, string]> = {
   [REFERENCE_ID]: [set1A, set1B, set1C],
   [MEMO_ID]: [set2A, set2B, set2C],
+  [EXTRA_ID]: [extraA, extraB, extraC],
 };
 
 /** 시안 `01 · 편집자 자료` 세트 칩·캡션 */
@@ -132,11 +135,11 @@ const SET_LABELS: Record<string, { title: string; caption: string }> = {
     title: "강가의 동물들",
     caption: "8장의 레퍼런스 이미지",
   },
+  [EXTRA_ID]: {
+    title: "노을진 풍경",
+    caption: "3장의 레퍼런스 이미지",
+  },
 };
-
-function formatTodayTime(startsAt: string) {
-  return `오늘 ${startsAt.slice(11, 16)}`;
-}
 
 type ShootStep =
   | "materials"
@@ -181,6 +184,8 @@ type ShootActivityPageProps = {
   onFinish: () => void;
   /** Header 홈 버튼. App이 홈 탭으로 돌릴 때 넘긴다 */
   onHome?: () => void;
+  /** 진입 직후 바로 열 자료(러닝 「작업 완료」→ AI 결과) */
+  initialResourceId?: string;
 };
 
 /**
@@ -192,11 +197,16 @@ export function ShootActivityPage({
   activityId,
   onFinish,
   onHome,
+  initialResourceId,
 }: ShootActivityPageProps) {
   useUtSession();
 
-  const [step, setStep] = useState<ShootStep>("materials");
-  const [resourceId, setResourceId] = useState<string | null>(null);
+  const [step, setStep] = useState<ShootStep>(
+    initialResourceId ? "resource" : "materials",
+  );
+  const [resourceId, setResourceId] = useState<string | null>(
+    initialResourceId ?? null,
+  );
   const [alertOpen, setAlertOpen] = useState(false);
   const [draft, setDraft] = useState("");
   const [showFallback, setShowFallback] = useState(false);
@@ -216,10 +226,12 @@ export function ShootActivityPage({
     };
   }, []);
 
-  const resources = getResources(activityId).filter(
-    (resource) => resource.kind !== "ai_result",
-  );
-  const startLabel = formatTodayTime(getScheduleByActivity(activityId).startsAt);
+  /** AI 결과(ai_result)는 작업 completed 후에만 getResources에 포함된다 */
+  const resources = [...getResources(activityId)].sort((a, b) => {
+    if (a.kind === "ai_result" && b.kind !== "ai_result") return -1;
+    if (a.kind !== "ai_result" && b.kind === "ai_result") return 1;
+    return 0;
+  });
   const selected = resources.find((item) => item.id === resourceId) ?? null;
   const alert = getAlert(ALERT_ID);
   const fallbacks = getFallbackChoices(activityId);
@@ -250,7 +262,8 @@ export function ShootActivityPage({
     setResourceId(id);
     setStep("resource");
     setAlertOpen(false);
-    scheduleRainAlert();
+    // AI 결과 확인 경로에서는 비 알림을 걸지 않는다
+    if (id !== EXTRA_ID) scheduleRainAlert();
   }
 
   function backToMaterials() {
@@ -512,14 +525,18 @@ export function ShootActivityPage({
         <div className={styles.body}>
           <h1 className={styles.visuallyHidden}>촬영 자료</h1>
           <p className={styles.lead}>
-            {startLabel} 강변 촬영에 쓸 자료를 확인하세요.
+            내일 강변 촬영에 쓸 자료를 확인하세요.
           </p>
           <div className={styles.setList}>
             {resources.map((resource) => {
               const labels = SET_LABELS[resource.id] ?? {
                 title: resource.title,
                 caption:
-                  resource.kind === "reference" ? "참고 자료" : "메모",
+                  resource.kind === "ai_result"
+                    ? "AI 작업 결과"
+                    : resource.kind === "reference"
+                      ? "참고 자료"
+                      : "메모",
               };
               return (
                 <ResourceSetCard

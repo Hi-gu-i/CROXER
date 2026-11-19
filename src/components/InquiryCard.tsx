@@ -1,5 +1,5 @@
 import type { ButtonHTMLAttributes, HTMLAttributes, ReactNode } from "react";
-import { IconClose } from "../icons";
+import { IconAi, IconClose } from "../icons";
 import { ContextChip } from "./ContextChip";
 import styles from "./InquiryCard.module.css";
 
@@ -104,7 +104,7 @@ export function AiAssessmentCard({
   return (
     <section className={classes} role="dialog" aria-label="AI 판단" {...rest}>
       <div className={styles.assessmentHeader}>
-        <span className={styles.aiOrb} aria-hidden="true" />
+        <IconAi className={styles.aiIcon} size={22} aria-hidden="true" />
         {onClose ? (
           <button
             type="button"

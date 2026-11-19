@@ -183,13 +183,15 @@
   flex-shrink: 0;
 }
 
-/* Footer: HUG */
+/* Footer: 카드 폭 안에서 줄바꿈 · 화면 밖 넘침 방지 */
 .footer {
-  display: inline-flex;
-  align-items: center;
+  display: flex;
+  align-items: flex-start;
   gap: var(--gap-150);
-  width: fit-content;
+  width: 100%;
   max-width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
 }
 
 .insightIcon {
@@ -199,6 +201,7 @@
   justify-content: center;
   width: 14px;
   height: 14px;
+  margin-top: 2px;
   overflow: hidden;
   color: var(--color-gray-400);
 }
@@ -208,9 +211,13 @@
 }
 
 .description {
+  flex: 1;
+  min-width: 0;
   font: var(--type-ios-caption-large-font);
   letter-spacing: var(--type-ios-caption-large-tracking);
-  white-space: nowrap;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  word-break: keep-all;
 }
 
 .selected .description {
