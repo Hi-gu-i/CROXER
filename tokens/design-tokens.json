@@ -64,6 +64,11 @@
       "muted": {
         "800": { "$value": "#272C6D" }
       },
+      "role": {
+        "leader": { "$value": "#D1BB72" },
+        "editor": { "$value": "#A899C0" },
+        "runner": { "$value": "#83B1AF" }
+      },
       "opacity": {
         "white": {
           "000": { "$value": "#FFFFFF00" },
@@ -98,6 +103,13 @@
         "document": { "$value": "{color.primitive.gray.200}" },
         "document-fold": { "$value": "{color.primitive.gray.300}" }
       },
+      "chart": {
+        "strong": { "$value": "{color.primitive.blue.900}" },
+        "muted": { "$value": "{color.primitive.gray.200}" }
+      },
+      "control": {
+        "off": { "$value": "{color.primitive.gray.300}" }
+      },
       "text": {
         "primary": { "$value": "{color.primitive.gray.900}" },
         "secondary": { "$value": "{color.primitive.gray.700}" },
@@ -130,6 +142,11 @@
         "warning-strong": { "$value": "{color.primitive.yellow.300}" },
         "danger": { "$value": "{color.primitive.red.400}" },
         "danger-strong": { "$value": "{color.primitive.red.800}" }
+      },
+      "role": {
+        "leader-strong": { "$value": "{color.primitive.role.leader}" },
+        "editor-strong": { "$value": "{color.primitive.role.editor}" },
+        "runner-strong": { "$value": "{color.primitive.role.runner}" }
       }
     }
   },

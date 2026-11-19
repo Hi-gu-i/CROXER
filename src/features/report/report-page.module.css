@@ -1,0 +1,495 @@
+/* 리포트 · Figma `11 · 스케줄·리포트` › Report final 3(일간)·4(주간) */
+
+.page {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: var(--gap-md);
+  min-height: 0;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  min-height: 48px;
+}
+
+.title {
+  margin: 0;
+  font: var(--type-ios-title-small-font);
+  letter-spacing: var(--type-ios-title-small-tracking);
+  color: var(--color-text-secondary);
+}
+
+/* 일간·주간·시즌 */
+.periodTabs {
+  display: flex;
+  align-self: center;
+  gap: var(--gap-025);
+  padding: var(--padding-050);
+  border-radius: var(--radius-150);
+  background: var(--color-bg-brand-subtle);
+}
+
+.periodTab {
+  padding: var(--padding-050) var(--padding-300);
+  border: 0;
+  border-radius: var(--radius-100);
+  background: transparent;
+  color: var(--color-text-primary);
+  font: var(--type-ios-body-small-font);
+  letter-spacing: var(--type-ios-body-small-tracking);
+  cursor: pointer;
+}
+
+.periodTab[aria-selected='true'] {
+  background: var(--color-surface-default);
+}
+
+.periodTab:focus-visible,
+.feedbackChoice:focus-visible {
+  outline: 2px solid var(--color-border-color);
+  outline-offset: 2px;
+}
+
+.panel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-md);
+  animation: fade-in 220ms ease-out both;
+}
+
+.dateLabel {
+  margin: 0;
+  font: var(--type-ios-body-medium-font);
+  letter-spacing: var(--type-ios-body-medium-tracking);
+  color: var(--color-text-secondary);
+  text-align: center;
+}
+
+/* 이번 주 요일 */
+.weekStrip {
+  display: flex;
+  justify-content: space-between;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.weekDay {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 40px;
+  padding: var(--padding-050) var(--padding-100);
+  border-radius: var(--radius-200);
+  background: var(--color-surface-default);
+  box-shadow: var(--shadow-card);
+}
+
+.weekDay[data-today='true'] {
+  background: var(--color-bg-brand);
+}
+
+.weekDayNumber {
+  font: var(--type-ios-body-medium-font);
+  letter-spacing: var(--type-ios-body-medium-tracking);
+  color: var(--color-text-secondary);
+}
+
+.weekDayName {
+  font: var(--type-ios-caption-medium-font);
+  letter-spacing: var(--type-ios-caption-medium-tracking);
+  color: var(--color-text-tertiary);
+}
+
+.weekDay[data-today='true'] .weekDayNumber,
+.weekDay[data-today='true'] .weekDayName {
+  color: var(--color-text-inverse);
+}
+
+/* 카드 공통 */
+.card {
+  gap: var(--gap-sm);
+}
+
+.cardHeader {
+  display: flex;
+  flex-direction: column;
+}
+
+.cardTitle {
+  margin: 0;
+  font: var(--type-ios-body-strong-font);
+  letter-spacing: var(--type-ios-body-strong-tracking);
+  color: var(--color-text-primary);
+}
+
+.cardCaption {
+  margin: 0;
+  font: var(--type-ios-body-small-font);
+  letter-spacing: var(--type-ios-body-small-tracking);
+  color: var(--color-text-tertiary);
+}
+
+/* 오늘의 진행 상황 */
+.progressList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-sm);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.progressItem {
+  display: flex;
+  align-items: center;
+  gap: var(--gap-200);
+  padding: var(--padding-150) var(--padding-300);
+  border-radius: var(--radius-150);
+  background: var(--color-bg-subtle);
+}
+
+.progressIcon {
+  flex: none;
+  color: var(--color-bg-brand);
+}
+
+.progressItem[data-status='waiting'] .progressIcon {
+  color: var(--color-brand-light);
+}
+
+.progressText {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-025);
+  min-width: 0;
+}
+
+.progressName {
+  font: var(--type-ios-caption-large-font);
+  letter-spacing: var(--type-ios-caption-large-tracking);
+  color: var(--color-text-brand);
+}
+
+.progressDetail {
+  font: var(--type-ios-caption-large-font);
+  letter-spacing: var(--type-ios-caption-large-tracking);
+  color: var(--color-text-secondary);
+}
+
+/* 미완료 검토사항 */
+.remainingHeader {
+  display: flex;
+  align-items: center;
+  gap: var(--gap-200);
+}
+
+.divider {
+  width: 1px;
+  height: 20px;
+  background: var(--color-border-default);
+}
+
+.remainingCount {
+  font: var(--type-ios-caption-large-font);
+  letter-spacing: var(--type-ios-caption-large-tracking);
+  color: var(--color-text-brand);
+}
+
+.stackBar {
+  display: flex;
+  overflow: hidden;
+  height: 11px;
+  margin-top: var(--gap-sm);
+  border-radius: var(--radius-control);
+}
+
+.stackSegment,
+.legendSwatch {
+  background: var(--color-bg-brand);
+}
+
+.stackSegment {
+  flex-basis: 0;
+}
+
+.stackSegment[data-tone='strong'],
+.legendSwatch[data-tone='strong'] {
+  background: var(--color-chart-strong);
+}
+
+.stackSegment[data-tone='soft'],
+.legendSwatch[data-tone='soft'] {
+  background: var(--color-bg-brand-soft);
+}
+
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--gap-sm) var(--gap-400);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.legendItem {
+  display: flex;
+  align-items: center;
+  gap: var(--gap-xs);
+  font: var(--type-ios-caption-large-font);
+  letter-spacing: var(--type-ios-caption-large-tracking);
+  color: var(--color-text-secondary);
+}
+
+.legendSwatch {
+  width: 12px;
+  height: 12px;
+  border-radius: var(--radius-control-sm);
+}
+
+/* AI 결과·피드백 카드 (CardCroxer) */
+.insightCard {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-sm);
+  padding: var(--padding-card-md);
+  border: 1px solid var(--color-border-color);
+  border-radius: var(--radius-card-md);
+  background: linear-gradient(180deg, var(--color-surface-default) 0%, var(--color-bg-subtle) 100%);
+  box-shadow: var(--shadow-card);
+}
+
+.insightHeader {
+  display: flex;
+  align-items: center;
+  gap: var(--gap-sm);
+}
+
+.insightIcon {
+  flex: none;
+  color: var(--color-text-brand);
+}
+
+.insightTitle {
+  margin: 0;
+  font: var(--type-ios-body-strong-font);
+  letter-spacing: var(--type-ios-body-strong-tracking);
+  color: var(--color-text-brand);
+}
+
+.insightBody {
+  margin: 0;
+  font: var(--type-ios-body-small-font);
+  letter-spacing: var(--type-ios-body-small-tracking);
+  color: var(--color-text-secondary);
+}
+
+.feedbackChoices {
+  display: flex;
+  gap: var(--gap-200);
+  margin-top: var(--gap-sm);
+}
+
+.feedbackChoice {
+  flex: 1;
+  padding: var(--padding-100) var(--padding-150);
+  border: 0;
+  border-radius: var(--radius-control);
+  background: var(--color-surface-default);
+  color: var(--color-text-primary);
+  font: var(--type-ios-body-small-font);
+  letter-spacing: var(--type-ios-body-small-tracking);
+  cursor: pointer;
+}
+
+.feedbackChoice[data-variant='positive'] {
+  background: var(--color-bg-brand);
+  color: var(--color-text-inverse);
+}
+
+.feedbackChoice[aria-pressed='true'] {
+  box-shadow:
+    0 0 0 2px var(--color-surface-default),
+    0 0 0 4px var(--color-brand-default);
+}
+
+.feedbackForm {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-sm);
+  animation: fade-in 200ms ease-out both;
+}
+
+.feedbackLabel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-xs);
+  font: var(--type-ios-caption-large-font);
+  letter-spacing: var(--type-ios-caption-large-tracking);
+  color: var(--color-text-secondary);
+}
+
+.feedbackInput {
+  padding: var(--padding-200);
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-card-sm);
+  background: var(--color-surface-default);
+  color: var(--color-text-primary);
+  font: var(--type-ios-body-small-font);
+  letter-spacing: var(--type-ios-body-small-tracking);
+  resize: none;
+}
+
+.feedbackInput:focus-visible {
+  outline: 2px solid var(--color-border-color);
+  outline-offset: 0;
+}
+
+.feedbackSaved {
+  margin: 0;
+  font: var(--type-ios-body-small-font);
+  letter-spacing: var(--type-ios-body-small-tracking);
+  color: var(--color-text-brand);
+}
+
+/* 주간: 요일별 완료 성취도 */
+.barChart {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: var(--gap-500);
+  height: 176px;
+  margin: var(--gap-sm) 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.barColumn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--gap-300);
+  height: 100%;
+}
+
+.barTrack {
+  display: flex;
+  flex: 1;
+  align-items: flex-end;
+  width: 28px;
+}
+
+.bar {
+  width: 100%;
+  border-radius: var(--radius-control-sm);
+  background: var(--color-chart-muted);
+  animation: grow 420ms ease-out both;
+  transform-origin: bottom;
+}
+
+.bar[data-today='true'] {
+  background: var(--color-bg-brand);
+}
+
+.barLabel {
+  font: var(--type-ios-body-medium-font);
+  letter-spacing: var(--type-ios-body-medium-tracking);
+  color: var(--color-text-secondary);
+}
+
+.weekSummary {
+  margin: 0;
+  padding: var(--padding-300) 0;
+  border-top: 1px solid var(--color-border-subtle);
+  border-bottom: 1px solid var(--color-border-subtle);
+  font: var(--type-ios-body-medium-font);
+  letter-spacing: var(--type-ios-body-medium-tracking);
+  color: var(--color-text-primary);
+  text-align: center;
+}
+
+.statList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-xs);
+  margin: 0;
+}
+
+.statRow {
+  display: flex;
+  justify-content: space-between;
+  font: var(--type-ios-body-small-font);
+  letter-spacing: var(--type-ios-body-small-tracking);
+}
+
+.statRow dt {
+  color: var(--color-text-tertiary);
+}
+
+.statRow dd {
+  margin: 0;
+  color: var(--color-text-brand);
+}
+
+.patternTable {
+  width: 100%;
+  margin-top: var(--gap-sm);
+  border-collapse: collapse;
+  font: var(--type-ios-body-medium-font);
+  letter-spacing: var(--type-ios-body-medium-tracking);
+}
+
+.patternTable th,
+.patternTable td {
+  padding: var(--padding-150) 0;
+  text-align: left;
+}
+
+.patternTable th {
+  width: 25%;
+  color: var(--color-text-tertiary);
+  font-weight: inherit;
+}
+
+.patternTable td {
+  color: var(--color-text-primary);
+}
+
+.patternTable .patternResult {
+  color: var(--color-text-brand);
+  text-align: right;
+}
+
+.emptyCard {
+  align-items: flex-start;
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes grow {
+  from {
+    transform: scaleY(0);
+  }
+  to {
+    transform: scaleY(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .panel,
+  .feedbackForm,
+  .bar {
+    animation: none;
+  }
+}

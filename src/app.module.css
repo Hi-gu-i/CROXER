@@ -60,6 +60,13 @@
   background: var(--color-bg-subtle);
 }
 
+.activityScreen {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-height: 0;
+}
+
 .screenWithTabBar {
   padding-bottom: calc(
     var(--tab-bar-bottom) + var(--tab-item-height) + var(--gap-xs) * 2 + var(--gap-md)

@@ -47,6 +47,9 @@
   --color-yellow-400: #eba300;
   --color-yellow-600: #985907;
   --color-muted-800: #272c6d;
+  --color-role-leader: #d1bb72;
+  --color-role-editor: #a899c0;
+  --color-role-runner: #83b1af;
   --color-opacity-white-000: #ffffff00;
   --color-opacity-white-100: #ffffff1a;
   --color-opacity-white-200: #ffffff33;
@@ -69,6 +72,9 @@
   --color-surface-muted: var(--color-gray-100);
   --color-surface-document: var(--color-gray-200);
   --color-surface-document-fold: var(--color-gray-300);
+  --color-chart-strong: var(--color-blue-900);
+  --color-chart-muted: var(--color-gray-200);
+  --color-control-off: var(--color-gray-300);
   --color-text-primary: var(--color-gray-900);
   --color-text-secondary: var(--color-gray-700);
   --color-text-tertiary: var(--color-gray-500);
@@ -92,6 +98,9 @@
   --color-status-warning-strong: var(--color-yellow-300);
   --color-status-danger: var(--color-red-400);
   --color-status-danger-strong: var(--color-red-800);
+  --color-role-leader-strong: var(--color-role-leader);
+  --color-role-editor-strong: var(--color-role-editor);
+  --color-role-runner-strong: var(--color-role-runner);
 
   /* Layout primitives */
   --padding-000: 0;
