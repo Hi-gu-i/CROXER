@@ -27,7 +27,6 @@ import {
   getScheduleByActivity,
   getSelectedCourseId,
   isAiJobRequested,
-  markAiJobCompleted,
   markAiJobRunning,
   requestAiJob,
   selectCourse,
@@ -59,7 +58,6 @@ const ROUTE_B = {
 
 const INQUIRY_ID = "inquiry-run-weather";
 const JOB_ID = "job-shoot-extra";
-const RESULT_RESOURCE_ID = "resource-shoot-extra";
 const ANNOUNCEMENT_ID = "announcement-run-course";
 /** 이미 맡긴 뒤 추가 채팅 응답 */
 const JOB_IN_PROGRESS_REPLY = "레퍼런스 정리중이에요.";
@@ -222,24 +220,16 @@ type RunActivityPageProps = {
   activityId: ActivityId;
   /** 활동의 UT 흐름을 마쳤을 때 한 번 부른다. 완료 처리와 전환 패널은 App이 맡는다 */
   onFinish: () => void;
-  /** Header 홈 버튼. App이 홈 탭으로 돌릴 때 넘긴다 */
-  onHome?: () => void;
-  /** 작업 완료 후 촬영 자료 화면으로 넘길 때 */
-  onOpenActivity?: (
-    activityId: ActivityId,
-    options?: { openResourceId?: string },
-  ) => void;
 };
 
 /**
  * Task 8(문의·코스·공지) → Task 9(러닝 중 레퍼런스 요청).
  * 원본 `03 · 러닝 문의` → AI 판단 → 코스·공지·러닝.
+ * 마치기는 onFinish만 부른다. 촬영로 바로 점프하지 않는다 (#62 리뷰).
  */
 export function RunActivityPage({
   activityId,
-  onFinish: _onFinish,
-  onHome,
-  onOpenActivity,
+  onFinish,
 }: RunActivityPageProps) {
   useUtSession();
 
@@ -481,9 +471,9 @@ export function RunActivityPage({
     handleReferenceRequest(label, reply);
   }
 
+  /** 러닝 UT 종료. App이 schedule-run done·다음 활동 안내를 맡는다 */
   function handleJobDone() {
-    markAiJobCompleted(JOB_ID);
-    onOpenActivity?.("activity-shoot", { openResourceId: RESULT_RESOURCE_ID });
+    onFinish();
   }
 
   function onChatSubmit(event: FormEvent) {
@@ -525,7 +515,6 @@ export function RunActivityPage({
             ? undefined
             : handleHeaderAiClick
         }
-        onHomeClick={onHome}
         onCloseClick={closeChat}
       />
 

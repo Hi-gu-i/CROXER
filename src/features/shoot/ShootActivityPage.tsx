@@ -598,16 +598,16 @@ export function ShootActivityPage({
                         onAction={openPlaceMap}
                       />
                     </div>
-                  ) : message.role === "ai" ? (
+                  ) : "text" in message && message.role === "ai" ? (
                     <div className={styles.chatAiBlock}>
                       <span className={styles.chatAiAvatar} aria-hidden="true">
                         <IconAi size={22} />
                       </span>
                       <ChatBubble role="ai">{message.text}</ChatBubble>
                     </div>
-                  ) : (
+                  ) : "text" in message ? (
                     <ChatBubble role="user">{message.text}</ChatBubble>
-                  )}
+                  ) : null}
                 </div>
               ))}
             </div>
@@ -735,7 +735,7 @@ export function ShootActivityPage({
                           onAction={openScheduleSwap}
                         />
                       </div>
-                    ) : message.role === "ai" ? (
+                    ) : "text" in message && message.role === "ai" ? (
                       <div className={styles.chatAiBlock}>
                         {showAiAvatar ? (
                           <span
@@ -752,9 +752,9 @@ export function ShootActivityPage({
                         )}
                         <ChatBubble role="ai">{message.text}</ChatBubble>
                       </div>
-                    ) : (
+                    ) : "text" in message ? (
                       <ChatBubble role="user">{message.text}</ChatBubble>
-                    )}
+                    ) : null}
                   </div>
                 );
               })}

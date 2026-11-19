@@ -39,15 +39,18 @@ export function ShootResourceDetail({ resourceId }: ShootResourceDetailProps) {
   }, [resourceId]);
 
   useEffect(() => {
-    const el = scrollerRef.current;
-    if (!el || !detail) return;
+    if (!detail) return;
 
     function measure() {
+      const node = scrollerRef.current;
+      if (!node) return;
       const pad =
-        Number.parseFloat(getComputedStyle(el).paddingLeft) || 0;
-      setSlideWidth(Math.max(0, el.clientWidth - pad * 2));
+        Number.parseFloat(getComputedStyle(node).paddingLeft) || 0;
+      setSlideWidth(Math.max(0, node.clientWidth - pad * 2));
     }
 
+    const el = scrollerRef.current;
+    if (!el) return;
     measure();
     const observer = new ResizeObserver(measure);
     observer.observe(el);
