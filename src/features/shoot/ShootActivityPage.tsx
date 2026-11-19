@@ -330,19 +330,26 @@ export function ShootActivityPage({
     setSelectedPlaceId(placeId);
   }
 
-  /** 지도 입력 · 강변 고집 → `05 · 일정 조정 대화` */
-  function openScheduleChat(userText: string) {
-    const stamp = Date.now();
+  /**
+   * 강변 유지·지도 입력 종료.
+   * 첫 UT는 일정 교체 제외(ut-activity-flow.md) → 다리 아래 안내 후 「촬영 흐름 마치기」.
+   */
+  function endKeepRiversidePath(userText: string) {
+    const hit = findKeywordReply(activityId, userText);
+    const keepHit = findKeywordReply(activityId, "강변에서");
+    const reply =
+      hit?.id === KEEP_RIVERSIDE_REPLY_ID
+        ? hit.reply
+        : (keepHit?.reply ??
+          "강변에서 촬영하고 싶으시군요. 그럼 강변 가까이에서 비를 피할 수 있는 다리 아래 산책로 구간을 찾아봤어요. 지붕이 있어 장비가 젖지 않고, 강 풍경도 그대로 담을 수 있어요. 비가 잠깐 멎을 때 물결에 비친 빛을 담으면 원래 계획한 3번 장면과도 잘 어울려요.");
     setMessages([
-      { id: `u-${stamp}`, role: "user", text: userText },
-      { id: `a-${stamp + 1}`, role: "ai", text: SCHEDULE_AI_TEXT },
-      { id: `a-${stamp + 2}`, role: "ai", kind: "scheduleSwap" },
+      { id: `u-${Date.now()}`, role: "user", text: userText },
+      { id: `a-${Date.now() + 1}`, role: "ai", text: reply },
     ]);
     setDraft("");
     setShowFallback(false);
-    setResolved(false);
-    setScheduleChoicePhase("both");
-    setStep("scheduleChat");
+    setResolved(true);
+    setStep("chat");
   }
 
   function visibleScheduleChoices() {
@@ -368,10 +375,7 @@ export function ShootActivityPage({
         appendPlaceResult(text);
         return;
       }
-      if (hit.id === KEEP_RIVERSIDE_REPLY_ID) {
-        openScheduleChat(text);
-        return;
-      }
+      // 강변 유지 포함 · 일정 교체 없이 답변 후 「촬영 흐름 마치기」
       handleResolved(text, hit.reply);
       return;
     }
@@ -384,11 +388,11 @@ export function ShootActivityPage({
     setShowFallback(true);
   }
 
-  /** `06 · 지도 채팅` 하단 입력 → `05 · 일정 조정 대화` */
+  /** `06 · 지도 채팅` 하단 입력 → 다리 아래 안내 후 촬영 흐름 마치기 */
   function handleSendMap() {
     const text = draft.trim();
     if (!text) return;
-    openScheduleChat(text);
+    endKeepRiversidePath(text);
   }
 
   /** 일정 조정 대화 — 입력 → 선택지 / `10` 제안 이유 카드 */

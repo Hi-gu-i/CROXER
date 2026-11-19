@@ -76,10 +76,6 @@ const ASSESSMENT = {
   actionLabel: "코스 확인",
 } as const;
 
-function formatTodayTime(startsAt: string) {
-  return `오늘 ${startsAt.slice(11, 16)}`;
-}
-
 /** 시안 `05` 공지 카드 시간 · 오늘 오후 h:mm */
 function formatAnnouncementTime(startsAt: string) {
   const hour = Number(startsAt.slice(11, 13));
@@ -302,7 +298,6 @@ export function RunActivityPage({
   const jobRequested = isAiJobRequested(JOB_ID);
   const fallbacks = getFallbackChoices(activityId);
   const schedule = getScheduleByActivity(activityId);
-  const startLabel = formatTodayTime(schedule.startsAt);
   const announcementTime = formatAnnouncementTime(schedule.startsAt);
   const selectedView =
     (selectedCourseId && COURSE_VIEW[selectedCourseId]) || null;
@@ -747,15 +742,15 @@ export function RunActivityPage({
             onReset={handleMeterReset}
           />
           {/*
-            시안 `러닝 · 일시정지 및 작업 완료`
+            러닝 종료 토스트 · 작업은 running 유지(ut-data-baseline).
             조건: 1) 작업 카드 후 러닝 복귀  2) 한 번 이상 시작·멈춤
           */}
           {returnedAfterJob && hasPausedRun ? (
             <div className={styles.runJobToast}>
               <AiJobToast
-                tone="done"
-                message="레퍼런스 정리가 완료됐어요"
-                actionLabel="작업 완료"
+                tone="ack"
+                message="레퍼런스 정리 중이에요"
+                actionLabel="러닝 마치기"
                 onAction={handleJobDone}
               />
             </div>
