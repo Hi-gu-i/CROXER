@@ -22,6 +22,7 @@ export { ResourceSetCard } from "./ResourceSetCard";
 export { RunMeter } from "./RunMeter";
 export type { RunMeterPhase } from "./RunMeter";
 export { ScheduleListCard } from "./ScheduleListCard";
+export { ScheduleSwapCard } from "./ScheduleSwapCard";
 export { SectionIntro } from "./SectionIntro";
 export { ShotPoint } from "./ShotPoint";
 export { StatusResult } from "./StatusResult";

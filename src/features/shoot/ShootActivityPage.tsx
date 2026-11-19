@@ -7,6 +7,7 @@ import {
   ChatInput,
   ChatResultCard,
   ResourceSetCard,
+  ScheduleSwapCard,
   StatusBar,
 } from "../../components";
 import type { ActivityId, FallbackChoice } from "../../data/types";
@@ -29,11 +30,14 @@ import set1C from "./assets/set1-c.png";
 import set2A from "./assets/set2-a.png";
 import set2B from "./assets/set2-b.png";
 import set2C from "./assets/set2-c.png";
+import { ScheduleCompareCard } from "./ScheduleCompareCard";
 import { ShootMapChat } from "./ShootMapChat";
 import {
   getShootDetailHeaderTitle,
   ShootResourceDetail,
 } from "./ShootResourceDetail";
+import { ShootScheduleDone } from "./ShootScheduleDone";
+import { ShootScheduleSwap } from "./ShootScheduleSwap";
 import { MEMO_ID, REFERENCE_ID } from "./shootDetailData";
 import { SHOOT_PLACES } from "./shootPlaceData";
 import styles from "./shoot-activity-page.module.css";
@@ -44,11 +48,73 @@ const RAIN_ALERT_DELAY_MS = 10_000;
 /** `05 · 추천 결과` — 다른 장소 찾기 / 장소 키워드 */
 const PLACE_CHOICE_ID = "choice-shoot-indoor";
 const PLACE_REPLY_ID = "reply-shoot-indoor";
+/** 지도 입력 → `05 · 일정 조정 대화` (강변 고집) */
+const KEEP_RIVERSIDE_REPLY_ID = "reply-shoot-keep-riverside";
 const PLACE_RESULT = {
   title: "추천 장소 3곳을 찾았어요",
   description: "비를 피하면서 기존 촬영 분위기를 이어갈 수 있는 곳이에요",
   actionLabel: "추천 장소 보러가기",
 } as const;
+/** 시안 `05 · 일정 조정 대화` 첫 교환 */
+const SCHEDULE_AI_TEXT =
+  "강변 촬영은 유지할게요\n비가 그친 뒤로 옮길 수 있는지\n일정을 확인해 볼게요";
+const SCHEDULE_SWAP = {
+  title: "내일 촬영하려면\n편집 일정 조정이 필요해요",
+  left: { dayLabel: "오늘", title: "강변 촬영", kind: "shoot" as const },
+  right: { dayLabel: "내일", title: "영상 편집", kind: "edit" as const },
+};
+/** 시안 `05` — 일정 조정 선택지 */
+const SCHEDULE_CHOICE_LATER = {
+  id: "choice-schedule-later",
+  label: "더 늦출 수 있는지 확인하기",
+  reply:
+    "모레부터는 편집본 제출 준비가 이어져\n이번 주에는 촬영 시간을 내기 어려워요",
+} as const;
+const SCHEDULE_CHOICE_TOMORROW = {
+  id: "choice-schedule-tomorrow",
+  label: "내일로 모든 일정 미루기",
+  reply: "가능해요, 다만 촬영까지 미루면 내일 작업이 3개로 늘어나요",
+} as const;
+const SCHEDULE_FALLBACK_AI =
+  "준비된 키워드와 맞지 않아요. 아래 선택지에서 고르거나 다른 말로 다시 입력해 주세요.";
+/** 시안 `08 · … 일정 교체 제안` 「내일 일정 비교」 */
+const SCHEDULE_COMPARE = {
+  title: "내일 일정 비교",
+  sections: [
+    {
+      label: "현재",
+      chips: [
+        { label: "강변 촬영", tone: "muted" as const },
+        { label: "편집본 제출 준비", tone: "muted" as const },
+      ],
+    },
+    {
+      label: "촬영을 미룰 시",
+      chips: [
+        { label: "강변 촬영", tone: "muted" as const },
+        { label: "편집본 제출 준비", tone: "muted" as const },
+        { label: "영상 편집", tone: "accent" as const },
+      ],
+    },
+  ],
+} as const;
+/** 시안 `08` — 비교 카드 뒤 일정 교체 제안 */
+const SCHEDULE_SWAP_PROPOSE =
+  "내일 예정된 영상 편집을 오늘 먼저하고, 강변 촬영을 내일로 변경하는 게 어떨까요?";
+/** 시안 `10 · … 제안 이유` — ChatResultCard 문구 */
+const SCHEDULE_REASON = {
+  title: "이렇게 제안한 이유",
+  description:
+    "하루 작업이 3개 이상 겹치면 일부 일정이 다시 미뤄진 경우가 많았어요",
+  actionLabel: "대안 보러가기",
+} as const;
+const SCHEDULE_CHOICES_BOTH = [
+  SCHEDULE_CHOICE_LATER,
+  SCHEDULE_CHOICE_TOMORROW,
+] as const;
+
+/** both → tomorrow → done(교체 제안까지) → reasonShown */
+type ScheduleChoicePhase = "both" | "tomorrow" | "done" | "reasonShown";
 
 /** 시안 `01 · 편집자 자료` 콜라주 6장 · 세트당 좌·우상·우하 */
 const SET_IMAGES: Record<string, readonly [string, string, string]> = {
@@ -72,7 +138,14 @@ function formatTodayTime(startsAt: string) {
   return `오늘 ${startsAt.slice(11, 16)}`;
 }
 
-type ShootStep = "materials" | "resource" | "chat" | "map";
+type ShootStep =
+  | "materials"
+  | "resource"
+  | "chat"
+  | "map"
+  | "scheduleChat"
+  | "scheduleSwap"
+  | "scheduleDone";
 
 type ChatMessage =
   | {
@@ -85,6 +158,21 @@ type ChatMessage =
       id: string;
       role: "ai";
       kind: "placeResult";
+    }
+  | {
+      id: string;
+      role: "ai";
+      kind: "scheduleSwap";
+    }
+  | {
+      id: string;
+      role: "ai";
+      kind: "scheduleCompare";
+    }
+  | {
+      id: string;
+      role: "ai";
+      kind: "scheduleReason";
     };
 
 type ShootActivityPageProps = {
@@ -97,8 +185,8 @@ type ShootActivityPageProps = {
 
 /**
  * Task 6 강변 촬영.
- * 원본 `01 · 편집자 자료` → `02 · 강변 촬영` → `03 · 촬영·AI 알림` → `04 · 장소 제안` → `06 · 지도 채팅`.
- * 일정 교체(§05)는 첫 UT 제외.
+ * 원본 `01`~`06` → `05` 일정 조정 → `10` 제안 이유 → `11` 일정 교체 제안 → `12` 완료.
+ * 일정 교체 본실행은 첫 UT 제외 · UI만(완료 화면까지 전환 가능).
  */
 export function ShootActivityPage({
   activityId,
@@ -115,7 +203,12 @@ export function ShootActivityPage({
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [resolved, setResolved] = useState(false);
   const [selectedPlaceId, setSelectedPlaceId] = useState<string | null>(null);
+  const [scheduleChoicePhase, setScheduleChoicePhase] =
+    useState<ScheduleChoicePhase>("both");
   const timerRef = useRef<number | null>(null);
+  /** 타이머 콜백이 채팅·지도 등에서 setAlertOpen 하지 않도록 */
+  const stepRef = useRef<ShootStep>(step);
+  stepRef.current = step;
 
   useEffect(() => {
     return () => {
@@ -145,8 +238,11 @@ export function ShootActivityPage({
     timerRef.current = window.setTimeout(() => {
       fireAlert(ALERT_ID);
       markAlertRead(ALERT_ID);
-      setAlertOpen(true);
       timerRef.current = null;
+      // 자료 상세에 있을 때만 펼침 · 채팅 중 재등장 방지
+      if (stepRef.current === "resource") {
+        setAlertOpen(true);
+      }
     }, RAIN_ALERT_DELAY_MS);
   }
 
@@ -164,18 +260,21 @@ export function ShootActivityPage({
     setAlertOpen(false);
   }
 
-  /** Header IconAi — 비 알림 펼침 */
+  /** Header IconAi — 비 알림 펼침 · 예약 타이머는 취소 */
   function openRainAlert() {
+    clearRainTimer();
     fireAlert(ALERT_ID);
     markAlertRead(ALERT_ID);
     setAlertOpen(true);
   }
 
   function closeAlert() {
+    clearRainTimer();
     setAlertOpen(false);
   }
 
   function startPlanChat() {
+    clearRainTimer();
     markAlertRead(ALERT_ID);
     setAlertOpen(false);
     setShowFallback(false);
@@ -218,6 +317,27 @@ export function ShootActivityPage({
     setSelectedPlaceId(placeId);
   }
 
+  /** 지도 입력 · 강변 고집 → `05 · 일정 조정 대화` */
+  function openScheduleChat(userText: string) {
+    const stamp = Date.now();
+    setMessages([
+      { id: `u-${stamp}`, role: "user", text: userText },
+      { id: `a-${stamp + 1}`, role: "ai", text: SCHEDULE_AI_TEXT },
+      { id: `a-${stamp + 2}`, role: "ai", kind: "scheduleSwap" },
+    ]);
+    setDraft("");
+    setShowFallback(false);
+    setResolved(false);
+    setScheduleChoicePhase("both");
+    setStep("scheduleChat");
+  }
+
+  function visibleScheduleChoices() {
+    if (scheduleChoicePhase === "both") return SCHEDULE_CHOICES_BOTH;
+    if (scheduleChoicePhase === "tomorrow") return [SCHEDULE_CHOICE_TOMORROW];
+    return [];
+  }
+
   function handleResolved(userText: string, aiText: string) {
     appendExchange(userText, aiText);
     setDraft("");
@@ -235,6 +355,10 @@ export function ShootActivityPage({
         appendPlaceResult(text);
         return;
       }
+      if (hit.id === KEEP_RIVERSIDE_REPLY_ID) {
+        openScheduleChat(text);
+        return;
+      }
       handleResolved(text, hit.reply);
       return;
     }
@@ -245,6 +369,60 @@ export function ShootActivityPage({
     );
     setDraft("");
     setShowFallback(true);
+  }
+
+  /** `06 · 지도 채팅` 하단 입력 → `05 · 일정 조정 대화` */
+  function handleSendMap() {
+    const text = draft.trim();
+    if (!text) return;
+    openScheduleChat(text);
+  }
+
+  /** 일정 조정 대화 — 입력 → 선택지 / `10` 제안 이유 카드 */
+  function handleSendSchedule() {
+    const text = draft.trim();
+    if (!text) return;
+    if (scheduleChoicePhase === "reasonShown") {
+      setDraft("");
+      return;
+    }
+    if (scheduleChoicePhase === "done") {
+      const stamp = Date.now();
+      setMessages((prev) => [
+        ...prev,
+        { id: `u-${stamp}`, role: "user", text },
+        { id: `a-${stamp + 1}`, role: "ai", kind: "scheduleReason" },
+      ]);
+      setDraft("");
+      setShowFallback(false);
+      setScheduleChoicePhase("reasonShown");
+      return;
+    }
+    appendExchange(text, SCHEDULE_FALLBACK_AI);
+    setDraft("");
+    setShowFallback(true);
+  }
+
+  function handleScheduleChoice(
+    choice: typeof SCHEDULE_CHOICE_LATER | typeof SCHEDULE_CHOICE_TOMORROW,
+  ) {
+    setShowFallback(false);
+    if (choice.id === SCHEDULE_CHOICE_LATER.id) {
+      appendExchange(choice.label, choice.reply);
+      // 입력창 유지 · 다음 입력 시 「내일로 모든 일정 미루기」만
+      setScheduleChoicePhase("tomorrow");
+      return;
+    }
+    // 「내일로 모든 일정 미루기」 → 답변 + 비교 카드 + 교체 제안(연속 AI)
+    const stamp = Date.now();
+    setMessages((prev) => [
+      ...prev,
+      { id: `u-${stamp}`, role: "user", text: choice.label },
+      { id: `a-${stamp + 1}`, role: "ai", text: choice.reply },
+      { id: `a-${stamp + 2}`, role: "ai", kind: "scheduleCompare" },
+      { id: `a-${stamp + 3}`, role: "ai", text: SCHEDULE_SWAP_PROPOSE },
+    ]);
+    setScheduleChoicePhase("done");
   }
 
   function handleFallback(choice: FallbackChoice) {
@@ -260,21 +438,53 @@ export function ShootActivityPage({
     handleSendChat();
   }
 
+  function onMapSubmit(event: FormEvent) {
+    event.preventDefault();
+    handleSendMap();
+  }
+
+  function onScheduleSubmit(event: FormEvent) {
+    event.preventDefault();
+    handleSendSchedule();
+  }
+
+  function openScheduleSwap() {
+    setStep("scheduleSwap");
+  }
+
+  function openScheduleDone() {
+    setStep("scheduleDone");
+  }
+
   const isDetail = step === "resource" && selected != null;
   const isChat = step === "chat";
+  const isScheduleChat = step === "scheduleChat";
+  const isChatLike = isChat || isScheduleChat;
   const isMap = step === "map";
+  const isScheduleSwap = step === "scheduleSwap";
+  const isScheduleDone = step === "scheduleDone";
+
+  if (isScheduleSwap) {
+    return (
+      <ShootScheduleSwap onHome={onHome} onConfirm={openScheduleDone} />
+    );
+  }
+
+  if (isScheduleDone) {
+    return <ShootScheduleDone onHome={onHome} onFinish={onFinish} />;
+  }
 
   return (
     <main
       className={[
         styles.page,
-        isChat ? styles.pageChat : "",
+        isChatLike ? styles.pageChat : "",
         isMap ? styles.pageMap : "",
       ]
         .filter(Boolean)
         .join(" ")}
     >
-      {isChat ? (
+      {isChatLike ? (
         <div className={styles.chatBackground} aria-hidden="true">
           <img
             className={styles.chatBgGradient}
@@ -291,7 +501,7 @@ export function ShootActivityPage({
         roleLabel={isDetail ? detailTitle : "편집자"}
         roleTone={isDetail ? "neutral" : "violet"}
         showRoleIcon={!isDetail}
-        showAi={!isChat && !isMap}
+        showAi={!isChatLike && !isMap}
         trailing={isDetail ? "close" : "home"}
         onAiClick={openRainAlert}
         onHomeClick={onHome}
@@ -331,7 +541,7 @@ export function ShootActivityPage({
         </div>
       ) : null}
 
-      {alertOpen ? (
+      {alertOpen && step === "resource" ? (
         <div className={styles.alertOverlay}>
           <ActivityAiAlert
             state="expanded"
@@ -424,6 +634,147 @@ export function ShootActivityPage({
         </>
       ) : null}
 
+      {isScheduleChat ? (
+        <>
+          <div className={[styles.body, styles.chatBody].join(" ")}>
+            <div className={styles.chatList}>
+              {messages.map((message, index) => {
+                const prev = messages[index - 1];
+                /** 연속 AI 묶음은 첫 메시지에만 IconAi */
+                const showAiAvatar =
+                  message.role === "ai" && (prev == null || prev.role !== "ai");
+
+                return (
+                  <div
+                    key={message.id}
+                    className={[
+                      styles.chatRow,
+                      message.role === "user"
+                        ? styles.chatRowUser
+                        : styles.chatRowAi,
+                    ].join(" ")}
+                  >
+                    {message.kind === "scheduleSwap" ? (
+                      <div className={styles.chatAiBlock}>
+                        {showAiAvatar ? (
+                          <span
+                            className={styles.chatAiAvatar}
+                            aria-hidden="true"
+                          >
+                            <IconAi size={22} />
+                          </span>
+                        ) : (
+                          <span
+                            className={styles.chatAiAvatarSpacer}
+                            aria-hidden="true"
+                          />
+                        )}
+                        <ScheduleSwapCard
+                          title={SCHEDULE_SWAP.title}
+                          left={SCHEDULE_SWAP.left}
+                          right={SCHEDULE_SWAP.right}
+                        />
+                      </div>
+                    ) : message.kind === "scheduleCompare" ? (
+                      <div className={styles.chatAiBlock}>
+                        {showAiAvatar ? (
+                          <span
+                            className={styles.chatAiAvatar}
+                            aria-hidden="true"
+                          >
+                            <IconAi size={22} />
+                          </span>
+                        ) : (
+                          <span
+                            className={styles.chatAiAvatarSpacer}
+                            aria-hidden="true"
+                          />
+                        )}
+                        <ScheduleCompareCard
+                          title={SCHEDULE_COMPARE.title}
+                          sections={SCHEDULE_COMPARE.sections}
+                        />
+                      </div>
+                    ) : message.kind === "scheduleReason" ? (
+                      <div className={styles.chatAiBlock}>
+                        {showAiAvatar ? (
+                          <span
+                            className={styles.chatAiAvatar}
+                            aria-hidden="true"
+                          >
+                            <IconAi size={22} />
+                          </span>
+                        ) : (
+                          <span
+                            className={styles.chatAiAvatarSpacer}
+                            aria-hidden="true"
+                          />
+                        )}
+                        <ChatResultCard
+                          className={styles.scheduleReasonCard}
+                          title={SCHEDULE_REASON.title}
+                          description={SCHEDULE_REASON.description}
+                          actionLabel={SCHEDULE_REASON.actionLabel}
+                          onAction={openScheduleSwap}
+                        />
+                      </div>
+                    ) : message.role === "ai" ? (
+                      <div className={styles.chatAiBlock}>
+                        {showAiAvatar ? (
+                          <span
+                            className={styles.chatAiAvatar}
+                            aria-hidden="true"
+                          >
+                            <IconAi size={22} />
+                          </span>
+                        ) : (
+                          <span
+                            className={styles.chatAiAvatarSpacer}
+                            aria-hidden="true"
+                          />
+                        )}
+                        <ChatBubble role="ai">{message.text}</ChatBubble>
+                      </div>
+                    ) : (
+                      <ChatBubble role="user">{message.text}</ChatBubble>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+
+            {showFallback ? (
+              <div className={styles.fallback}>
+                <p className={styles.fallbackLabel}>선택지</p>
+                {visibleScheduleChoices().map((choice) => (
+                  <Button
+                    key={choice.id}
+                    variant="secondary"
+                    fullWidth
+                    onClick={() => handleScheduleChoice(choice)}
+                  >
+                    {choice.label}
+                  </Button>
+                ))}
+              </div>
+            ) : null}
+          </div>
+
+          <form
+            className={[styles.footer, styles.chatFooter].join(" ")}
+            onSubmit={onScheduleSubmit}
+          >
+            <ChatInput
+              value={draft}
+              placeholder="메세지를 입력하세요"
+              onChange={(event) => setDraft(event.target.value)}
+              onSend={handleSendSchedule}
+              disabled={showFallback}
+            />
+          </form>
+        </>
+      ) : null}
+
       {isMap ? (
         <>
           <div className={styles.mapLayer}>
@@ -432,14 +783,17 @@ export function ShootActivityPage({
               onSelectPlace={selectPlace}
             />
           </div>
-          <div className={[styles.footer, styles.mapFooter].join(" ")}>
+          <form
+            className={[styles.footer, styles.mapFooter].join(" ")}
+            onSubmit={onMapSubmit}
+          >
             <ChatInput
               value={draft}
               placeholder="메세지를 입력하세요"
               onChange={(event) => setDraft(event.target.value)}
-              onSend={() => undefined}
+              onSend={handleSendMap}
             />
-          </div>
+          </form>
         </>
       ) : null}
     </main>

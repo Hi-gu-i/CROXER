@@ -240,6 +240,18 @@
   color: var(--color-icon-brand);
 }
 
+/* 연속 AI 말풍선 정렬용 · 아바타 자리만 유지 */
+.chatAiAvatarSpacer {
+  flex-shrink: 0;
+  width: 36px;
+  height: 36px;
+}
+
+/* 시안 `10` 제안 이유 카드 · 232폭 */
+.scheduleReasonCard {
+  max-width: 232px;
+}
+
 .fallback {
   display: flex;
   flex-direction: column;
