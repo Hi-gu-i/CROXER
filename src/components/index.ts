@@ -25,3 +25,5 @@ export { Tag } from "./Tag";
 export { ToggleCategory } from "./ToggleCategory";
 /** DS 원본 전환 패널. 앱 셸 연결은 `features/role-switch/RoleSwitchPanel`을 쓴다. */
 export { RoleTransitionPanel } from "./RoleTransitionPanel";
+/** 역할 막대·전환용 아치 곡선 + 세포. 문구·역할 색 없음. (#56) */
+export { RoleTrack } from "./RoleTrack";
