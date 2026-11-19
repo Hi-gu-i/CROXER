@@ -19,7 +19,9 @@ import { FacilitatorPanel } from './features/facilitator'
 import HomeScreen from './features/home/HomeScreen'
 import RoleStaySheet from './features/role-switch/RoleStaySheet'
 import RoleSwitchPanel from './features/role-switch/RoleSwitchPanel'
+import { ReportPage } from './features/report'
 import SchedulePage from './features/schedule/SchedulePage'
+import { NotificationSettingsPage } from './features/setup'
 import { ResearchActivityPage } from './features/research'
 import { RunActivityPage } from './features/run'
 import { ShootActivityPage } from './features/shoot'
@@ -192,8 +194,8 @@ export default function App() {
           </div>
         )}
         {screen.name === 'schedule' && <SchedulePage />}
-        {screen.name === 'report' && <TempPlaceholderScreen title="리포트" />}
-        {screen.name === 'settings' && <TempPlaceholderScreen title="설정" />}
+        {screen.name === 'report' && <ReportPage />}
+        {screen.name === 'settings' && <NotificationSettingsPage />}
       </main>
       {showTabBar && (
         <nav className={styles.tabBar} aria-label="하단 탭">
@@ -271,11 +273,3 @@ function TempActivityScreen({ activityId, onFinish }: ActivityScreenProps) {
   )
 }
 
-function TempPlaceholderScreen({ title }: { title: string }) {
-  return (
-    <>
-      <h1 className={styles.tempTitle}>{title}</h1>
-      <p className={styles.tempNotice}>첫 UT에서는 준비 중인 화면입니다.</p>
-    </>
-  )
-}
