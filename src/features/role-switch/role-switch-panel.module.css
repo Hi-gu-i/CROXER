@@ -5,8 +5,10 @@
   display: flex;
   justify-content: center;
   align-items: flex-start;
-  /* 활동 화면이 비치지 않게 패널 뒤는 빈 표면만 둔다 */
-  background: var(--color-surface-default);
+  /* 유지하기 글자는 흰색 60%라 흰 표면만으로는 안 보인다.
+     빈 표면 위에 가장 진한 딤을 올려 글자는 읽고, 활동 화면은 비치지 않게 한다. */
+  background-color: var(--color-surface-default);
+  background-image: linear-gradient(var(--color-opacity-black-600), var(--color-opacity-black-600));
 }
 
 .stage section {
