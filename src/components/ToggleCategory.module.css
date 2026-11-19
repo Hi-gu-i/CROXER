@@ -49,3 +49,10 @@
   background: var(--color-mint-100);
   color: var(--color-mint-600);
 }
+
+/* `02 · 강변 촬영` 자료 세트 제목 — fill 없음 */
+.neutral {
+  background: transparent;
+  box-shadow: none;
+  color: var(--color-text-primary);
+}

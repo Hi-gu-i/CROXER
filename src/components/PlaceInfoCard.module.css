@@ -1,0 +1,108 @@
+/* 원본 `06 · 지도 채팅` 장소 카드 · 361×174 · radius 24 */
+.root {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-sm);
+  width: 100%;
+  padding: var(--padding-card-md);
+  border-radius: var(--radius-card-md);
+  background: var(--color-surface-default);
+  box-shadow: var(--shadow-card), var(--shadow-line);
+  box-sizing: border-box;
+}
+
+.badge {
+  position: absolute;
+  top: var(--padding-card-md);
+  right: var(--padding-card-md);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 34px;
+  height: 26px;
+  padding: 0 var(--padding-150);
+  border-radius: var(--radius-control);
+  background: var(--color-bg-subtle);
+  font: var(--type-ios-caption-large-font);
+  letter-spacing: var(--type-ios-caption-large-tracking);
+  color: var(--color-text-brand);
+  box-sizing: border-box;
+}
+
+.main {
+  display: flex;
+  gap: var(--gap-md);
+  align-items: flex-start;
+  padding-right: var(--gap-800);
+  box-sizing: border-box;
+}
+
+.thumb {
+  flex-shrink: 0;
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
+  border-radius: var(--radius-200);
+  background: var(--color-gray-075);
+}
+
+.copy {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.title {
+  margin: 0;
+  font: var(--type-ios-title-small-font);
+  letter-spacing: var(--type-ios-title-small-tracking);
+  color: var(--color-text-primary);
+}
+
+.meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--gap-xs);
+  margin: 0;
+  font: var(--type-ios-caption-large-font);
+  letter-spacing: var(--type-ios-caption-large-tracking);
+  color: var(--color-text-secondary);
+}
+
+.walkTime {
+  color: var(--color-text-brand);
+}
+
+.address {
+  margin: 0;
+  font: var(--type-ios-caption-large-font);
+  letter-spacing: var(--type-ios-caption-large-tracking);
+  color: var(--color-text-tertiary);
+}
+
+.insight {
+  display: flex;
+  align-items: center;
+  gap: var(--gap-sm);
+  width: 100%;
+  min-height: 36px;
+  padding: var(--padding-100) var(--padding-200);
+  border-radius: var(--radius-100);
+  background: var(--color-violet-050);
+  box-sizing: border-box;
+}
+
+.insightIcon {
+  flex-shrink: 0;
+  color: var(--color-icon-brand);
+}
+
+.insightText {
+  margin: 0;
+  font: var(--type-ios-caption-large-font);
+  letter-spacing: var(--type-ios-caption-large-tracking);
+  color: var(--color-text-secondary);
+}

@@ -1,0 +1,117 @@
+/* `06 · 지도 채팅` — 전체 화면 지도 + 마커 + 하단 카드 */
+.root {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.map {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  pointer-events: none;
+}
+
+.markers {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.marker {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  color: var(--color-icon-inverse);
+  pointer-events: auto;
+}
+
+.markerCenter {
+  transform: translate(-50%, -50%);
+}
+
+/* 왼쪽 가장자리 — 캡슐이 화면 안으로 자라도록 */
+.markerStart {
+  transform: translate(0, -50%);
+}
+
+/* 오른쪽 가장자리 */
+.markerEnd {
+  transform: translate(-100%, -50%);
+}
+
+.markerPin {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-150);
+  background: var(--color-bg-brand);
+  box-shadow: var(--shadow-card);
+}
+
+/* 선택 시 핀 대신 장소명 캡슐 */
+.markerCapsule {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  max-width: min(200px, calc(100vw - 32px));
+  padding: var(--padding-100) var(--padding-200);
+  border-radius: var(--radius-200);
+  background: var(--color-bg-brand);
+  font: var(--type-ios-body-small-font);
+  letter-spacing: var(--type-ios-body-small-tracking);
+  color: var(--color-text-inverse);
+  white-space: nowrap;
+  box-shadow: var(--shadow-card);
+}
+
+.markerCapsule::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  width: 0;
+  height: 0;
+  border: 6px solid transparent;
+  border-top-color: var(--color-bg-brand);
+}
+
+.markerCenter .markerCapsule::after {
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.markerStart .markerCapsule::after {
+  left: 18px;
+  transform: none;
+}
+
+.markerEnd .markerCapsule::after {
+  right: 18px;
+  left: auto;
+  transform: none;
+}
+
+.cardSlot {
+  position: absolute;
+  z-index: 2;
+  right: var(--padding-ios-x);
+  /* 입력창(footer) 위에 카드가 오도록 */
+  bottom: calc(72px + var(--gap-md));
+  left: var(--padding-ios-x);
+  pointer-events: auto;
+  box-sizing: border-box;
+}

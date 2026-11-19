@@ -26,7 +26,15 @@
   color: var(--color-gray-500);
 }
 
-.source,
+.source {
+  min-width: 0;
+  padding: 5px 10px;
+  border-radius: var(--radius-400);
+  background: var(--color-blue-050);
+  color: var(--color-gray-500);
+  box-sizing: border-box;
+}
+
 .date {
   min-width: 0;
 }

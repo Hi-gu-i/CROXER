@@ -6,8 +6,9 @@
 }
 
 .frame {
-  --frame-width: 390px;
-  --frame-height: 844px;
+  /* iPhone 14/15 Pro 논리 해상도. 팀 합의(민선 2026-11-18). 문서 미기재 · 셸 소유는 ① */
+  --frame-width: 393px;
+  --frame-height: 852px;
   --tab-bar-width: 306px;
   --tab-bar-bottom: 42px;
   --tab-item-height: 52px;
@@ -44,6 +45,18 @@
   min-height: 0;
   padding: var(--padding-ios-x);
   overflow-y: auto;
+  background: var(--color-bg-subtle);
+}
+
+/* 활동 화면(탭 없음): Status가 셸 최상단에 붙도록 패딩 제거. 본체 여백은 각 활동이 맡는다 */
+.screenActivity {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 0;
+  min-height: 0;
+  padding: 0;
+  overflow: hidden;
   background: var(--color-bg-subtle);
 }
 

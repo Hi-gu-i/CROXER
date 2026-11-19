@@ -31,6 +31,8 @@ interface ActivityScreenProps {
   activityId: ActivityId
   /** 활동의 UT 흐름을 마쳤을 때 한 번 부른다. 완료 처리와 다음 활동 안내는 App이 맡는다 */
   onFinish: () => void
+  /** Header 홈. 넘기지 않으면 활동 화면이 홈 동작을 생략할 수 있다 */
+  onHome?: () => void
 }
 
 const tabs: { id: TabId; label: string; Icon: typeof IconHome }[] = [
@@ -132,9 +134,18 @@ export default function App() {
   const ActivityScreen =
     screen.name === 'activity' ? (activityScreens[screen.activityId] ?? TempActivityScreen) : null
 
+  // 촬영은 Status·Header가 셸 최상단에 붙어야 해서 패딩 없는 screenActivity를 쓴다.
+  // 다른 활동은 기존 screen 패딩을 유지한다(예은 셸 합의 전 임시).
+  const screenClass =
+    screen.name === 'activity' && screen.activityId === 'activity-shoot'
+      ? styles.screenActivity
+      : showTabBar
+        ? `${styles.screen} ${styles.screenWithTabBar}`
+        : styles.screen
+
   return (
     <Frame>
-      <main className={showTabBar ? `${styles.screen} ${styles.screenWithTabBar}` : styles.screen}>
+      <main className={screenClass}>
         {screen.name === 'home' && (
           <HomeScreen
             onOpenActivity={openActivity}
@@ -146,6 +157,7 @@ export default function App() {
             key={screen.activityId}
             activityId={screen.activityId}
             onFinish={() => finishActivity(screen.activityId)}
+            onHome={() => setScreen({ name: 'home' })}
           />
         )}
         {screen.name === 'schedule' && <SchedulePage />}

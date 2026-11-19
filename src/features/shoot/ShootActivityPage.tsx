@@ -1,12 +1,15 @@
 import { useEffect, useRef, useState, type FormEvent } from "react";
 import {
   ActivityAiAlert,
+  ActivityHeader,
   Button,
   ChatBubble,
   ChatInput,
-  ToggleCategory,
+  ChatResultCard,
+  ResourceSetCard,
+  StatusBar,
 } from "../../components";
-import type { ActivityId } from "../../data/types";
+import type { ActivityId, FallbackChoice } from "../../data/types";
 import {
   findKeywordReply,
   fireAlert,
@@ -18,38 +21,89 @@ import {
   markAlertRead,
 } from "../../data/utStore";
 import { useUtSession } from "../../data/useUtSession";
+import { IconAi } from "../../icons";
+import chatBgGradient from "./assets/chat-bg-gradient.png";
+import set1A from "./assets/set1-a.png";
+import set1B from "./assets/set1-b.png";
+import set1C from "./assets/set1-c.png";
+import set2A from "./assets/set2-a.png";
+import set2B from "./assets/set2-b.png";
+import set2C from "./assets/set2-c.png";
+import { ShootMapChat } from "./ShootMapChat";
+import {
+  getShootDetailHeaderTitle,
+  ShootResourceDetail,
+} from "./ShootResourceDetail";
+import { MEMO_ID, REFERENCE_ID } from "./shootDetailData";
+import { SHOOT_PLACES } from "./shootPlaceData";
 import styles from "./shoot-activity-page.module.css";
 
 const ALERT_ID = "alert-shoot-rain";
 /** UT 베이스라인: 촬영 자료 진입 후 기본 10초 */
 const RAIN_ALERT_DELAY_MS = 10_000;
+/** `05 · 추천 결과` — 다른 장소 찾기 / 장소 키워드 */
+const PLACE_CHOICE_ID = "choice-shoot-indoor";
+const PLACE_REPLY_ID = "reply-shoot-indoor";
+const PLACE_RESULT = {
+  title: "추천 장소 3곳을 찾았어요",
+  description: "비를 피하면서 기존 촬영 분위기를 이어갈 수 있는 곳이에요",
+  actionLabel: "추천 장소 보러가기",
+} as const;
+
+/** 시안 `01 · 편집자 자료` 콜라주 6장 · 세트당 좌·우상·우하 */
+const SET_IMAGES: Record<string, readonly [string, string, string]> = {
+  [REFERENCE_ID]: [set1A, set1B, set1C],
+  [MEMO_ID]: [set2A, set2B, set2C],
+};
+
+/** 시안 `01 · 편집자 자료` 세트 칩·캡션 */
+const SET_LABELS: Record<string, { title: string; caption: string }> = {
+  [REFERENCE_ID]: {
+    title: "풍경 속 사람들",
+    caption: "12장의 레퍼런스 이미지",
+  },
+  [MEMO_ID]: {
+    title: "강가의 동물들",
+    caption: "8장의 레퍼런스 이미지",
+  },
+};
 
 function formatTodayTime(startsAt: string) {
   return `오늘 ${startsAt.slice(11, 16)}`;
 }
 
-type ShootStep = "materials" | "resource" | "chat";
+type ShootStep = "materials" | "resource" | "chat" | "map";
 
-type ChatMessage = {
-  id: string;
-  role: "ai" | "user";
-  text: string;
-};
+type ChatMessage =
+  | {
+      id: string;
+      role: "ai" | "user";
+      kind?: "text";
+      text: string;
+    }
+  | {
+      id: string;
+      role: "ai";
+      kind: "placeResult";
+    };
 
 type ShootActivityPageProps = {
   activityId: ActivityId;
   /** 활동의 UT 흐름을 마쳤을 때 한 번 부른다. 완료 처리와 전환 패널은 App이 맡는다 */
   onFinish: () => void;
+  /** Header 홈 버튼. App이 홈 탭으로 돌릴 때 넘긴다 */
+  onHome?: () => void;
 };
 
 /**
  * Task 6 강변 촬영.
- * 원본 `03 · 촬영·AI 알림` → `04 · 장소 제안` 흐름.
+ * 원본 `01 · 편집자 자료` → `02 · 강변 촬영` → `03 · 촬영·AI 알림` → `04 · 장소 제안` → `06 · 지도 채팅`.
  * 일정 교체(§05)는 첫 UT 제외.
  */
 export function ShootActivityPage({
   activityId,
   onFinish,
+  onHome,
 }: ShootActivityPageProps) {
   useUtSession();
 
@@ -60,6 +114,7 @@ export function ShootActivityPage({
   const [showFallback, setShowFallback] = useState(false);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [resolved, setResolved] = useState(false);
+  const [selectedPlaceId, setSelectedPlaceId] = useState<string | null>(null);
   const timerRef = useRef<number | null>(null);
 
   useEffect(() => {
@@ -68,12 +123,15 @@ export function ShootActivityPage({
     };
   }, []);
 
-  const resources = getResources(activityId);
+  const resources = getResources(activityId).filter(
+    (resource) => resource.kind !== "ai_result",
+  );
   const startLabel = formatTodayTime(getScheduleByActivity(activityId).startsAt);
   const selected = resources.find((item) => item.id === resourceId) ?? null;
-  const alertFired = isAlertFired(ALERT_ID);
   const alert = getAlert(ALERT_ID);
   const fallbacks = getFallbackChoices(activityId);
+  const detailTitle =
+    resourceId != null ? getShootDetailHeaderTitle(resourceId) : "편집자";
 
   function clearRainTimer() {
     if (timerRef.current !== null) {
@@ -82,17 +140,21 @@ export function ShootActivityPage({
     }
   }
 
+  function scheduleRainAlert() {
+    if (isAlertFired(ALERT_ID) || timerRef.current !== null) return;
+    timerRef.current = window.setTimeout(() => {
+      fireAlert(ALERT_ID);
+      markAlertRead(ALERT_ID);
+      setAlertOpen(true);
+      timerRef.current = null;
+    }, RAIN_ALERT_DELAY_MS);
+  }
+
   function openResource(id: string) {
     setResourceId(id);
     setStep("resource");
     setAlertOpen(false);
-
-    if (!isAlertFired(ALERT_ID) && timerRef.current === null) {
-      timerRef.current = window.setTimeout(() => {
-        fireAlert(ALERT_ID);
-        timerRef.current = null;
-      }, RAIN_ALERT_DELAY_MS);
-    }
+    scheduleRainAlert();
   }
 
   function backToMaterials() {
@@ -102,7 +164,9 @@ export function ShootActivityPage({
     setAlertOpen(false);
   }
 
-  function openAlert() {
+  /** Header IconAi — 비 알림 펼침 */
+  function openRainAlert() {
+    fireAlert(ALERT_ID);
     markAlertRead(ALERT_ID);
     setAlertOpen(true);
   }
@@ -133,6 +197,27 @@ export function ShootActivityPage({
     ]);
   }
 
+  function appendPlaceResult(userText: string) {
+    setMessages((prev) => [
+      ...prev,
+      { id: `u-${Date.now()}`, role: "user", text: userText },
+      { id: `a-${Date.now() + 1}`, role: "ai", kind: "placeResult" },
+    ]);
+    setDraft("");
+    setShowFallback(false);
+    setResolved(false);
+  }
+
+  /** `05` 추천 카드 → `06 · 지도 채팅` */
+  function openPlaceMap() {
+    setSelectedPlaceId(SHOOT_PLACES[0]?.id ?? null);
+    setStep("map");
+  }
+
+  function selectPlace(placeId: string) {
+    setSelectedPlaceId(placeId);
+  }
+
   function handleResolved(userText: string, aiText: string) {
     appendExchange(userText, aiText);
     setDraft("");
@@ -146,6 +231,10 @@ export function ShootActivityPage({
 
     const hit = findKeywordReply(activityId, text);
     if (hit) {
+      if (hit.id === PLACE_REPLY_ID) {
+        appendPlaceResult(text);
+        return;
+      }
       handleResolved(text, hit.reply);
       return;
     }
@@ -158,8 +247,12 @@ export function ShootActivityPage({
     setShowFallback(true);
   }
 
-  function handleFallback(label: string, reply: string) {
-    handleResolved(label, reply);
+  function handleFallback(choice: FallbackChoice) {
+    if (choice.id === PLACE_CHOICE_ID) {
+      appendPlaceResult(choice.label);
+      return;
+    }
+    handleResolved(choice.label, choice.reply);
   }
 
   function onChatSubmit(event: FormEvent) {
@@ -167,92 +260,94 @@ export function ShootActivityPage({
     handleSendChat();
   }
 
-  return (
-    <main className={styles.page}>
-      <header className={styles.header}>
-        <ToggleCategory tone="violet">편집자</ToggleCategory>
-        <h1 className={styles.headerTitle}>
-          {step === "materials"
-            ? "촬영 자료"
-            : step === "chat"
-              ? "촬영 계획"
-              : selected?.title ?? "강변 촬영"}
-        </h1>
-      </header>
+  const isDetail = step === "resource" && selected != null;
+  const isChat = step === "chat";
+  const isMap = step === "map";
 
-      {step === "materials" ? (
-        <div className={styles.body}>
-          <p className={styles.lead}>
-            {startLabel} 강변 촬영에 쓸 자료를 확인하세요.
-          </p>
-          <ul className={styles.resourceList}>
-            {resources.map((resource) => (
-              <li key={resource.id}>
-                <button
-                  type="button"
-                  className={styles.resourceCard}
-                  onClick={() => openResource(resource.id)}
-                >
-                  <span className={styles.resourceKind}>
-                    {resource.kind === "reference" ? "참고 자료" : "메모"}
-                  </span>
-                  <span className={styles.resourceTitle}>{resource.title}</span>
-                  <span className={styles.resourcePreview}>
-                    {resource.body.split("\n")[0]}
-                  </span>
-                </button>
-              </li>
-            ))}
-          </ul>
+  return (
+    <main
+      className={[
+        styles.page,
+        isChat ? styles.pageChat : "",
+        isMap ? styles.pageMap : "",
+      ]
+        .filter(Boolean)
+        .join(" ")}
+    >
+      {isChat ? (
+        <div className={styles.chatBackground} aria-hidden="true">
+          <img
+            className={styles.chatBgGradient}
+            src={chatBgGradient}
+            alt=""
+            draggable={false}
+          />
+          <div className={styles.chatBgWhite} />
         </div>
       ) : null}
 
-      {step === "resource" && selected ? (
-        <>
-          <div className={styles.body}>
-            <button
-              type="button"
-              className={styles.back}
-              onClick={backToMaterials}
-            >
-              자료 목록
-            </button>
-            <article className={styles.doc}>
-              <h2 className={styles.docTitle}>{selected.title}</h2>
-              <p className={styles.docBody}>{selected.body}</p>
-            </article>
-            {!alertFired ? (
-              <p className={styles.hint}>
-                자료 확인 중이에요. 잠시 후 날씨 알림이 뜰 수 있어요.
-              </p>
-            ) : null}
+      <StatusBar />
+      <ActivityHeader
+        roleLabel={isDetail ? detailTitle : "편집자"}
+        roleTone={isDetail ? "neutral" : "violet"}
+        showRoleIcon={!isDetail}
+        showAi={!isChat && !isMap}
+        trailing={isDetail ? "close" : "home"}
+        onAiClick={openRainAlert}
+        onHomeClick={onHome}
+        onCloseClick={backToMaterials}
+      />
+
+      {step === "materials" ? (
+        <div className={styles.body}>
+          <h1 className={styles.visuallyHidden}>촬영 자료</h1>
+          <p className={styles.lead}>
+            {startLabel} 강변 촬영에 쓸 자료를 확인하세요.
+          </p>
+          <div className={styles.setList}>
+            {resources.map((resource) => {
+              const labels = SET_LABELS[resource.id] ?? {
+                title: resource.title,
+                caption:
+                  resource.kind === "reference" ? "참고 자료" : "메모",
+              };
+              return (
+                <ResourceSetCard
+                  key={resource.id}
+                  title={labels.title}
+                  caption={labels.caption}
+                  images={SET_IMAGES[resource.id]}
+                  onClick={() => openResource(resource.id)}
+                />
+              );
+            })}
           </div>
-
-          {alertFired && !alertOpen ? (
-            <div className={styles.alertDock}>
-              <ActivityAiAlert state="signal" onSignalClick={openAlert} />
-            </div>
-          ) : null}
-
-          {alertFired && alertOpen ? (
-            <div className={styles.alertOverlay}>
-              <ActivityAiAlert
-                state="expanded"
-                meta="현재 날씨 · 강변 지역에 강수"
-                title={alert.title}
-                description={alert.body}
-                actionLabel="촬영 계획 상의하기"
-                onAction={startPlanChat}
-                onClose={closeAlert}
-              />
-            </div>
-          ) : null}
-        </>
+        </div>
       ) : null}
 
-      {step === "chat" ? (
+      {isDetail ? (
+        <div className={styles.detailBody}>
+          <ShootResourceDetail resourceId={selected.id} />
+        </div>
+      ) : null}
+
+      {alertOpen ? (
+        <div className={styles.alertOverlay}>
+          <ActivityAiAlert
+            state="expanded"
+            meta="현재 날씨 • 강변 지역에 강수"
+            title={alert.title}
+            description={alert.body}
+            actionLabel="촬영 계획 상의하기"
+            onAction={startPlanChat}
+            onClose={closeAlert}
+          />
+        </div>
+      ) : null}
+
+      {isChat ? (
         <>
-          <div className={styles.body}>
+          <div className={[styles.body, styles.chatBody].join(" ")}>
             <div className={styles.chatList}>
               {messages.map((message) => (
                 <div
@@ -264,7 +359,28 @@ export function ShootActivityPage({
                       : styles.chatRowAi,
                   ].join(" ")}
                 >
-                  <ChatBubble role={message.role}>{message.text}</ChatBubble>
+                  {message.kind === "placeResult" ? (
+                    <div className={styles.chatAiBlock}>
+                      <span className={styles.chatAiAvatar} aria-hidden="true">
+                        <IconAi size={22} />
+                      </span>
+                      <ChatResultCard
+                        title={PLACE_RESULT.title}
+                        description={PLACE_RESULT.description}
+                        actionLabel={PLACE_RESULT.actionLabel}
+                        onAction={openPlaceMap}
+                      />
+                    </div>
+                  ) : message.role === "ai" ? (
+                    <div className={styles.chatAiBlock}>
+                      <span className={styles.chatAiAvatar} aria-hidden="true">
+                        <IconAi size={22} />
+                      </span>
+                      <ChatBubble role="ai">{message.text}</ChatBubble>
+                    </div>
+                  ) : (
+                    <ChatBubble role="user">{message.text}</ChatBubble>
+                  )}
                 </div>
               ))}
             </div>
@@ -277,7 +393,7 @@ export function ShootActivityPage({
                     key={choice.id}
                     variant="secondary"
                     fullWidth
-                    onClick={() => handleFallback(choice.label, choice.reply)}
+                    onClick={() => handleFallback(choice)}
                   >
                     {choice.label}
                   </Button>
@@ -287,13 +403,16 @@ export function ShootActivityPage({
           </div>
 
           {resolved ? (
-            <div className={styles.footer}>
+            <div className={[styles.footer, styles.chatFooter].join(" ")}>
               <Button fullWidth onClick={onFinish}>
                 촬영 흐름 마치기
               </Button>
             </div>
           ) : (
-            <form className={styles.footer} onSubmit={onChatSubmit}>
+            <form
+              className={[styles.footer, styles.chatFooter].join(" ")}
+              onSubmit={onChatSubmit}
+            >
               <ChatInput
                 value={draft}
                 placeholder="메세지를 입력하세요"
@@ -302,6 +421,25 @@ export function ShootActivityPage({
               />
             </form>
           )}
+        </>
+      ) : null}
+
+      {isMap ? (
+        <>
+          <div className={styles.mapLayer}>
+            <ShootMapChat
+              selectedPlaceId={selectedPlaceId}
+              onSelectPlace={selectPlace}
+            />
+          </div>
+          <div className={[styles.footer, styles.mapFooter].join(" ")}>
+            <ChatInput
+              value={draft}
+              placeholder="메세지를 입력하세요"
+              onChange={(event) => setDraft(event.target.value)}
+              onSend={() => undefined}
+            />
+          </div>
         </>
       ) : null}
     </main>

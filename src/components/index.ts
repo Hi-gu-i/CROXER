@@ -1,5 +1,7 @@
 export { ActivityAiAlert } from "./ActivityAiAlert";
+export { ActivityHeader } from "./ActivityHeader";
 export { AiAlertCapsule } from "./AiAlertCapsule";
+export { StatusBar } from "./StatusBar";
 export { AiJobToast } from "./AiJobToast";
 export type { AiJobToastTone } from "./AiJobToast";
 export { AnnouncementDraftCard } from "./AnnouncementDraftCard";
@@ -7,7 +9,9 @@ export { Button } from "./Button";
 export { Card } from "./Card";
 export { ChatBubble } from "./ChatBubble";
 export { ChatInput } from "./ChatInput";
+export { ChatResultCard } from "./ChatResultCard";
 export { CourseSelectCard } from "./CourseSelectCard";
+export { PlaceInfoCard } from "./PlaceInfoCard";
 export { AiAssessmentCard, InquiryCard } from "./InquiryCard";
 export { AiJobCard } from "./AiJobCard";
 export { ContextChip } from "./ContextChip";
