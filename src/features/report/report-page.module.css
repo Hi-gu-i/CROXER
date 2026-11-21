@@ -347,6 +347,12 @@
   outline-offset: 0;
 }
 
+.feedbackSave:disabled {
+  opacity: 1;
+  background: var(--color-surface-muted);
+  color: var(--color-text-disabled);
+}
+
 .feedbackSaved {
   margin: 0;
   font: var(--type-ios-body-small-font);
