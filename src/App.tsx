@@ -9,6 +9,7 @@ import {
   getActiveRoleId,
   getActivity,
   getCurrentActivityId,
+  getNextActivityId,
   getRole,
   getScheduleByActivity,
   isBriefingConfirmed,
@@ -113,17 +114,20 @@ export default function App() {
   }
 
   function finishActivity(activityId: ActivityId) {
-    if (getScheduleByActivity(activityId).status === 'done') return
-    const nextActivityId = completeActivity(activityId)
+    const nextActivityId = getNextActivityId(activityId)
     if (nextActivityId) {
       setSwitchTargetId(nextActivityId)
-    } else {
-      setScreen({ name: 'schedule' })
+      return
     }
+    if (getScheduleByActivity(activityId).status !== 'done') completeActivity(activityId)
+    setScreen({ name: 'schedule' })
   }
 
   function switchToNextActivity() {
-    if (!switchTargetId) return
+    if (!switchTargetId || screen.name !== 'activity') return
+    if (getScheduleByActivity(screen.activityId).status !== 'done') {
+      completeActivity(screen.activityId)
+    }
     enterActivity(switchTargetId)
     setScreen({ name: 'activity', activityId: switchTargetId })
     setSwitchTargetId(null)
@@ -131,7 +135,7 @@ export default function App() {
 
   const activityDone =
     screen.name === 'activity' && getScheduleByActivity(screen.activityId).status === 'done'
-  // 활동을 마친 뒤 유지하기는 그 화면에 남긴다. 하단 탭이 없으면 나갈 곳이 없다.
+  // 유지하기는 완료로 잠그지 않는다. 같은 완료 버튼을 다시 누르면 전환 패널이 또 열린다.
   const showTabBar = screen.name !== 'activity' || (activityDone && !switchTargetId)
   const activeTab: TabId | null = screen.name === 'activity' ? null : screen.name
   const ActivityScreen =
