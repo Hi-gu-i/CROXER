@@ -21,7 +21,7 @@
   animation: role-stay-drop 320ms ease;
 }
 
-/* 위는 흰색. 유지하기가 앉는 아래만 역할 색이다. 선은 없다. */
+/* 위는 흰색. 유지하기가 앉는 아래만 역할 색이다. 아치 선은 전환 패널과 같은 자리다. */
 .yellow,
 .violet,
 .mint {
@@ -45,6 +45,13 @@
 
 .mint {
   --role-stay-color: var(--color-role-runner-strong);
+}
+
+.track {
+  position: absolute;
+  left: -80px;
+  top: 268px;
+  z-index: 0;
 }
 
 .header,

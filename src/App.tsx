@@ -56,13 +56,6 @@ export default function App() {
   const [screen, setScreen] = useState<Screen>({ name: 'home' })
   const [switchTargetId, setSwitchTargetId] = useState<ActivityId | null>(null)
   const [roleSheetOpen, setRoleSheetOpen] = useState(false)
-  const [enteredAtByActivity, setEnteredAtByActivity] = useState<Partial<Record<ActivityId, number>>>({})
-
-  function rememberActivityEntry(nextActivityId: ActivityId) {
-    setEnteredAtByActivity((current) =>
-      current[nextActivityId] != null ? current : { ...current, [nextActivityId]: Date.now() },
-    )
-  }
 
   useEffect(() => {
     function onStorage(event: StorageEvent) {
@@ -80,12 +73,10 @@ export default function App() {
       if (!briefingChanged && !activityChanged) return
       setSwitchTargetId(null)
       setRoleSheetOpen(false)
-      setEnteredAtByActivity({})
       if (!next.isBriefingConfirmed || briefingChanged) {
         setScreen({ name: 'home' })
         return
       }
-      if (next.currentActivityId) rememberActivityEntry(next.currentActivityId)
       setScreen(
         next.currentActivityId ? { name: 'activity', activityId: next.currentActivityId } : { name: 'schedule' },
       )
@@ -99,14 +90,12 @@ export default function App() {
   function handleFacilitatorActivity(nextActivityId: ActivityId | null) {
     setSwitchTargetId(null)
     setRoleSheetOpen(false)
-    if (nextActivityId) rememberActivityEntry(nextActivityId)
     setScreen(nextActivityId ? { name: 'activity', activityId: nextActivityId } : { name: 'schedule' })
   }
 
   function handleFacilitatorReset() {
     setSwitchTargetId(null)
     setRoleSheetOpen(false)
-    setEnteredAtByActivity({})
     setScreen({ name: 'home' })
   }
 
@@ -129,7 +118,6 @@ export default function App() {
     // 브리핑 확정(confirmBriefing)이 첫 활동 진입을 이미 처리했으므로 같은 활동이면 다시 시작하지 않는다.
     if (getCurrentActivityId() !== activityId) enterActivity(activityId)
     setRoleSheetOpen(false)
-    rememberActivityEntry(activityId)
     setScreen({ name: 'activity', activityId })
   }
 
@@ -148,7 +136,6 @@ export default function App() {
     if (!switchTargetId) return
     enterActivity(switchTargetId)
     setRoleSheetOpen(false)
-    rememberActivityEntry(switchTargetId)
     setScreen({ name: 'activity', activityId: switchTargetId })
     setSwitchTargetId(null)
   }
@@ -167,8 +154,6 @@ export default function App() {
     event.stopPropagation()
     setRoleSheetOpen(true)
   }
-
-  const enteredAt = activityId ? enteredAtByActivity[activityId] : undefined
 
   const activityDone =
     screen.name === 'activity' && getScheduleByActivity(screen.activityId).status === 'done'
@@ -218,10 +203,9 @@ export default function App() {
           ))}
         </nav>
       )}
-      {roleSheetOpen && activityId && enteredAt != null && (
+      {roleSheetOpen && activityId && (
         <RoleStaySheet
           activityId={activityId}
-          enteredAt={enteredAt}
           onKeep={closeRoleSheet}
           onDismiss={closeRoleSheet}
         />

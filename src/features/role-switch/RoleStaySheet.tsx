@@ -1,18 +1,16 @@
-import { useEffect, useId, useState } from 'react'
-import { ToggleCategory } from '../../components'
+import { useEffect, useId, useRef, useState } from 'react'
+import { RoleTrack, ToggleCategory } from '../../components'
 import type { ToggleCategoryTone } from '../../components/ToggleCategory'
 import type { ActivityId, RoleId } from '../../data/types'
-import { getActivity, getRole, getSchedules } from '../../data/utStore'
+import { getActivity, getRole } from '../../data/utStore'
 import { IconTime } from '../../icons'
 import styles from './role-stay-sheet.module.css'
 
 interface RoleStaySheetProps {
   activityId: ActivityId
-  /** 이 활동 화면에 들어온 시각. 남은 시간은 여기서부터 줄어든다 */
-  enteredAt: number
   /** 유지하기. 역할과 활동 화면은 바꾸지 않고 막대만 닫는다 */
   onKeep: () => void
-  /** 딤 처리된 화면이나 역할 탭을 다시 눌렀을 때 */
+  /** 딤 처리된 화면이나 역할 탭을 다시 눌렀을 때. 시간이 다 돼도 막대만 닫는다 */
   onDismiss: () => void
 }
 
@@ -22,19 +20,8 @@ const toneByRole: Record<RoleId, ToggleCategoryTone> = {
   'role-runner': 'mint',
 }
 
-const fallbackSlotMs = 60 * 60 * 1000
-
-/** 브리핑 자리의 길이. 다음 자리 시각까지이고, 마지막 자리는 1시간으로 둔다 */
-function slotDurationMs(activityId: ActivityId) {
-  const schedules = getSchedules().slice().sort((a, b) => a.startsAt.localeCompare(b.startsAt))
-  const index = schedules.findIndex((item) => item.activityId === activityId)
-  const current = schedules[index]
-  if (!current) return fallbackSlotMs
-  const next = schedules[index + 1]
-  const start = Date.parse(current.startsAt)
-  const end = next ? Date.parse(next.startsAt) : start + fallbackSlotMs
-  return Number.isFinite(end - start) && end > start ? end - start : fallbackSlotMs
-}
+/** 역할 막대에서 세는 남은 시간. 다 되면 막대만 닫고 활동은 넘기지 않는다 */
+const stayMs = 30 * 1000
 
 function formatRemaining(ms: number) {
   const totalSeconds = Math.floor(ms / 1000)
@@ -46,23 +33,31 @@ function formatRemaining(ms: number) {
 
 /**
  * 활동 화면 상단 역할 탭을 열었을 때 위에서 내려오는 막대.
- * Figma Section 22 `러닝에서 학생` 기준. 역할 전환 패널과는 별개다.
+ * 남은 시간은 30초다. 다 되면 막대만 닫고, 역할과 활동은 바꾸지 않는다.
+ * 아치 선은 전환 패널과 같은 RoleTrack이다.
  */
-export default function RoleStaySheet({ activityId, enteredAt, onKeep, onDismiss }: RoleStaySheetProps) {
+export default function RoleStaySheet({ activityId, onKeep, onDismiss }: RoleStaySheetProps) {
   const titleId = useId()
   const activity = getActivity(activityId)
   const role = getRole(activity.roleId)
   const tone = toneByRole[activity.roleId]
-  const durationMs = slotDurationMs(activityId)
-  const [now, setNow] = useState(() => Date.now())
+  const [openedAt] = useState(() => Date.now())
+  const [now, setNow] = useState(openedAt)
+  const closed = useRef(false)
 
   useEffect(() => {
     const timer = window.setInterval(() => setNow(Date.now()), 1000)
     return () => window.clearInterval(timer)
   }, [])
 
-  const remainingMs = Math.max(durationMs - Math.max(now - enteredAt, 0), 0)
+  const remainingMs = Math.max(stayMs - Math.max(now - openedAt, 0), 0)
   const remainingLabel = formatRemaining(remainingMs)
+
+  useEffect(() => {
+    if (closed.current || remainingMs > 0) return
+    closed.current = true
+    onDismiss()
+  }, [onDismiss, remainingMs])
 
   return (
     <div className={styles.scrim} onClick={onDismiss}>
@@ -88,6 +83,10 @@ export default function RoleStaySheet({ activityId, enteredAt, onKeep, onDismiss
           <IconTime size={16} aria-hidden="true" />
           <span aria-label={`남은 시간 ${remainingLabel}`}>{remainingLabel}</span>
         </p>
+
+        <div className={styles.track}>
+          <RoleTrack cellX={177} cellY={13} />
+        </div>
 
         <p className={styles.caption}>현재 활동</p>
         <h2 id={titleId} className={styles.task}>
