@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Button, ToggleCategory } from '../../components'
+import { ActivityHeader, Button } from '../../components'
 import type { ActivityId, Resource } from '../../data/types'
 import { IconArrowL, IconClose } from '../../icons'
 import { ResImgFile } from '../../res-img'
@@ -20,6 +20,8 @@ interface ResearchActivityPageProps {
   activityId: ActivityId
   /** 활동의 UT 흐름을 마쳤을 때 한 번 부른다. 완료 처리와 전환 패널은 App이 맡는다 */
   onFinish: () => void
+  /** 상단 홈 버튼. App이 홈 화면으로 보낸다(촬영·러닝과 같은 자리) */
+  onHome?: () => void
 }
 
 const sourceIcon: Record<DocumentSource, { src: string; label: string; width: number; height: number }> = {
@@ -47,7 +49,7 @@ function resolveFolder(folder: ResearchFolder, resources: Resource[]) {
  * 어제 밤 정리한 자료 열기 → 본문 → 같은 자료 목록으로 복귀 → 검토 마침.
  * Figma `홈에서 파일 나오기-Task 4`의 폴더 목록·폴더 열림 화면 기준. 본문 화면과 검토 마침은 시안에 없어 같은 스타일로 추가했다.
  */
-export function ResearchActivityPage({ activityId, onFinish }: ResearchActivityPageProps) {
+export function ResearchActivityPage({ activityId, onFinish, onHome }: ResearchActivityPageProps) {
   useUtSession()
   const [view, setView] = useState<View>({ name: 'folders' })
   const [hasReviewed, setHasReviewed] = useState(false)
@@ -68,6 +70,12 @@ export function ResearchActivityPage({ activityId, onFinish }: ResearchActivityP
 
   return (
     <section className={styles.page}>
+      {/* 폴더 4개 화면: 촬영·러닝과 같은 상단(AI · 역할 · 홈) */}
+      {view.name === 'folders' && (
+        <ActivityHeader roleLabel={role.label} roleTone="yellow" onHomeClick={onHome} />
+      )}
+
+      {view.name !== 'folders' && (
       <header className={styles.header}>
         {view.name === 'document' && currentFolder ? (
           <button
@@ -80,15 +88,9 @@ export function ResearchActivityPage({ activityId, onFinish }: ResearchActivityP
           </button>
         ) : null}
 
-        {view.name === 'folders' ? (
-          <ToggleCategory tone="yellow" className={styles.headerCenter}>
-            {role.label}
-          </ToggleCategory>
-        ) : (
-          <h1 className={`${styles.headerTitle} ${styles.headerCenter}`}>
-            {view.name === 'document' ? currentDocument?.title : currentFolder?.title}
-          </h1>
-        )}
+        <h1 className={`${styles.headerTitle} ${styles.headerCenter}`}>
+          {view.name === 'document' ? currentDocument?.title : currentFolder?.title}
+        </h1>
 
         {view.name === 'folder' ? (
           <button
@@ -101,6 +103,7 @@ export function ResearchActivityPage({ activityId, onFinish }: ResearchActivityP
           </button>
         ) : null}
       </header>
+      )}
 
       {view.name === 'folders' && (
         <ul className={styles.folderGrid} aria-label="어제 밤 정리한 자료">
@@ -176,8 +179,8 @@ export function ResearchActivityPage({ activityId, onFinish }: ResearchActivityP
         </div>
       )}
 
-      {/* 완료 뒤에도 다시 눌러 전환 패널을 열 수 있다(#84). 완료 처리를 반복하지 않는 건 App이 맡는다 */}
-      {(hasReviewed || isDone) && view.name !== 'document' && (
+      {/* 마친 뒤 유지하기로 남으면 자료만 다시 보는 화면이라 버튼을 숨긴다. 다음 활동은 하단 탭 홈에서 연다(#84) */}
+      {hasReviewed && !isDone && view.name !== 'document' && (
         <div className={styles.footer}>
           <Button fullWidth onClick={onFinish}>
             검토 마침

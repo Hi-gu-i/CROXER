@@ -13,7 +13,10 @@
   display: grid;
   grid-template-columns: 48px minmax(0, 1fr) 48px;
   align-items: center;
-  min-height: 48px;
+  /* 폴더 4개 화면의 ActivityHeader(393×72, 좌우 16)와 같은 높이·자리 */
+  min-height: 72px;
+  padding: var(--padding-200) var(--padding-ios-x);
+  box-sizing: border-box;
 }
 
 .headerStart {
