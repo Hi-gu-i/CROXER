@@ -496,7 +496,7 @@ export function ShootActivityPage({
       setScheduleChoicePhase("tomorrow");
       return;
     }
-    // 「내일로 모든 일정 미루기」 → 답변 + 비교 카드 + 교체 제안(연속 AI)
+    // 「내일로 모든 일정 미루기」 → 답변 + 비교 + 교체 제안 + 이유 카드(대안 보러가기)
     const stamp = Date.now();
     setMessages((prev) => [
       ...prev,
@@ -504,8 +504,9 @@ export function ShootActivityPage({
       { id: `a-${stamp + 1}`, role: "ai", text: choice.reply },
       { id: `a-${stamp + 2}`, role: "ai", kind: "scheduleCompare" },
       { id: `a-${stamp + 3}`, role: "ai", text: SCHEDULE_SWAP_PROPOSE },
+      { id: `a-${stamp + 4}`, role: "ai", kind: "scheduleReason" },
     ]);
-    setScheduleChoicePhase("done");
+    setScheduleChoicePhase("reasonShown");
   }
 
   function handleFallback(choice: FallbackChoice) {

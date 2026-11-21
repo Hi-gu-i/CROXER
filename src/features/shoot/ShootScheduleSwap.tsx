@@ -78,8 +78,8 @@ export function ShootScheduleSwap({ onHome, onConfirm }: ShootScheduleSwapProps)
 
   const top: SwapItem = {
     when: `오늘 ${formatClock(shootStartsAt)} 예정`,
-    title: "성수동 외부 촬영",
-    subtitle: "여행 콘텐츠 제작",
+    title: "강변 촬영",
+    subtitle: "편집자",
     status: "바로 진행 어려움",
     statusTone: "warn",
     illustration: "camera",
@@ -87,8 +87,8 @@ export function ShootScheduleSwap({ onHome, onConfirm }: ShootScheduleSwapProps)
 
   const bottom: SwapItem = {
     when: `${tomorrowLabel} 11:00 예정`,
-    title: "리서치 자료 정리",
-    subtitle: "팀 프로젝트",
+    title: "영상 편집",
+    subtitle: "편집자",
     status: "시간 조정 가능",
     statusTone: "ok",
     illustration: "file",
