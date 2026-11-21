@@ -40,7 +40,7 @@
 화면은 아래 함수로만 UT 데이터를 읽고 씁니다. 타입은 `src/data/types.ts`, 함수는 `src/data/utStore.ts`에 있습니다. 필요한 함수가 없거나 동작을 바꿔야 하면 데이터·흐름 담당에게 요청합니다.
 
 - **화면 다시 그리기.** 컴포넌트 맨 위에서 `useUtSession()`을 부른 뒤 조회 함수로 값을 읽습니다. 저장 함수를 부르면 값을 쓰는 모든 화면이 함께 갱신됩니다.
-- **저장 위치.** 참가자 세션은 브라우저 저장소의 UT 전용 키 `croxer-ut-session` 하나에 저장되어 새로고침해도 유지됩니다. 주소에 `?room=방번호`가 있으면 방마다 `croxer-ut-session:room:방번호`에 따로 저장하고, 같은 방의 다른 기기와 맞춥니다(아래 '방 연결'). 초기 데이터는 읽기 전용이며 세션과 섞이지 않습니다.
+- **저장 위치.** 참가자 세션은 브라우저 저장소의 UT 전용 키 `croxer-ut-session` 하나에 저장되어 새로고침해도 유지됩니다. 주소에 `?room=방번호`가 있으면 방마다 `croxer-ut-session:room:방번호`에 따로 저장하고, 같은 방의 다른 기기와 맞춥니다(아래 '방 연결'). 방에 연결된 동안에는 탭마다 따로인 저장소(sessionStorage)를 써서, 같은 브라우저에서 방 주소를 두 탭으로 열어도 서로의 중간 상태로 화면이 바뀌지 않습니다. 초기 데이터는 읽기 전용이며 세션과 섞이지 않습니다.
 - **상태 규칙.** 함수가 [PRD](prd.md) 6.2를 지킵니다. 예를 들어 `completeActivity`는 현재 역할과 AI 작업 상태를 바꾸지 않고, `requestAiJob`은 작업을 완료로 만들지 않습니다. 화면에서 상태 값을 직접 조합하지 않습니다.
 
 | 화면·기능 | 조회 | 저장·변경 |
@@ -55,7 +55,7 @@
 | 채팅 입력 | `findKeywordReply(활동 ID, 입력)`, `getFallbackChoices(활동 ID)` | — |
 | 스케줄(F-11) | `getScheduleSections()` — 진행 완료·진행 중·백그라운드·진행 후 | — |
 | 진행자 패널 | — | `resetUtSession()`, `skipToNextActivity()`, `fireAlert`, `fireInquiry` |
-| 방 연결(다른 기기) | `getUtRoomId()` — 방 번호 또는 `null`, `getUtSyncStatus()` — `local` / `connecting` / `connected` / `offline`, `subscribeUtSyncStatus(listener)` | `createUtRoomId()` — 새 6자리 방 번호, `buildUtRoomUrl(방번호, 'participant' \| 'facilitator')` — 참가자·진행자 주소 |
+| 방 연결(다른 기기) | `getUtRoomId()` — 방 번호 또는 `null`, `getUtSyncStatus()` — `local`(방이 없거나 데이터베이스 주소가 설정되지 않음) / `connecting` / `connected` / `offline`(연결이 끊김), `subscribeUtSyncStatus(listener)` | `createUtRoomId()` — 새 6자리 방 번호, `buildUtRoomUrl(방번호, 'participant' \| 'facilitator')` — 참가자·진행자 주소 |
 | 앱 셸(화면 이동) | `subscribeUtExternalChange((이전, 다음) => …)` — 다른 탭·다른 기기에서 세션이 바뀌었을 때만 부름. 이 기기의 변경에는 부르지 않음 | — |
 
 초기 데이터는 UT 담당의 `src/fixtures/croxer-ut-baseline.v1.json`을 쓰며, 이 파일은 `types.ts`의 `UtBaseline` 모양을 따릅니다. 화면에서 이 파일을 직접 불러오지 않고 위 함수로 읽습니다.
@@ -141,6 +141,7 @@
 
 | 버전 | 날짜 | 수정자 | 수정 내용과 이유 |
 | --- | --- | --- | --- |
+| 1.7 | 2026-11-21 | Claude Code · 지유 요청 | 방 연결 중에는 탭마다 따로인 저장소를 쓰도록 바꿔, 같은 브라우저 두 탭에서 화면이 튀던 문제를 고침. 데이터베이스 주소가 없을 때 연결 상태를 `offline` 대신 `local`로 알림 |
 | 1.6 | 2026-11-21 | Claude Code · 지유 요청 | 참가자·진행자가 서로 다른 기기로 UT를 진행할 수 있게 방 연결(`?room=`, Firebase Realtime Database REST) 함수와 처음 설정·데이터베이스 규칙을 추가. 현지 님 요청 카드 반영 |
 | 1.5 | 2026-11-15 | Claude Code · 지유 요청 | UT 담당의 초기 데이터 파일이 합쳐져 저장·조회 함수가 임시값 대신 이 파일을 쓰도록 안내 문구 수정 |
 | 1.4 | 2026-11-15 | Claude Code · 지유 요청 | 0단계 데이터 기반: 공용 데이터 폴더 `src/data/`를 파일 위치 표에 추가하고, 화면별 저장·조회 함수 이름과 저장 키를 공유하기 위해 `저장·조회 함수` 섹션 추가 |
