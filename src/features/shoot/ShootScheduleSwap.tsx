@@ -5,6 +5,8 @@ import {
   SectionIntro,
   StatusBar,
 } from "../../components";
+import { getScheduleByActivity, getToday } from "../../data/utStore";
+import { useUtSession } from "../../data/useUtSession";
 import {
   IconAi,
   IconComplete,
@@ -37,35 +39,67 @@ type ShootScheduleSwapProps = {
   onConfirm?: () => void;
 };
 
-const TOP: SwapItem = {
-  when: "오늘 13:00 예정",
-  title: "성수동 외부 촬영",
-  subtitle: "여행 콘텐츠 제작",
-  status: "바로 진행 어려움",
-  statusTone: "warn",
-  illustration: "camera",
-};
+/** YYYY-MM-DD → 다음 날 YYYY-MM-DD (가상 UT 날짜) */
+function nextCalendarDay(today: string) {
+  const [year, month, day] = today.split("-").map(Number);
+  const date = new Date(Date.UTC(year, month - 1, day + 1));
+  const y = date.getUTCFullYear();
+  const m = String(date.getUTCMonth() + 1).padStart(2, "0");
+  const d = String(date.getUTCDate()).padStart(2, "0");
+  return `${y}-${m}-${d}`;
+}
 
-const BOTTOM: SwapItem = {
-  when: "10월 14일 11:00 예정",
-  title: "리서치 자료 정리",
-  subtitle: "팀 프로젝트",
-  status: "시간 조정 가능",
-  statusTone: "ok",
-  illustration: "file",
-};
+/** 2026-11-15 → 11월 15일 */
+function formatMonthDay(day: string) {
+  return new Intl.DateTimeFormat("ko-KR", {
+    timeZone: "Asia/Seoul",
+    month: "long",
+    day: "numeric",
+  }).format(new Date(`${day}T12:00:00+09:00`));
+}
 
-const REASONS: readonly ReasonRow[] = [
-  { icon: "sunny", text: "14일은 맑을 예정이에요" },
-  { icon: "time", text: "두 일정 모두 마감에 영향이 없어요" },
-  { icon: "person", text: "참여자 일정을 확인했어요" },
-];
+/** ISO startsAt → 13:00 */
+function formatClock(startsAt: string) {
+  return startsAt.slice(11, 16);
+}
 
 /**
  * 원본 `11 · 일정 교체 제안`.
  * Status+Header · SectionIntro · blue-050 위 교체 카드 2장 · 이유 카드 · 하단 Button.
+ * 오늘 시각은 브리핑 자리의 촬영 일정, 내일은 getToday() 다음 날(#96·#81).
  */
 export function ShootScheduleSwap({ onHome, onConfirm }: ShootScheduleSwapProps) {
+  useUtSession();
+
+  const shootStartsAt = getScheduleByActivity("activity-shoot").startsAt;
+  const tomorrow = nextCalendarDay(getToday());
+  const tomorrowLabel = formatMonthDay(tomorrow);
+  const tomorrowDay = Number(tomorrow.slice(8, 10));
+
+  const top: SwapItem = {
+    when: `오늘 ${formatClock(shootStartsAt)} 예정`,
+    title: "성수동 외부 촬영",
+    subtitle: "여행 콘텐츠 제작",
+    status: "바로 진행 어려움",
+    statusTone: "warn",
+    illustration: "camera",
+  };
+
+  const bottom: SwapItem = {
+    when: `${tomorrowLabel} 11:00 예정`,
+    title: "리서치 자료 정리",
+    subtitle: "팀 프로젝트",
+    status: "시간 조정 가능",
+    statusTone: "ok",
+    illustration: "file",
+  };
+
+  const reasons: readonly ReasonRow[] = [
+    { icon: "sunny", text: `${tomorrowDay}일은 맑을 예정이에요` },
+    { icon: "time", text: "두 일정 모두 마감에 영향이 없어요" },
+    { icon: "person", text: "참여자 일정을 확인했어요" },
+  ];
+
   return (
     <main className={styles.page}>
       <StatusBar />
@@ -87,11 +121,11 @@ export function ShootScheduleSwap({ onHome, onConfirm }: ShootScheduleSwapProps)
         {/* 시안: blue-050 밴드는 교체 카드 구간만 감쌈 · 이유 카드는 밴드 밖 */}
         <div className={styles.swapRegion}>
           <div className={styles.swapStack}>
-            <SwapProposeCard item={TOP} />
+            <SwapProposeCard item={top} />
             <span className={styles.exchange} aria-hidden="true">
               <IconExchange size={18} />
             </span>
-            <SwapProposeCard item={BOTTOM} />
+            <SwapProposeCard item={bottom} />
           </div>
         </div>
 
@@ -101,7 +135,7 @@ export function ShootScheduleSwap({ onHome, onConfirm }: ShootScheduleSwapProps)
             <h2 className={styles.reasonTitle}>교체해도 괜찮아요</h2>
           </header>
           <ul className={styles.reasonList}>
-            {REASONS.map((row) => (
+            {reasons.map((row) => (
               <li key={String(row.text)} className={styles.reasonRow}>
                 <ReasonIcon kind={row.icon} />
                 <span className={styles.reasonText}>{row.text}</span>

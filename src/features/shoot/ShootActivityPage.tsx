@@ -599,7 +599,7 @@ export function ShootActivityPage({
         <div className={styles.body}>
           <h1 className={styles.visuallyHidden}>촬영 자료</h1>
           <p className={styles.lead}>
-            내일 강변 촬영에 쓸 자료를 확인하세요.
+            강변 촬영에 쓸 자료를 확인하세요.
           </p>
           <div className={styles.setList}>
             {resources.map((resource) => {
