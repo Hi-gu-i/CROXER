@@ -33,7 +33,7 @@
 | 자료 | Task 4: `resource-research-cases`(지역 활성화 사례 3가지), `resource-research-space-culture`(빈 점포의 문화공간 전환), `resource-research-space-hub`(유휴공간의 커뮤니티 거점화), `resource-research-resident`(주민이 운영하는 지역 프로그램), `resource-research-compare`(사례 비교 메모), `resource-research-agenda`(팀 회의 안건). 폴더 배치(핵심 요약·활성화 사례·사례 비교·참고 자료)는 `src/features/research/researchFolders.ts`에 있다. 촬영: `resource-shoot-reference`(강변 촬영 참고 자료), `resource-shoot-memo`(촬영 메모), `resource-shoot-extra`(Task 9 결과, 작업 완료 전 숨김) |
 | 알림 | `alert-shoot-rain` (Task 6 비 예보) |
 | 문의·AI 판단 | `inquiry-run-weather`, `assessment-run-weather` (Task 8) |
-| 대체 코스 | `course-run-paved`(한강 포장 산책로 코스), `course-run-park`(여의도공원 순환 코스) |
+| 대체 코스 | `course-run-park`(공원 순환 A코스 · 4.2km · 약 45분), `course-run-paved`(강변 포장 B코스 · 3.8km · 약 37분). 이름·거리·시간은 Figma 러닝 시안과 같게 둔다 |
 | 공지 | `announcement-run-course` |
 | 채팅 키워드 응답 | `reply-shoot-keep-riverside`, `reply-shoot-indoor`, `reply-shoot-weather`, `reply-shoot-proceed`, `reply-run-reference` |
 | 키워드가 맞지 않을 때 선택지 | `choice-shoot-indoor`, `choice-shoot-keep-riverside`, `choice-shoot-weather`, `choice-run-reference` |
@@ -92,6 +92,7 @@
 
 | 버전 | 날짜 | 수정자 | 수정 내용과 이유 |
 | --- | --- | --- | --- |
+| 2.7 | 2026-11-21 | Claude · 현지 요청 | 러닝 대체 코스 이름·거리·시간을 Figma 시안(공원 순환 A코스 4.2km·45분, 강변 포장 B코스 3.8km·37분)에 맞춤. 코스 카드·공지·진행자 패널·리포트에서 같은 이름이 보이게 하기 위함(이슈 #68). 초기 데이터 버전 1.3 |
 | 2.6 | 2026-11-21 | Claude Code · 지유 요청 | 세션에 `startedAt`·`updatedAt`을 추가하고, 서로 다른 기기에서 같은 세션을 맞추는 방 번호(`?room=`) 규칙을 적음. 현지 님 요청 카드 반영 |
 | 2.5 | 2026-11-18 | Claude · 현지 요청 | 브리핑·스케줄 카드 설명을 두 화면 코드가 아닌 초기 데이터 한 곳에서 관리하도록 활동에 `summary` 필드를 추가(이슈 #37). 리서치 설명은 실제 화면과 맞게 ‘어제 밤 정리한 자료 확인하기’로 정함 |
 | 2.4 | 2026-11-18 | Claude · 현지 요청 | Figma Task 4 시안의 ‘활성화 사례’ 폴더에 맞춰 리서치 자료 3개를 추가하고 자료 ID 표를 갱신 |
