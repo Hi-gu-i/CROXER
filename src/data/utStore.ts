@@ -103,13 +103,20 @@ function createInitialSession(): UtSession {
   }
 }
 
+/** 저장된 문자열을 세션으로 읽는다. 저장 형식이나 초기 데이터가 바뀌었으면 이전 저장값을 쓰지 않는다 */
+function parseStoredSession(raw: string | null | undefined): UtSession | null {
+  if (!raw) return null
+  try {
+    const parsed = JSON.parse(raw) as UtSession
+    return parsed.version === sessionVersion() ? parsed : null
+  } catch {
+    return null
+  }
+}
+
 function readStoredSession(): UtSession | null {
   try {
-    const raw = sessionStorageArea()?.getItem(UT_STORAGE_KEY)
-    if (!raw) return null
-    const parsed = JSON.parse(raw) as UtSession
-    // 저장 형식이나 초기 데이터가 바뀌었으면 이전 저장값을 쓰지 않는다
-    return parsed.version === sessionVersion() ? parsed : null
+    return parseStoredSession(sessionStorageArea()?.getItem(UT_STORAGE_KEY))
   } catch {
     return null
   }
@@ -132,11 +139,16 @@ function notify() {
   listeners.forEach((listener) => listener())
 }
 
-/** 이 기기 밖(다른 탭·다른 기기)에서 바뀐 세션으로 교체한다 */
-function replaceFromOutside(next: UtSession) {
+/**
+ * 이 기기 밖(다른 탭·다른 기기)에서 바뀐 세션으로 교체한다.
+ * persist: 다른 기기(방 연결)에서 받은 값은 새로고침해도 남도록 저장한다.
+ * 같은 컴퓨터의 다른 탭에서 온 값은 이미 브라우저 저장소에 있으므로 다시 쓰지 않는다.
+ * 다시 쓰면 두 탭이 서로의 낡은 값을 주고받아 방금 바꾼 상태가 되돌아간다.
+ */
+function replaceFromOutside(next: UtSession, persist = true) {
   const previous = session
   session = next
-  writeStoredSession(session)
+  if (persist) writeStoredSession(session)
   notify()
   externalListeners.forEach((listener) => listener(previous, next))
 }
@@ -229,7 +241,8 @@ if (roomId && !roomSync) {
 if (typeof window !== 'undefined' && !roomSync) {
   window.addEventListener('storage', (event) => {
     if (event.key !== UT_STORAGE_KEY) return
-    replaceFromOutside(readStoredSession() ?? createInitialSession())
+    // 저장소를 다시 읽지 않고 이벤트에 담긴 값을 쓴다. 다른 탭이 연달아 저장하면 다시 읽을 때 앞의 값이 올 수 있다
+    replaceFromOutside(parseStoredSession(event.newValue) ?? createInitialSession(), false)
   })
 }
 
