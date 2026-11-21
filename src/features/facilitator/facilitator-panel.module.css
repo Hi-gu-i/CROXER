@@ -315,7 +315,23 @@
   font-variant-numeric: tabular-nums;
 }
 
+.linkBlock {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-xs);
+  padding-top: var(--gap-sm);
+}
+
+.linkLabel {
+  font: var(--type-ios-body-accent-font);
+  letter-spacing: var(--type-ios-body-accent-tracking);
+  color: var(--color-text-primary);
+}
+
 .roomLink {
+  font: var(--type-ios-body-small-font);
+  letter-spacing: var(--type-ios-body-small-tracking);
+  color: var(--color-text-secondary);
   overflow-wrap: anywhere;
 }
 
