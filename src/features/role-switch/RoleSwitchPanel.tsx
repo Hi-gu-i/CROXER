@@ -19,11 +19,11 @@ const toneByRole: Record<RoleId, ToggleCategoryTone> = {
   'role-runner': 'mint',
 }
 
-/** 왼쪽은 지금 역할, 오른쪽은 다음 역할. 교양 3조 팀장은 #FCD658 */
+/** 왼쪽은 지금 역할, 오른쪽은 다음 역할. 전환 워시는 semantic soft */
 const tintByRole: Record<RoleId, string> = {
-  'role-leader': 'var(--color-yellow-200)',
-  'role-editor': 'var(--color-violet-200)',
-  'role-runner': 'var(--color-mint-200)',
+  'role-leader': 'var(--color-role-leader-soft)',
+  'role-editor': 'var(--color-role-editor-soft)',
+  'role-runner': 'var(--color-role-runner-soft)',
 }
 
 const countdownStart = 5

@@ -101,6 +101,9 @@
   --color-role-leader-strong: var(--color-role-leader);
   --color-role-editor-strong: var(--color-role-editor);
   --color-role-runner-strong: var(--color-role-runner);
+  --color-role-leader-soft: var(--color-yellow-200);
+  --color-role-editor-soft: var(--color-violet-200);
+  --color-role-runner-soft: var(--color-mint-200);
 
   /* Layout primitives */
   --padding-000: 0;

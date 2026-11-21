@@ -16,7 +16,7 @@
 }
 
 /* 민선 패널의 고정 보라→민트 위에, 역할 색 워시를 덮는다.
-   오른쪽이 다음 역할이다. 교양 3조 팀장은 #FCD658(--color-yellow-200). */
+   오른쪽이 다음 역할이다. 색은 --color-role-*-soft. */
 .stage section > div:nth-of-type(1) {
   background: linear-gradient(90deg, var(--handoff-from) 0%, var(--handoff-to) 100%);
 }
