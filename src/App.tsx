@@ -114,20 +114,19 @@ export default function App() {
   }
 
   function finishActivity(activityId: ActivityId) {
-    const nextActivityId = getNextActivityId(activityId)
+    const nextActivityId =
+      getScheduleByActivity(activityId).status === 'done'
+        ? getNextActivityId(activityId)
+        : completeActivity(activityId)
     if (nextActivityId) {
       setSwitchTargetId(nextActivityId)
       return
     }
-    if (getScheduleByActivity(activityId).status !== 'done') completeActivity(activityId)
     setScreen({ name: 'schedule' })
   }
 
   function switchToNextActivity() {
     if (!switchTargetId || screen.name !== 'activity') return
-    if (getScheduleByActivity(screen.activityId).status !== 'done') {
-      completeActivity(screen.activityId)
-    }
     enterActivity(switchTargetId)
     setScreen({ name: 'activity', activityId: switchTargetId })
     setSwitchTargetId(null)
@@ -135,7 +134,7 @@ export default function App() {
 
   const activityDone =
     screen.name === 'activity' && getScheduleByActivity(screen.activityId).status === 'done'
-  // 유지하기는 완료로 잠그지 않는다. 같은 완료 버튼을 다시 누르면 전환 패널이 또 열린다.
+  // 흐름을 마치면 바로 완료다. 유지하기 뒤에 하단 탭이 남고, 완료 버튼을 다시 누를 수 있으면 전환 패널이 또 열린다.
   const showTabBar = screen.name !== 'activity' || (activityDone && !switchTargetId)
   const activeTab: TabId | null = screen.name === 'activity' ? null : screen.name
   const ActivityScreen =
