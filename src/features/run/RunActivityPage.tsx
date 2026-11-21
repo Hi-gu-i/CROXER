@@ -218,8 +218,10 @@ type RunActivityPageProps = {
   onFinish: () => void;
   /** 프리뷰·딥링크용. 지정 시 해당 단계로 바로 연다 */
   initialStep?: RunStep;
-  /** 프리뷰: 러닝 종료 토스트가 보이는 상태 */
+  /** 프리뷰: 채팅 경로 러닝 종료 토스트가 보이는 상태 */
   previewEndToast?: boolean;
+  /** 프리뷰: 정지 후 「러닝을 마칠까요?」 토스트가 보이는 상태 */
+  previewStopConfirm?: boolean;
 };
 
 /**
@@ -232,6 +234,7 @@ export function RunActivityPage({
   onFinish,
   initialStep,
   previewEndToast = false,
+  previewStopConfirm = false,
 }: RunActivityPageProps) {
   useUtSession();
 
@@ -245,12 +248,19 @@ export function RunActivityPage({
   const [assessmentOpen, setAssessmentOpen] = useState(false);
   /** 화면 선택 상태. 공지 발송 후에도 시안처럼 선택이 보이게 유지 */
   const [pickedCourseId, setPickedCourseId] = useState<string | null>(null);
-  const [meterPhase, setMeterPhase] = useState<RunMeterPhase>("idle");
+  const [meterPhase, setMeterPhase] = useState<RunMeterPhase>(
+    previewStopConfirm || previewEndToast ? "paused" : "idle",
+  );
   const [elapsedMs, setElapsedMs] = useState(0);
   /** 러닝을 한 번 이상 시작 후 멈춤 */
-  const [hasPausedRun, setHasPausedRun] = useState(previewEndToast);
+  const [hasPausedRun, setHasPausedRun] = useState(
+    previewEndToast || previewStopConfirm,
+  );
   /** 작업 카드(job)를 본 뒤 채팅을 나가 러닝으로 복귀 */
   const [returnedAfterJob, setReturnedAfterJob] = useState(previewEndToast);
+  /** 정지(■) 후 · 채팅 없이 마치기 확인 토스트 */
+  const [showStopFinishConfirm, setShowStopFinishConfirm] =
+    useState(previewStopConfirm);
   const runAccumulatedRef = useRef(0);
   const runStartedAtRef = useRef<number | null>(null);
 
@@ -347,6 +357,7 @@ export function RunActivityPage({
 
   function handleMeterStart() {
     setMeterPhase("running");
+    setShowStopFinishConfirm(false);
   }
 
   function handleMeterPause() {
@@ -357,6 +368,10 @@ export function RunActivityPage({
   function handleMeterStop() {
     setMeterPhase("paused");
     setHasPausedRun(true);
+    // 채팅 경로 토스트가 없을 때만 정지 확인 토스트
+    if (!returnedAfterJob) {
+      setShowStopFinishConfirm(true);
+    }
   }
 
   function handleMeterReset() {
@@ -364,6 +379,7 @@ export function RunActivityPage({
     runStartedAtRef.current = null;
     setElapsedMs(0);
     setMeterPhase("idle");
+    setShowStopFinishConfirm(false);
   }
 
   function openChat() {
@@ -749,13 +765,23 @@ export function RunActivityPage({
           />
           {/*
             러닝 종료 토스트 · 작업은 running 유지(ut-data-baseline).
-            조건: 1) 작업 카드 후 러닝 복귀  2) 한 번 이상 시작·멈춤
+            채팅 경로: 작업 카드 후 복귀 + 일시정지/정지
+            비채팅 경로(#72): 정지(■) 후 확인 토스트
           */}
           {returnedAfterJob && hasPausedRun ? (
             <div className={styles.runJobToast}>
               <AiJobToast
                 tone="ack"
                 message="레퍼런스 정리 중이에요"
+                actionLabel="러닝 마치기"
+                onAction={handleJobDone}
+              />
+            </div>
+          ) : showStopFinishConfirm ? (
+            <div className={styles.runJobToast}>
+              <AiJobToast
+                tone="ack"
+                message="러닝을 마칠까요?"
                 actionLabel="러닝 마치기"
                 onAction={handleJobDone}
               />
