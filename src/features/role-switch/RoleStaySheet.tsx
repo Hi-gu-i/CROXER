@@ -12,7 +12,7 @@ interface RoleStaySheetProps {
   onKeep: () => void
   /** 딤 처리된 화면이나 역할 탭을 다시 눌렀을 때 */
   onDismiss: () => void
-  /** 남은 시간이 5초가 되었을 때. 역할을 다음 활동으로 넘긴다 */
+  /** 남은 시간이 5초가 되었을 때. 역할은 아직 바꾸지 않고 전환 안내만 연다 */
   onSwitch: () => void
 }
 
@@ -24,7 +24,7 @@ const toneByRole: Record<RoleId, ToggleCategoryTone> = {
 
 /** 역할 막대에서 세는 남은 시간 */
 const stayMs = 30 * 1000
-/** 이 초가 남으면 역할을 넘긴다 */
+/** 이 초가 남으면 전환 안내를 연다. 역할은 안내가 끝난 뒤에 바뀐다 */
 const switchAtMs = 5 * 1000
 
 function formatRemaining(ms: number) {
@@ -37,7 +37,7 @@ function formatRemaining(ms: number) {
 
 /**
  * 활동 화면 상단 역할 탭을 열었을 때 위에서 내려오는 막대.
- * 남은 시간은 30초다. 5초가 남으면 역할을 넘긴다.
+ * 남은 시간은 30초다. 5초가 남으면 전환 안내가 내려오고, 그 카운트가 끝나면 역할이 바뀐다.
  * 아치 선은 전환 패널과 같은 RoleTrack이다.
  */
 export default function RoleStaySheet({ activityId, onKeep, onDismiss, onSwitch }: RoleStaySheetProps) {

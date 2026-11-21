@@ -145,7 +145,7 @@ export default function App() {
     setRoleSheetOpen(false)
   }
 
-  function switchRoleFromStay() {
+  function warnRoleSwitch() {
     if (screen.name !== 'activity') return
     const nextActivityId = getNextActivityId(screen.activityId)
     setRoleSheetOpen(false)
@@ -153,8 +153,7 @@ export default function App() {
       setScreen({ name: 'schedule' })
       return
     }
-    enterActivity(nextActivityId)
-    setScreen({ name: 'activity', activityId: nextActivityId })
+    setSwitchTargetId(nextActivityId)
   }
 
   function handleActivityClickCapture(event: MouseEvent<HTMLDivElement>) {
@@ -221,7 +220,7 @@ export default function App() {
           activityId={activityId}
           onKeep={closeRoleSheet}
           onDismiss={closeRoleSheet}
-          onSwitch={switchRoleFromStay}
+          onSwitch={warnRoleSwitch}
         />
       )}
       {switchTargetId && (
