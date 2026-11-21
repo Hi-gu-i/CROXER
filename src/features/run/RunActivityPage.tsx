@@ -451,8 +451,8 @@ export function RunActivityPage({
     appendExchange(
       text,
       alreadyHasJobCard
-        ? "준비된 키워드와 맞지 않아요. 다른 말로 다시 입력해 주세요."
-        : "준비된 키워드와 맞지 않아요. 아래 선택지에서 고르거나 다른 말로 다시 입력해 주세요.",
+        ? "잘 이해하지 못했어요. 다른 말로 다시 말해 주세요."
+        : "잘 이해하지 못했어요. 아래에서 고르거나 다른 말로 다시 말해 주세요.",
     );
     setDraft("");
     setShowFallback(!alreadyHasJobCard);

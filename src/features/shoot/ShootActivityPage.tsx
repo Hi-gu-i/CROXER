@@ -79,7 +79,7 @@ const SCHEDULE_CHOICE_TOMORROW = {
   reply: "가능해요, 다만 촬영까지 미루면 내일 작업이 3개로 늘어나요",
 } as const;
 const SCHEDULE_FALLBACK_AI =
-  "준비된 키워드와 맞지 않아요. 아래 선택지에서 고르거나 다른 말로 다시 입력해 주세요.";
+  "잘 이해하지 못했어요. 아래에서 고르거나 다른 말로 다시 말해 주세요.";
 /** 시안 `08 · … 일정 교체 제안` 「내일 일정 비교」 */
 const SCHEDULE_COMPARE = {
   title: "내일 일정 비교",
@@ -387,7 +387,7 @@ export function ShootActivityPage({
 
     appendExchange(
       text,
-      "준비된 키워드와 맞지 않아요. 아래 선택지에서 고르거나 다른 말로 다시 입력해 주세요.",
+      "잘 이해하지 못했어요. 아래에서 고르거나 다른 말로 다시 말해 주세요.",
     );
     setDraft("");
     setShowFallback(true);
