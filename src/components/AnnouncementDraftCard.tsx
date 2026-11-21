@@ -1,6 +1,7 @@
 import type { HTMLAttributes, ReactNode } from "react";
 import { IconLocation, IconRight, IconTime } from "../icons";
 import { ContextChip } from "./ContextChip";
+import kakaoChipIcon from "./assets/kakao-chip-icon.png";
 import styles from "./AnnouncementDraftCard.module.css";
 
 type AnnouncementDraftCardProps = {
@@ -15,20 +16,19 @@ type AnnouncementDraftCardProps = {
   /** 코스 미리보기 맵. 없으면 플레이스홀더 */
   mapSrc?: string;
   mapAlt?: string;
+  /** 맵 자리에 직접 넣을 콘텐츠(선택 코스 합성 지도 등). 있으면 mapSrc보다 우선 */
+  mapContent?: ReactNode;
   onCourseClick?: () => void;
 } & Omit<HTMLAttributes<HTMLElement>, "title">;
 
-/** KakaoTalk 마크 (원본 이미지 대체용 심플 마크). */
+/** 시안 카카오톡 칩 옆 마크 · 원형 가운데 정렬 */
 function KakaoMark() {
   return (
-    <span className={styles.kakaoMark} aria-hidden="true">
-      <svg viewBox="0 0 24 24" width="14" height="14" focusable="false">
-        <path
-          fill="currentColor"
-          d="M12 4C7.03 4 3 7.14 3 11c0 2.45 1.61 4.6 4.04 5.84-.13.48-.84 3.06-.87 3.25 0 0-.07.2.11.27.18.08.28.03.28.03.37-.05 4.27-2.82 4.94-3.3.49.07 1 .1 1.5.1 4.97 0 9-3.14 9-7s-4.03-7-9-7z"
-        />
-      </svg>
-    </span>
+    <span
+      className={styles.kakaoMark}
+      style={{ backgroundImage: `url(${kakaoChipIcon})` }}
+      aria-hidden="true"
+    />
   );
 }
 
@@ -43,6 +43,7 @@ export function AnnouncementDraftCard({
   courseMeta,
   mapSrc,
   mapAlt = "",
+  mapContent,
   onCourseClick,
   className,
   ...rest
@@ -79,7 +80,9 @@ export function AnnouncementDraftCard({
         </div>
 
         <div className={styles.coursePreview}>
-          {mapSrc ? (
+          {mapContent != null ? (
+            <div className={styles.mapSlot}>{mapContent}</div>
+          ) : mapSrc ? (
             <img className={styles.map} src={mapSrc} alt={mapAlt} />
           ) : (
             <div className={styles.mapPlaceholder} aria-hidden="true" />

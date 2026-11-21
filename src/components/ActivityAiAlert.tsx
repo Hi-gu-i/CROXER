@@ -1,5 +1,5 @@
 import type { ButtonHTMLAttributes, ReactNode } from "react";
-import { IconClose } from "../icons";
+import { IconAi, IconClose } from "../icons";
 import styles from "./ActivityAiAlert.module.css";
 
 type ActivityAiAlertState = "signal" | "expanded";
@@ -43,7 +43,7 @@ export function ActivityAiAlert({
         }}
         {...rest}
       >
-        <span className={styles.orb} aria-hidden="true" />
+        <IconAi className={styles.aiIcon} size={22} aria-hidden="true" />
       </button>
     );
   }
@@ -53,7 +53,7 @@ export function ActivityAiAlert({
   return (
     <div className={classes} role="dialog" aria-label={ariaLabel ?? "AI 알림"}>
       <div className={styles.header}>
-        <span className={styles.orb} aria-hidden="true" />
+        <IconAi className={styles.aiIcon} size={22} aria-hidden="true" />
         {onClose ? (
           <button
             type="button"

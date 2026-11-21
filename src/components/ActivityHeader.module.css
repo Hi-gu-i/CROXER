@@ -1,0 +1,82 @@
+/* 원본: Header 393×72 · pad 12 16 · AI / ToggleCategory / Home */
+.root {
+  position: relative;
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  min-height: 72px;
+  padding: 12px var(--padding-ios-x);
+  box-sizing: border-box;
+}
+
+.side {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  width: 48px;
+  height: 48px;
+}
+
+.side:last-child {
+  justify-content: flex-end;
+}
+
+.ai,
+.home {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  padding: 0;
+  border: none;
+  border-radius: var(--radius-control);
+  background: var(--color-opacity-white-600);
+  box-shadow: var(--shadow-glass);
+  backdrop-filter: var(--effect-glass-background-backdrop);
+  -webkit-backdrop-filter: var(--effect-glass-background-backdrop);
+  cursor: pointer;
+  box-sizing: border-box;
+}
+
+.ai {
+  flex-shrink: 0;
+  color: var(--color-icon-brand);
+}
+
+.aiIcon,
+.homeIcon {
+  display: block;
+  flex-shrink: 0;
+}
+
+.role {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1;
+}
+
+.home {
+  color: var(--color-icon-default);
+}
+
+/* `02 · 강변 촬영` 닫기 — fill 없음 */
+.close {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  padding: 0;
+  border: none;
+  border-radius: var(--radius-control);
+  background: transparent;
+  box-shadow: none;
+  color: var(--color-icon-default);
+  cursor: pointer;
+  box-sizing: border-box;
+}

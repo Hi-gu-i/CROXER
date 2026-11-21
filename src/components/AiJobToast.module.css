@@ -9,37 +9,31 @@
   height: 44px;
   padding: var(--padding-050) 3px var(--padding-050) var(--padding-500);
   box-sizing: border-box;
-  border: 1px solid var(--color-border-color);
   border-radius: var(--radius-250);
-  background: var(--color-bg-subtle);
-  overflow: visible;
   isolation: isolate;
 }
 
+/*
+ * 시안 `07 · 레퍼런스 · 작업 진행`
+ * fill blue-400 @ 20% · white 1px · shadow 0 0 6 / gray-200@60% · blur 12
+ */
 .ack {
-  /* 접수·진행 안내 — 보더만 */
+  overflow: hidden;
+  border: 1px solid var(--color-base-000);
+  background: color-mix(in srgb, var(--color-blue-400) 20%, transparent);
+  box-shadow: 0 0 6px 0 color-mix(in srgb, var(--color-gray-200) 60%, transparent);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
 }
 
+/*
+ * 시안 `10 · 러닝끝나고 자료 정리는 완료 됐다.` 알림
+ * fill blue-050 · stroke blue-200 · radius 20 · 글로우 없음
+ */
 .done {
-  /* 완료 — Blue Violet 외곽 글로우 */
-  box-shadow: 0 0 10px 2px color-mix(in srgb, var(--color-blue-200) 80%, transparent);
-}
-
-.glow {
-  position: absolute;
-  left: -10px;
-  top: -10px;
-  z-index: -1;
-  width: 353px;
-  height: 64px;
-  border-radius: var(--radius-300);
-  background: radial-gradient(
-    ellipse at center,
-    color-mix(in srgb, var(--color-blue-300) 55%, transparent) 0%,
-    color-mix(in srgb, var(--color-blue-200) 35%, transparent) 45%,
-    transparent 70%
-  );
-  pointer-events: none;
+  overflow: hidden;
+  border: 1px solid var(--color-blue-200);
+  background: var(--color-blue-050);
 }
 
 .inner {
@@ -54,7 +48,7 @@
   box-sizing: border-box;
 }
 
-/* 원본 14 Regular / 20 · tracking -3% ≈ letter-spacing-300 */
+/* 14 Regular / 20 · tracking -3% · text-primary */
 .message {
   margin: 0;
   flex: 1 1 auto;
@@ -68,13 +62,12 @@
   text-overflow: ellipsis;
 }
 
+/* 시안 액션 슬롯 · 99×36 */
 .action {
   display: inline-flex;
   flex-shrink: 0;
   align-items: center;
-  justify-content: flex-end;
-  gap: var(--gap-200);
-  min-width: 99px;
+  width: 99px;
   height: 36px;
   margin: 0;
   padding: 0;
@@ -82,11 +75,24 @@
   background: transparent;
   cursor: pointer;
   white-space: nowrap;
+  box-sizing: border-box;
 }
 
 .action:disabled,
 span.action {
   cursor: default;
+}
+
+/* 시안 `10` · 작업 완료 텍스트 x=24 (오른쪽 끝으로 붙지 않음) */
+.actionPlain {
+  justify-content: flex-start;
+  padding-left: var(--padding-500);
+}
+
+/* 시안 `07` · 작업 상세 + IconPlaying 원 */
+.actionWithIcon {
+  justify-content: flex-end;
+  gap: var(--gap-200);
 }
 
 .actionLabel {
@@ -96,8 +102,8 @@ span.action {
   color: var(--color-text-brand);
 }
 
-/* 채팅 「작업 상세」 보조 — 원본 36 원 */
-.chevron {
+/* 채팅 「작업 상세」 · 36 흰 원 + IconPlaying 12 */
+.actionIcon {
   display: inline-flex;
   align-items: center;
   justify-content: center;

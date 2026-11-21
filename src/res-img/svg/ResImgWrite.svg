@@ -1,0 +1,34 @@
+<svg width="64" height="56" viewBox="0 0 64 56" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <g id="ResImgWrite_ResImgWrite" transform="translate(8 4) scale(2)">
+    <path
+      id="ResImgWrite_tip"
+      d="M0.883901 24.0092L3.68983 23.6069L0.409805 20.3245L0.00785348 23.1325C-0.0642916 23.643 0.371156 24.0813 0.881325 24.0066L0.883901 24.0092Z"
+      fill="#5165FE"
+    />
+    <path
+      id="ResImgWrite_eraser"
+      d="M20.2678 11.0268L23.5478 7.74442C24.1507 7.14106 24.1507 6.16124 23.5478 5.5553L18.4461 0.452521C17.8432 -0.15084 16.8641 -0.15084 16.2586 0.452521L12.9785 3.73491L20.2652 11.0268H20.2678Z"
+      fill="url(#ResImgWrite_paint0)"
+      fill-opacity="0.9"
+    />
+    <path
+      id="ResImgWrite_body"
+      d="M1.56158 15.1597C1.24723 15.4743 1.0411 15.8843 0.979265 16.3277L0.407257 20.3269L3.68728 23.6093L7.68361 23.0369C8.12421 22.975 8.53389 22.7688 8.85081 22.4542L20.6337 10.6629C21.2366 10.0595 21.2366 9.07968 20.6337 8.47374L15.532 3.36838C14.929 2.76502 13.9499 2.76502 13.3444 3.36838L1.56158 15.1597Z"
+      fill="#B2C5FF"
+      fill-opacity="0.4"
+    />
+  </g>
+  <defs>
+    <linearGradient
+      id="ResImgWrite_paint0"
+      x1="23.7108"
+      y1="5.80155"
+      x2="18.4855"
+      y2="11.023"
+      gradientUnits="userSpaceOnUse"
+    >
+      <stop stop-color="#5165FE" />
+      <stop offset="1" stop-color="#5165FE" stop-opacity="0.8" />
+    </linearGradient>
+  </defs>
+</svg>

@@ -1,0 +1,80 @@
+/* 시안 `02 · 강변 촬영` · 좌우 `--padding-ios-x`(16px) 가이드 */
+.root {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  align-items: center;
+  gap: 0;
+  min-height: 0;
+  overflow: auto;
+  box-sizing: border-box;
+}
+
+.carousel {
+  display: flex;
+  flex-shrink: 0;
+  width: 100%;
+  height: 431px;
+  padding: 0 var(--padding-ios-x);
+  overflow-x: auto;
+  overflow-y: hidden;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x mandatory;
+  scroll-padding-inline: var(--padding-ios-x);
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+  touch-action: pan-x;
+  cursor: grab;
+  box-sizing: border-box;
+  gap: var(--gap-100);
+  user-select: none;
+}
+
+.carousel:active {
+  cursor: grabbing;
+}
+
+.carousel::-webkit-scrollbar {
+  display: none;
+}
+
+/* 너비는 JS(ResizeObserver)가 clientWidth − 좌우 16px로 맞춤 */
+.slide {
+  flex: 0 0 auto;
+  height: 431px;
+  scroll-snap-align: start;
+  border-radius: var(--radius-300);
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+.photo {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: var(--radius-300);
+  pointer-events: none;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+.shot {
+  flex-shrink: 0;
+  margin-top: var(--padding-300);
+  margin-bottom: var(--padding-300);
+}
+
+.noteBand {
+  display: flex;
+  flex-shrink: 0;
+  justify-content: center;
+  width: 100%;
+  padding: var(--padding-300) var(--padding-ios-x) var(--padding-section);
+  background: var(--color-bg-subtle);
+  box-sizing: border-box;
+}
+
+.note {
+  width: 100%;
+}

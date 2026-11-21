@@ -1,0 +1,75 @@
+/* 원본 `05 · 추천 결과` 채팅 카드 · 227×158 */
+.root {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 227px;
+  overflow: hidden;
+  border-radius: var(--radius-250);
+  background: var(--color-surface-default);
+  box-shadow: var(--shadow-card);
+  box-sizing: border-box;
+}
+
+.body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-xs);
+  padding: var(--padding-card-md);
+  box-sizing: border-box;
+}
+
+.title {
+  margin: 0;
+  /* 시안 Wanted Sans Regular 16 — body-strong(세미볼드)보다 얇은 body-medium */
+  font: var(--type-ios-body-medium-font);
+  letter-spacing: var(--type-ios-body-medium-tracking);
+  color: var(--color-text-primary);
+}
+
+.description {
+  margin: 0;
+  font: var(--type-ios-body-small-font);
+  letter-spacing: var(--type-ios-body-small-tracking);
+  color: var(--color-text-secondary);
+  white-space: pre-line;
+}
+
+.action {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--gap-sm);
+  width: 100%;
+  min-height: 54px;
+  padding: var(--padding-150) var(--padding-card-md);
+  border: none;
+  background: var(--color-bg-brand);
+  color: var(--color-text-inverse);
+  cursor: pointer;
+  box-sizing: border-box;
+  text-align: left;
+}
+
+.action:disabled {
+  cursor: default;
+  opacity: 0.72;
+}
+
+.actionLabel {
+  font: var(--type-ios-body-small-font);
+  letter-spacing: var(--type-ios-body-small-tracking);
+  color: inherit;
+}
+
+.actionIcon {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: var(--radius-control);
+  background: var(--color-brand-light);
+  color: var(--color-icon-inverse);
+}

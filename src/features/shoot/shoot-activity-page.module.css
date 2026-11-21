@@ -1,95 +1,144 @@
+/* 앱 셸 393×852 · Figma `01 · 편집자 자료` 상단 Status+Header */
 .page {
   position: relative;
   display: flex;
+  flex: 1;
   flex-direction: column;
   width: 100%;
-  max-width: 393px;
-  min-height: 100dvh;
-  margin: 0 auto;
-  background: var(--color-surface-default);
-  color: var(--color-gray-900);
+  min-height: 0;
+  background: var(--color-bg-subtle);
+  color: var(--color-text-primary);
   box-sizing: border-box;
 }
 
-.header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--gap-200);
-  padding: var(--padding-200) var(--padding-300);
-  box-sizing: border-box;
+/* `04 · 장소 제안` — GradientImage(opacity 60%) + GradientWhite fade */
+.pageChat {
+  background: var(--color-bg-subtle);
 }
 
-.headerTitle {
-  margin: 0;
-  font: var(--type-ios-title-small-font);
-  letter-spacing: var(--type-ios-title-small-tracking);
-  color: var(--color-gray-900);
-  text-align: right;
+/* `06 · 지도 채팅` — 지도가 Status·Header·입력창 뒤로 full-bleed */
+.pageMap {
+  background: transparent;
+}
+
+.mapLayer {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+
+.pageMap > :not(.mapLayer) {
+  position: relative;
+  z-index: 1;
+}
+
+.mapFooter {
+  position: relative;
+  z-index: 2;
+  margin-top: auto;
+  background: transparent;
+}
+
+.chatBackground {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+/* Figma GradientImage: x -95 · w 585 on 393 frame · opacity 60% */
+.chatBgGradient {
+  position: absolute;
+  top: 0;
+  left: calc(100% * -95 / 393);
+  width: calc(100% * 585 / 393);
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  opacity: 0.6;
+}
+
+/* Figma GradientWhite: transparent → --color-bg-subtle at 80% */
+.chatBgWhite {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    transparent 0%,
+    var(--color-bg-subtle) 80%
+  );
+}
+
+/* 배경(z0) 위에 Status·Header·본문·푸터가 오도록 */
+.pageChat > :not(.chatBackground) {
+  position: relative;
+  z-index: 1;
+}
+
+.chatBody,
+.chatFooter {
+  position: relative;
+  z-index: 1;
 }
 
 .body {
   display: flex;
   flex: 1;
   flex-direction: column;
-  gap: var(--gap-300);
-  padding: 0 var(--padding-300) var(--padding-300);
+  gap: var(--gap-lg);
+  min-height: 0;
+  padding: var(--gap-sm) var(--padding-ios-x) var(--padding-section);
   box-sizing: border-box;
   overflow: auto;
+}
+
+/* `02 · 강변 촬영` — 패딩은 상세 내부(캐러셀·카드)가 맡는다 */
+.detailBody {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.visuallyHidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
 }
 
 .lead {
   margin: 0;
   font: var(--type-ios-body-medium-font);
   letter-spacing: var(--type-ios-body-medium-tracking);
-  color: var(--color-gray-700);
+  color: var(--color-text-secondary);
 }
 
-.resourceList {
+.setList {
   display: flex;
   flex-direction: column;
-  gap: var(--gap-200);
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-.resourceCard {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: var(--gap-100);
+  gap: var(--gap-xl);
   width: 100%;
-  padding: var(--padding-300);
-  border: none;
-  border-radius: var(--radius-card-md);
-  background: var(--color-gray-050);
-  box-shadow: var(--shadow-card);
-  text-align: left;
-  cursor: pointer;
-  box-sizing: border-box;
 }
 
-.resourceKind {
-  font: var(--type-ios-caption-medium-font);
-  letter-spacing: var(--type-ios-caption-medium-tracking);
-  color: var(--color-brand-default);
+.referenceLayout {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--gap-xl);
+  width: 100%;
 }
 
-.resourceTitle {
-  font: var(--type-ios-body-strong-font);
-  letter-spacing: var(--type-ios-body-strong-tracking);
-  color: var(--color-gray-900);
-}
-
-.resourcePreview {
-  font: var(--type-ios-caption-large-font);
-  letter-spacing: var(--type-ios-caption-large-tracking);
-  color: var(--color-gray-500);
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
+.shotStack {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--gap-lg);
+  width: 100%;
 }
 
 .back {
@@ -99,15 +148,16 @@
   background: transparent;
   font: var(--type-ios-caption-large-font);
   letter-spacing: var(--type-ios-caption-large-tracking);
-  color: var(--color-brand-default);
+  color: var(--color-text-brand);
   cursor: pointer;
 }
 
 .doc {
   display: flex;
   flex-direction: column;
-  gap: var(--gap-200);
-  padding: var(--padding-300);
+  gap: var(--gap-md);
+  width: 100%;
+  padding: var(--padding-card-md);
   border-radius: var(--radius-card-md);
   background: var(--color-surface-default);
   box-shadow: var(--shadow-card);
@@ -118,7 +168,7 @@
   margin: 0;
   font: var(--type-ios-title-small-font);
   letter-spacing: var(--type-ios-title-small-tracking);
-  color: var(--color-gray-900);
+  color: var(--color-text-primary);
 }
 
 .docBody {
@@ -126,22 +176,14 @@
   white-space: pre-wrap;
   font: var(--type-ios-body-medium-font);
   letter-spacing: var(--type-ios-body-medium-tracking);
-  color: var(--color-gray-700);
-  line-height: 1.55;
+  color: var(--color-text-secondary);
 }
 
 .hint {
   margin: 0;
   font: var(--type-ios-caption-large-font);
   letter-spacing: var(--type-ios-caption-large-tracking);
-  color: var(--color-gray-500);
-}
-
-.alertDock {
-  position: absolute;
-  right: var(--padding-300);
-  bottom: calc(var(--padding-400) + 8px);
-  z-index: 2;
+  color: var(--color-text-tertiary);
 }
 
 .alertOverlay {
@@ -149,9 +191,9 @@
   inset: 0;
   z-index: 3;
   display: flex;
-  align-items: flex-end;
+  align-items: center;
   justify-content: center;
-  padding: var(--padding-300);
+  padding: var(--padding-ios-x);
   background: var(--color-opacity-black-400);
   box-sizing: border-box;
 }
@@ -159,7 +201,7 @@
 .chatList {
   display: flex;
   flex-direction: column;
-  gap: var(--gap-200);
+  gap: var(--gap-md);
   width: 100%;
 }
 
@@ -176,44 +218,52 @@
   justify-content: flex-end;
 }
 
+/* 시안 AI 말풍선·추천 카드 — 흰 버블 옆 IconAi */
+.chatAiBlock {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--gap-sm);
+  width: 100%;
+  max-width: 100%;
+}
+
+.chatAiAvatar {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-control);
+  background: var(--color-surface-default);
+  box-shadow: var(--shadow-card);
+  color: var(--color-icon-brand);
+}
+
+/* 연속 AI 말풍선 정렬용 · 아바타 자리만 유지 */
+.chatAiAvatarSpacer {
+  flex-shrink: 0;
+  width: 36px;
+  height: 36px;
+}
+
 .fallback {
   display: flex;
   flex-direction: column;
-  gap: var(--gap-100);
+  gap: var(--gap-sm);
 }
 
 .fallbackLabel {
   margin: 0;
   font: var(--type-ios-caption-large-font);
   letter-spacing: var(--type-ios-caption-large-tracking);
-  color: var(--color-gray-500);
+  color: var(--color-text-tertiary);
 }
 
 .footer {
   display: flex;
   flex-direction: column;
-  gap: var(--gap-150);
-  padding: var(--padding-200) var(--padding-300) var(--padding-300);
+  gap: var(--gap-sm);
+  padding: var(--padding-ios-y) var(--padding-ios-x) var(--gap-md);
   box-sizing: border-box;
-}
-
-.done {
-  display: flex;
-  flex: 1;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: var(--gap-150);
-  padding: var(--padding-400) var(--padding-300);
-  text-align: center;
-  font: var(--type-ios-body-strong-font);
-  letter-spacing: var(--type-ios-body-strong-tracking);
-  color: var(--color-gray-900);
-}
-
-.doneMeta {
-  margin: 0;
-  font: var(--type-ios-caption-large-font);
-  letter-spacing: var(--type-ios-caption-large-tracking);
-  color: var(--color-gray-500);
 }
