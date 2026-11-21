@@ -1,7 +1,7 @@
 import { useEffect, useState, type ComponentType, type MouseEvent, type ReactNode } from 'react'
 import styles from './app.module.css'
 import { IconHome, IconReport, IconSchedule, IconSet } from './icons'
-import type { ActivityId } from './data/types'
+import type { ActivityId, UtSession } from './data/types'
 import { useUtSession } from './data/useUtSession'
 import {
   completeActivity,
@@ -13,10 +13,11 @@ import {
   getRole,
   getScheduleByActivity,
   isBriefingConfirmed,
-  UT_STORAGE_KEY,
+  subscribeUtExternalChange,
 } from './data/utStore'
 import BriefingPage from './features/briefing/BriefingPage'
 import { FacilitatorPanel } from './features/facilitator'
+import { isFacilitatorHash } from './features/facilitator/roomLink'
 import HomeScreen from './features/home/HomeScreen'
 import RoleSwitchPanel from './features/role-switch/RoleSwitchPanel'
 import { ReportPage } from './features/report'
@@ -57,32 +58,26 @@ export default function App() {
   useUtSession()
   const [screen, setScreen] = useState<Screen>({ name: 'home' })
   const [switchTargetId, setSwitchTargetId] = useState<ActivityId | null>(null)
+  const facilitatorStandalone = useFacilitatorStandalone()
 
+  // 이 기기의 저장은 부르지 않는다. 다른 탭·다른 기기가 세션을 바꿨을 때만 화면을 옮긴다.
   useEffect(() => {
-    function onStorage(event: StorageEvent) {
-      if (event.key !== UT_STORAGE_KEY || !event.newValue) return
-      let next: { isBriefingConfirmed?: boolean; currentActivityId?: ActivityId | null }
-      let prev: { isBriefingConfirmed?: boolean; currentActivityId?: ActivityId | null }
-      try {
-        next = JSON.parse(event.newValue)
-        prev = event.oldValue ? JSON.parse(event.oldValue) : {}
-      } catch {
-        return
-      }
-      const briefingChanged = Boolean(next.isBriefingConfirmed) !== Boolean(prev.isBriefingConfirmed)
-      const activityChanged = (next.currentActivityId ?? null) !== (prev.currentActivityId ?? null)
-      if (!briefingChanged && !activityChanged) return
+    return subscribeUtExternalChange((previous, next) => {
+      const briefingChanged = next.isBriefingConfirmed !== previous.isBriefingConfirmed
+      const activityChanged = next.currentActivityId !== previous.currentActivityId
+      const prevStarted = readStartedAt(previous)
+      const nextStarted = readStartedAt(next)
+      const startedAtChanged = prevStarted !== undefined && nextStarted !== prevStarted
+      if (!briefingChanged && !activityChanged && !startedAtChanged) return
       setSwitchTargetId(null)
-      if (!next.isBriefingConfirmed || briefingChanged) {
+      if (!next.isBriefingConfirmed || briefingChanged || startedAtChanged) {
         setScreen({ name: 'home' })
         return
       }
       setScreen(
         next.currentActivityId ? { name: 'activity', activityId: next.currentActivityId } : { name: 'schedule' },
       )
-    }
-    window.addEventListener('storage', onStorage)
-    return () => window.removeEventListener('storage', onStorage)
+    })
   }, [])
 
   function handleFacilitatorActivity(nextActivityId: ActivityId | null) {
@@ -93,6 +88,15 @@ export default function App() {
   function handleFacilitatorReset() {
     setSwitchTargetId(null)
     setScreen({ name: 'home' })
+  }
+
+  // 진행자 주소(#facilitator, #진행자)는 참가자 홈을 그리지 않는다. 홈이 활동을 진행 중으로 저장하면 다른 화면의 현재 활동을 덮어쓴다.
+  if (facilitatorStandalone) {
+    return (
+      <Frame>
+        <FacilitatorPanel onActivityChange={handleFacilitatorActivity} onReset={handleFacilitatorReset} />
+      </Frame>
+    )
   }
 
   if (!isBriefingConfirmed()) {
@@ -207,6 +211,24 @@ export default function App() {
       <FacilitatorPanel onActivityChange={handleFacilitatorActivity} onReset={handleFacilitatorReset} />
     </Frame>
   )
+}
+
+function useFacilitatorStandalone() {
+  const [standalone, setStandalone] = useState(
+    () => typeof window !== 'undefined' && isFacilitatorHash(window.location.hash),
+  )
+  useEffect(() => {
+    const onHashChange = () => setStandalone(isFacilitatorHash(window.location.hash))
+    window.addEventListener('hashchange', onHashChange)
+    return () => window.removeEventListener('hashchange', onHashChange)
+  }, [])
+  return standalone
+}
+
+/** 세션에 초기화 시각이 생기기 전에는 필드가 없다. 없던 값이 처음 생기는 것은 초기화로 보지 않는다. */
+function readStartedAt(session: UtSession): string | undefined {
+  if (!Object.prototype.hasOwnProperty.call(session, 'startedAt')) return undefined
+  return typeof session.startedAt === 'string' ? session.startedAt : undefined
 }
 
 function Frame({ children }: { children: ReactNode }) {
