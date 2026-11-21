@@ -114,7 +114,8 @@ export default function App() {
   }
 
   function goHome() {
-    setSwitchTargetId(null)
+    // 전환 패널이 떠 있으면 그 선택이 우선이다. 홈으로 보내며 패널을 닫지 않는다.
+    if (switchTargetId) return
     setScreen({ name: 'home' })
   }
 
