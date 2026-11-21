@@ -1,4 +1,4 @@
-import { useEffect, useState, type ComponentType, type ReactNode } from 'react'
+import { useEffect, useState, type ComponentType, type MouseEvent, type ReactNode } from 'react'
 import styles from './app.module.css'
 import { IconHome, IconReport, IconSchedule, IconSet } from './icons'
 import type { ActivityId } from './data/types'
@@ -34,6 +34,8 @@ interface ActivityScreenProps {
   activityId: ActivityId
   /** 활동의 UT 흐름을 마쳤을 때 한 번 부른다. 완료 처리와 다음 활동 안내는 App이 맡는다 */
   onFinish: () => void
+  /** 헤더의 홈. 그 버튼이 있는 활동 화면이 부른다 */
+  onHome?: () => void
 }
 
 const tabs: { id: TabId; label: string; Icon: typeof IconHome }[] = [
@@ -107,6 +109,19 @@ export default function App() {
     )
   }
 
+  function goHome() {
+    setSwitchTargetId(null)
+    setScreen({ name: 'home' })
+  }
+
+  function handleActivityHomeCapture(event: MouseEvent<HTMLDivElement>) {
+    const button = (event.target as HTMLElement).closest('button')
+    if (button?.getAttribute('aria-label') !== '홈') return
+    event.preventDefault()
+    event.stopPropagation()
+    goHome()
+  }
+
   function openActivity(activityId: ActivityId) {
     // 브리핑 확정(confirmBriefing)이 첫 활동 진입을 이미 처리했으므로 같은 활동이면 다시 시작하지 않는다.
     if (getCurrentActivityId() !== activityId) enterActivity(activityId)
@@ -150,14 +165,16 @@ export default function App() {
           />
         )}
         {screen.name === 'activity' && ActivityScreen && (
-          <div className={styles.activityScreen}>
+          <div className={styles.activityScreen} onClickCapture={handleActivityHomeCapture}>
             <ActivityScreen
               key={screen.activityId}
               activityId={screen.activityId}
               onFinish={() => finishActivity(screen.activityId)}
+              onHome={goHome}
             />
           </div>
         )}
+        {/* 진행 완료 카드를 누르면 그 활동 화면만 연다. 스케줄 화면이 onOpenActivity를 받기 시작하면 연결한다 */}
         {screen.name === 'schedule' && <SchedulePage />}
         {screen.name === 'report' && <ReportPage />}
         {screen.name === 'settings' && <NotificationSettingsPage />}
