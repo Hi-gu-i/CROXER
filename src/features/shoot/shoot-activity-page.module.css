@@ -247,11 +247,6 @@
   height: 36px;
 }
 
-/* 시안 `10` 제안 이유 카드 · 232폭 */
-.scheduleReasonCard {
-  max-width: 232px;
-}
-
 .fallback {
   display: flex;
   flex-direction: column;
