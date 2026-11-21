@@ -146,7 +146,10 @@
       "role": {
         "leader-strong": { "$value": "{color.primitive.role.leader}" },
         "editor-strong": { "$value": "{color.primitive.role.editor}" },
-        "runner-strong": { "$value": "{color.primitive.role.runner}" }
+        "runner-strong": { "$value": "{color.primitive.role.runner}" },
+        "leader-soft": { "$value": "{color.primitive.yellow.200}" },
+        "editor-soft": { "$value": "{color.primitive.violet.200}" },
+        "runner-soft": { "$value": "{color.primitive.mint.200}" }
       }
     }
   },

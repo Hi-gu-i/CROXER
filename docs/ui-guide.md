@@ -158,6 +158,9 @@ Semantic은 Primitive를 가리킨다. 브랜드 색이 바뀌면 `--color-brand
 | `--color-role-leader-strong` | `#d1bb72` | 팀장 역할 막대 |
 | `--color-role-editor-strong` | `#a899c0` | 편집자 역할 막대 |
 | `--color-role-runner-strong` | `#83b1af` | 러닝 크루장 역할 막대 |
+| `--color-role-leader-soft` | `#fcd658` | 팀장 전환 워시. 교양 3조 팀장 쪽 |
+| `--color-role-editor-soft` | `#d9b9ff` | 편집자 전환 워시 |
+| `--color-role-runner-soft` | `#95e6e0` | 러닝 크루장 전환 워시 |
 
 배경·표면·글자·테두리·아이콘은 역할 토큰을 쓴다. 브랜드 버튼의 채움은 `--color-brand-*`, 버튼 위 글자와 아이콘은 `--color-text-inverse`, `--color-icon-inverse`다.
 
@@ -175,7 +178,7 @@ Semantic은 Primitive를 가리킨다. 브랜드 색이 바뀌면 `--color-brand
 | `--color-red-400` `600` `800` | `#f15863` `#d0293c` `#a9040b` |
 | `--color-yellow-050` `100` `200` `300` `400` `600` | `#fffbe7` `#fbecb2` `#fcd658` `#fbc205` `#eba300` `#985907` |
 | `--color-muted-800` | `#272c6d` |
-| `--color-role-leader` `#d1bb72` · `--color-role-editor` `#a899c0` · `--color-role-runner` `#83b1af` | 역할 막대 색. 화면은 semantic `--color-role-*-strong`만 쓴다 |
+| `--color-role-leader` `#d1bb72` · `--color-role-editor` `#a899c0` · `--color-role-runner` `#83b1af` | 역할 막대 색. 화면의 막대는 semantic `--color-role-*-strong`만 쓴다 |
 
 Lime 스케일과 red 500·700, yellow의 이전 hex는 라이브러리에서 빠졌다. 성공은 mint, 오류는 red 400/800, 경고는 yellow 200/300이다.
 
@@ -424,7 +427,7 @@ CROXER 화면을 만들 때는 tokens/design-tokens.css의 커스텀 프로퍼�
 - 토큰은 src/index.css에서 이미 불러온다. 기능 CSS에서 다시 불러오지 않는다. Wanted Sans 웹폰트도 토큰 파일이 불러오므로 폰트 링크나 @font-face를 따로 추가하지 않는다.
 - 색, padding, gap, radius, font, letter-spacing에 hex, rgb, 임의 px를 쓰지 않는다.
 - 화면 CSS에는 semantic 토큰만 쓴다. --color-blue-600, --padding-300, --radius-200 같은 primitive는 새 semantic을 정의할 때만 쓴다.
-- 배경은 --color-bg-default, --color-bg-subtle, --color-bg-brand-subtle, --color-bg-brand-soft, --color-bg-brand. 카드 표면은 --color-surface-*. 글자는 --color-text-*, 선은 --color-border-*, 아이콘은 --color-icon-*, 브랜드 채움은 --color-brand-*, 성공·경고·오류는 --color-status-* 를 쓴다.
+- 배경은 --color-bg-default, --color-bg-subtle, --color-bg-brand-subtle, --color-bg-brand-soft, --color-bg-brand. 카드 표면은 --color-surface-*. 글자는 --color-text-*, 선은 --color-border-*, 아이콘은 --color-icon-*, 브랜드 채움은 --color-brand-*, 성공·경고·오류는 --color-status-* 를 쓴다. 역할 막대는 --color-role-*-strong, 전환 워시는 --color-role-*-soft 를 쓴다.
 - 성공은 mint, 경고는 yellow, 오류는 red다. lime 색과 red-500, red-700은 없다.
 - 반투명 오버레이는 --color-opacity-white-*, --color-opacity-black-*, --color-opacity-color-500 만 쓴다.
 - 간격은 --gap-xs|sm|md|lg|xl|section, 카드 여백은 --padding-card-sm|md|lg, 버튼 여백은 --padding-control-x|y, 둥글기는 --radius-control, --radius-control-sm 또는 --radius-card-sm|md|lg 를 쓴다. 카드의 padding과 radius는 같은 크기 단계를 짝으로 쓴다. 체크박스·브리핑 번호 배지처럼 4px 모서리는 --radius-control-sm 을 쓴다.
@@ -452,6 +455,7 @@ semantic이 역할을 표현하지 못할 때만 `tokens/design-tokens.css`의 s
 
 | 버전 | 날짜 | 수정자 | 수정 내용과 이유 |
 | --- | --- | --- | --- |
+| 1.7 | 2026-11-21 | Cursor AI · Hi-gu-i 요청 | 전환 워시용 `--color-role-leader-soft`, `--color-role-editor-soft`, `--color-role-runner-soft` 추가. 화면이 yellow·violet·mint primitive를 직접 쓰지 않게 함 |
 | 1.6 | 2026-11-21 | Cursor AI · 예은 요청 | 30초 역할 막대와 상단 역할 탭으로 막대를 여는 연결을 없앰. 활동 완료 뒤에만 전환 패널이 내려오도록 `RoleTrack` 배치 설명을 고침 |
 | 1.5 | 2026-11-19 | Cursor AI · 김민선 요청 | `RoleTrack` 추가. Figma `역할 막대` 공통 아치 곡선·세포. #56 |
 | 1.4 | 2026-11-19 | Cursor AI · 예은 요청 | 역할 막대 색 `--color-role-leader-strong`, `--color-role-editor-strong`, `--color-role-runner-strong` 추가. 팔레트에 없는 명도라 primitive를 같이 두고 화면은 semantic만 쓰게 함 |
