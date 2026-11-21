@@ -176,10 +176,11 @@ export function ResearchActivityPage({ activityId, onFinish }: ResearchActivityP
         </div>
       )}
 
-      {hasReviewed && view.name !== 'document' && (
+      {/* 완료 뒤에도 다시 눌러 전환 패널을 열 수 있다(#84). 완료 처리를 반복하지 않는 건 App이 맡는다 */}
+      {(hasReviewed || isDone) && view.name !== 'document' && (
         <div className={styles.footer}>
-          <Button fullWidth disabled={isDone} onClick={onFinish}>
-            {isDone ? '검토를 마쳤어요' : '검토 마침'}
+          <Button fullWidth onClick={onFinish}>
+            검토 마침
           </Button>
         </div>
       )}
