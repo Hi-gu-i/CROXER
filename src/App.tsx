@@ -170,8 +170,11 @@ export default function App() {
 
   const enteredAt = activityId ? enteredAtByActivity[activityId] : undefined
 
-  const showTabBar = screen.name !== 'activity'
-  const activeTab: TabId = screen.name === 'activity' ? 'home' : screen.name
+  const activityDone =
+    screen.name === 'activity' && getScheduleByActivity(screen.activityId).status === 'done'
+  // 활동을 마친 뒤 유지하기는 그 화면에 남긴다. 하단 탭이 없으면 나갈 곳이 없다.
+  const showTabBar = screen.name !== 'activity' || (activityDone && !switchTargetId)
+  const activeTab: TabId | null = screen.name === 'activity' ? null : screen.name
   const ActivityScreen =
     screen.name === 'activity' ? (activityScreens[screen.activityId] ?? TempActivityScreen) : null
 
@@ -227,10 +230,7 @@ export default function App() {
         <RoleSwitchPanel
           nextActivityId={switchTargetId}
           onSwitch={switchToNextActivity}
-          onKeep={() => {
-            setSwitchTargetId(null)
-            setScreen({ name: 'home' })
-          }}
+          onKeep={() => setSwitchTargetId(null)}
         />
       )}
       <FacilitatorPanel onActivityChange={handleFacilitatorActivity} onReset={handleFacilitatorReset} />
