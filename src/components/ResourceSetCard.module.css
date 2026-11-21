@@ -6,6 +6,7 @@
   gap: var(--gap-150);
   width: 100%;
   max-width: 363px;
+  min-width: 0;
   padding: 0;
   border: none;
   background: transparent;
@@ -40,14 +41,20 @@
   color: var(--color-gray-600);
 }
 
-/* 원본 콜라주 363×210 · 조각 radius 24(바깥 모서리) */
+/* 원본 콜라주 363×210 · 조각 radius 24(바깥 모서리)
+   minmax(0, …fr): 이미지 고유 너비 때문에 모바일에서 틀 밖으로 넘치지 않게 */
 .media {
   display: grid;
-  grid-template-columns: 229fr 132fr;
-  grid-template-rows: 104px 104px;
+  grid-template-columns: minmax(0, 229fr) minmax(0, 132fr);
+  grid-template-rows: minmax(0, 1fr) minmax(0, 1fr);
   gap: 2px;
   width: 100%;
-  height: 210px;
+  max-width: 100%;
+  height: auto;
+  aspect-ratio: 363 / 210;
+  min-width: 0;
+  overflow: hidden;
+  border-radius: var(--radius-300);
 }
 
 .tileA,
@@ -56,6 +63,9 @@
   display: block;
   width: 100%;
   height: 100%;
+  min-width: 0;
+  min-height: 0;
+  max-width: 100%;
   object-fit: cover;
   background:
     linear-gradient(

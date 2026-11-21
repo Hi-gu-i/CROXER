@@ -245,6 +245,8 @@ export function RunActivityPage({
   const [hasPausedRun, setHasPausedRun] = useState(false);
   /** 작업 카드(job)를 본 뒤 채팅을 나가 러닝으로 복귀 */
   const [returnedAfterJob, setReturnedAfterJob] = useState(false);
+  /** 정지(■) 후 · 채팅 없이 마치기 확인 토스트 */
+  const [showStopFinishConfirm, setShowStopFinishConfirm] = useState(false);
   const runAccumulatedRef = useRef(0);
   const runStartedAtRef = useRef<number | null>(null);
 
@@ -341,6 +343,7 @@ export function RunActivityPage({
 
   function handleMeterStart() {
     setMeterPhase("running");
+    setShowStopFinishConfirm(false);
   }
 
   function handleMeterPause() {
@@ -351,6 +354,10 @@ export function RunActivityPage({
   function handleMeterStop() {
     setMeterPhase("paused");
     setHasPausedRun(true);
+    // 채팅 경로 토스트가 없을 때만 정지 확인 토스트
+    if (!returnedAfterJob) {
+      setShowStopFinishConfirm(true);
+    }
   }
 
   function handleMeterReset() {
@@ -358,6 +365,7 @@ export function RunActivityPage({
     runStartedAtRef.current = null;
     setElapsedMs(0);
     setMeterPhase("idle");
+    setShowStopFinishConfirm(false);
   }
 
   function openChat() {
@@ -445,8 +453,8 @@ export function RunActivityPage({
     appendExchange(
       text,
       alreadyHasJobCard
-        ? "준비된 키워드와 맞지 않아요. 다른 말로 다시 입력해 주세요."
-        : "준비된 키워드와 맞지 않아요. 아래 선택지에서 고르거나 다른 말로 다시 입력해 주세요.",
+        ? "잘 이해하지 못했어요. 다른 말로 다시 말해 주세요."
+        : "잘 이해하지 못했어요. 아래에서 고르거나 다른 말로 다시 말해 주세요.",
     );
     setDraft("");
     setShowFallback(!alreadyHasJobCard);
@@ -743,13 +751,23 @@ export function RunActivityPage({
           />
           {/*
             러닝 종료 토스트 · 작업은 running 유지(ut-data-baseline).
-            조건: 1) 작업 카드 후 러닝 복귀  2) 한 번 이상 시작·멈춤
+            채팅 경로: 작업 카드 후 복귀 + 일시정지/정지
+            비채팅 경로(#72): 정지(■) 후 확인 토스트
           */}
           {returnedAfterJob && hasPausedRun ? (
             <div className={styles.runJobToast}>
               <AiJobToast
                 tone="ack"
                 message="레퍼런스 정리 중이에요"
+                actionLabel="러닝 마치기"
+                onAction={handleJobDone}
+              />
+            </div>
+          ) : showStopFinishConfirm ? (
+            <div className={styles.runJobToast}>
+              <AiJobToast
+                tone="ack"
+                message="러닝을 마칠까요?"
                 actionLabel="러닝 마치기"
                 onAction={handleJobDone}
               />

@@ -1,0 +1,206 @@
+/* 원본 `11 · 일정 교체 제안` · 393×852 */
+.page {
+  position: relative;
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  width: 100%;
+  min-height: 0;
+  background: var(--color-bg-default);
+  color: var(--color-text-primary);
+  box-sizing: border-box;
+}
+
+.body {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-height: 0;
+  padding: var(--gap-md) 0 var(--padding-section);
+  overflow: auto;
+  box-sizing: border-box;
+}
+
+/* 시안 Content: intro x16 · 밴드 위까지 여백 */
+.intro {
+  padding: 0 var(--padding-ios-x);
+  margin-bottom: var(--gap-xl);
+}
+
+/*
+ * 시안 Rectangle blue-050: 교체 카드만 감쌈 (카드 위·아래 여백 포함).
+ * full-bleed · 좌우 16 패딩으로 카드 363폭 유지.
+ */
+.swapRegion {
+  width: 100%;
+  padding: var(--padding-200) var(--padding-ios-x) var(--padding-300);
+  background: var(--color-bg-subtle);
+  box-sizing: border-box;
+}
+
+.swapStack {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  /* 시안 카드 간격 ≈ 10 */
+  gap: var(--gap-sm);
+  width: 100%;
+}
+
+.swapCard {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--gap-md);
+  width: 100%;
+  min-height: 154px;
+  padding: var(--padding-card-lg);
+  border-radius: var(--radius-card-md);
+  background: var(--color-surface-default);
+  box-shadow: var(--shadow-card);
+  box-sizing: border-box;
+}
+
+.swapCopy {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: var(--gap-sm);
+  min-width: 0;
+}
+
+.swapWhen {
+  margin: 0;
+  font: var(--type-ios-caption-large-font);
+  letter-spacing: var(--type-ios-caption-large-tracking);
+  color: var(--color-text-brand);
+}
+
+.swapTitles {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.swapTitle {
+  margin: 0;
+  font: var(--type-ios-body-strong-font);
+  letter-spacing: var(--type-ios-body-strong-tracking);
+  color: var(--color-text-primary);
+}
+
+.swapSubtitle {
+  margin: 0;
+  font: var(--type-ios-body-small-font);
+  letter-spacing: var(--type-ios-body-small-tracking);
+  color: var(--color-text-secondary);
+}
+
+.statusWarn,
+.statusOk {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  width: fit-content;
+  max-width: 100%;
+  padding: var(--padding-050) 6px;
+  border-radius: var(--radius-control);
+  background: color-mix(in srgb, var(--color-border-default) 30%, transparent);
+  font: var(--type-ios-caption-medium-font);
+  letter-spacing: var(--type-ios-caption-medium-tracking);
+  color: var(--color-text-secondary);
+}
+
+.swapArt {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: 76px;
+}
+
+.exchange {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 52px;
+  height: 52px;
+  border-radius: var(--radius-control);
+  background: var(--color-bg-brand);
+  color: var(--color-icon-inverse);
+  box-shadow: var(--shadow-card);
+  transform: translate(-50%, -50%);
+}
+
+/* 시안: 밴드 끝(447) 아래 이유 카드(460) · 흰 배경 위 */
+.reasonCard {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-md);
+  width: calc(100% - 2 * var(--padding-ios-x));
+  margin: var(--gap-md) var(--padding-ios-x) 0;
+  padding: var(--padding-card-lg) var(--padding-card-md);
+  border: 1px solid var(--color-border-color);
+  border-radius: var(--radius-card-md);
+  background: var(--color-bg-subtle);
+  box-shadow: var(--shadow-card);
+  box-sizing: border-box;
+}
+
+.reasonHeader {
+  display: flex;
+  align-items: center;
+  gap: var(--gap-sm);
+  min-width: 0;
+}
+
+.reasonIcon {
+  flex-shrink: 0;
+  color: var(--color-icon-brand);
+}
+
+.reasonTitle {
+  margin: 0;
+  font: var(--type-ios-body-strong-font);
+  letter-spacing: var(--type-ios-body-strong-tracking);
+  color: var(--color-text-brand);
+}
+
+.reasonList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-xs);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.reasonRow {
+  display: flex;
+  align-items: center;
+  gap: var(--gap-xs);
+  min-width: 0;
+}
+
+.rowIcon {
+  flex-shrink: 0;
+  color: var(--color-icon-brand);
+}
+
+.reasonText {
+  font: var(--type-ios-body-small-font);
+  letter-spacing: var(--type-ios-body-small-tracking);
+  color: var(--color-text-secondary);
+}
+
+.footer {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-sm);
+  padding: var(--padding-ios-y) var(--padding-ios-x) var(--gap-md);
+  box-sizing: border-box;
+}

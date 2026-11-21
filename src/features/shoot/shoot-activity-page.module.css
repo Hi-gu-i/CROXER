@@ -87,6 +87,7 @@
   flex: 1;
   flex-direction: column;
   gap: var(--gap-lg);
+  min-width: 0;
   min-height: 0;
   padding: var(--gap-sm) var(--padding-ios-x) var(--padding-section);
   box-sizing: border-box;
@@ -123,6 +124,7 @@
   flex-direction: column;
   gap: var(--gap-xl);
   width: 100%;
+  min-width: 0;
 }
 
 .referenceLayout {
@@ -245,6 +247,11 @@
   flex-shrink: 0;
   width: 36px;
   height: 36px;
+}
+
+/* 시안 `10` 제안 이유 카드 · 232폭 */
+.scheduleReasonCard {
+  max-width: 232px;
 }
 
 .fallback {
