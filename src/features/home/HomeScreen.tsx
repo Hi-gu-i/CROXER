@@ -39,12 +39,10 @@ export default function HomeScreen({ onOpenActivity, onOpenSchedule }: HomeScree
     if (activityId) markActivityShown(activityId)
   }, [activityId])
 
-  const items = getBriefingItems()
+  const items = getBriefingItems().filter((item) => item.activity.id !== activityId)
   const waiting = items.filter((item) => item.schedule.status === 'waiting')
   const running = items.filter((item) => item.schedule.status === 'in_progress')
-  const listed = (homeTab === 'waiting' ? waiting : running).filter(
-    (item) => item.activity.id !== activityId,
-  )
+  const listed = homeTab === 'waiting' ? waiting : running
 
   return (
     <div className={styles.page}>
