@@ -216,12 +216,6 @@ type RunActivityPageProps = {
   activityId: ActivityId;
   /** 활동의 UT 흐름을 마쳤을 때 한 번 부른다. 완료 처리와 전환 패널은 App이 맡는다 */
   onFinish: () => void;
-  /** 프리뷰·딥링크용. 지정 시 해당 단계로 바로 연다 */
-  initialStep?: RunStep;
-  /** 프리뷰: 채팅 경로 러닝 종료 토스트가 보이는 상태 */
-  previewEndToast?: boolean;
-  /** 프리뷰: 정지 후 「러닝을 마칠까요?」 토스트가 보이는 상태 */
-  previewStopConfirm?: boolean;
 };
 
 /**
@@ -232,13 +226,10 @@ type RunActivityPageProps = {
 export function RunActivityPage({
   activityId,
   onFinish,
-  initialStep,
-  previewEndToast = false,
-  previewStopConfirm = false,
 }: RunActivityPageProps) {
   useUtSession();
 
-  const [step, setStep] = useState<RunStep>(initialStep ?? "inquiry");
+  const [step, setStep] = useState<RunStep>("inquiry");
   const [draft, setDraft] = useState("");
   /** 시안 `02 · 레퍼런스 · 대화 시작` · 빈 대화로 시작 */
   const [messages, setMessages] = useState<ChatMessage[]>([]);
@@ -248,19 +239,14 @@ export function RunActivityPage({
   const [assessmentOpen, setAssessmentOpen] = useState(false);
   /** 화면 선택 상태. 공지 발송 후에도 시안처럼 선택이 보이게 유지 */
   const [pickedCourseId, setPickedCourseId] = useState<string | null>(null);
-  const [meterPhase, setMeterPhase] = useState<RunMeterPhase>(
-    previewStopConfirm || previewEndToast ? "paused" : "idle",
-  );
+  const [meterPhase, setMeterPhase] = useState<RunMeterPhase>("idle");
   const [elapsedMs, setElapsedMs] = useState(0);
   /** 러닝을 한 번 이상 시작 후 멈춤 */
-  const [hasPausedRun, setHasPausedRun] = useState(
-    previewEndToast || previewStopConfirm,
-  );
+  const [hasPausedRun, setHasPausedRun] = useState(false);
   /** 작업 카드(job)를 본 뒤 채팅을 나가 러닝으로 복귀 */
-  const [returnedAfterJob, setReturnedAfterJob] = useState(previewEndToast);
+  const [returnedAfterJob, setReturnedAfterJob] = useState(false);
   /** 정지(■) 후 · 채팅 없이 마치기 확인 토스트 */
-  const [showStopFinishConfirm, setShowStopFinishConfirm] =
-    useState(previewStopConfirm);
+  const [showStopFinishConfirm, setShowStopFinishConfirm] = useState(false);
   const runAccumulatedRef = useRef(0);
   const runStartedAtRef = useRef<number | null>(null);
 
