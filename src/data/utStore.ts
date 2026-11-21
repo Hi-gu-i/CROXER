@@ -44,11 +44,31 @@ function readRoomIdFromUrl(): string | null {
 }
 
 const roomId = readRoomIdFromUrl()
+/** 방 연결 서버 주소. 없으면 방 번호가 있어도 기기 안에서만 동작한다 */
+const databaseUrl = (import.meta.env.VITE_FIREBASE_DATABASE_URL as string | undefined)?.trim() || null
+/** 실제로 다른 기기와 맞추는지 */
+const roomSyncEnabled = Boolean(
+  typeof window !== 'undefined' && roomId && databaseUrl && typeof EventSource !== 'undefined',
+)
 
 /** 브라우저 저장소의 UT 전용 키. 방에 들어가 있으면 방마다 따로 둔다 */
 export const UT_STORAGE_KEY = roomId ? `croxer-ut-session:room:${roomId}` : 'croxer-ut-session'
 /** 서버가 아직 받지 않은 방 변경을 기억하는 키 */
 const PENDING_KEY = `${UT_STORAGE_KEY}:pending`
+
+/**
+ * 세션을 둘 브라우저 저장소.
+ * 방 없이 쓸 때는 localStorage: 같은 컴퓨터의 탭끼리 storage 이벤트로 맞춘다(진행자 탭 방식).
+ * 방 연결 중이면 sessionStorage: 탭마다 따로 두어, 같은 브라우저에서 방 주소를 두 탭으로 열어도
+ * 다른 탭의 중간 상태가 storage 이벤트로 넘어오지 않는다. 새로고침해도 유지되고, 탭을 새로 열면 서버에서 받아온다.
+ */
+function sessionStorageArea(): Storage | null {
+  try {
+    return roomSyncEnabled ? window.sessionStorage : window.localStorage
+  } catch {
+    return null
+  }
+}
 /** 세션 저장 형식 버전. UtSession 모양을 바꾸면 올린다 */
 const SESSION_VERSION = '2'
 
@@ -85,7 +105,7 @@ function createInitialSession(): UtSession {
 
 function readStoredSession(): UtSession | null {
   try {
-    const raw = window.localStorage.getItem(UT_STORAGE_KEY)
+    const raw = sessionStorageArea()?.getItem(UT_STORAGE_KEY)
     if (!raw) return null
     const parsed = JSON.parse(raw) as UtSession
     // 저장 형식이나 초기 데이터가 바뀌었으면 이전 저장값을 쓰지 않는다
@@ -97,7 +117,7 @@ function readStoredSession(): UtSession | null {
 
 function writeStoredSession(next: UtSession) {
   try {
-    window.localStorage.setItem(UT_STORAGE_KEY, JSON.stringify(next))
+    sessionStorageArea()?.setItem(UT_STORAGE_KEY, JSON.stringify(next))
   } catch {
     // 저장소를 쓸 수 없는 환경에서는 메모리 상태만 유지한다
   }
@@ -159,7 +179,7 @@ function normalizeRemoteSession(raw: unknown): UtSession | null {
 
 function loadPendingChanges(): UtSessionChanges {
   try {
-    const raw = window.localStorage.getItem(PENDING_KEY)
+    const raw = sessionStorageArea()?.getItem(PENDING_KEY)
     const parsed: unknown = raw ? JSON.parse(raw) : null
     return parsed && typeof parsed === 'object' ? (parsed as UtSessionChanges) : {}
   } catch {
@@ -169,14 +189,13 @@ function loadPendingChanges(): UtSessionChanges {
 
 function savePendingChanges(changes: UtSessionChanges) {
   try {
-    if (Object.keys(changes).length > 0) window.localStorage.setItem(PENDING_KEY, JSON.stringify(changes))
-    else window.localStorage.removeItem(PENDING_KEY)
+    if (Object.keys(changes).length > 0) sessionStorageArea()?.setItem(PENDING_KEY, JSON.stringify(changes))
+    else sessionStorageArea()?.removeItem(PENDING_KEY)
   } catch {
     // 저장소를 쓸 수 없으면 이번 화면 동안만 기억한다
   }
 }
 
-const databaseUrl = (import.meta.env.VITE_FIREBASE_DATABASE_URL as string | undefined)?.trim() || null
 let syncStatus: UtSyncStatus = 'local'
 
 function setSyncStatus(next: UtSyncStatus) {
@@ -185,7 +204,7 @@ function setSyncStatus(next: UtSyncStatus) {
 }
 
 const roomSync =
-  typeof window !== 'undefined' && roomId && databaseUrl && typeof EventSource !== 'undefined'
+  roomSyncEnabled && roomId && databaseUrl
     ? startRoomSync({
         roomId,
         databaseUrl,
@@ -202,8 +221,7 @@ const roomSync =
 import.meta.hot?.dispose(() => roomSync?.stop())
 
 if (roomId && !roomSync) {
-  // 방 번호는 있는데 데이터베이스 주소가 없다. 기기 안의 상태로만 계속 동작한다
-  syncStatus = 'offline'
+  // 방 번호는 있는데 데이터베이스 주소가 없다. 끊긴 게 아니라 서버가 없는 것이므로 'local'로 알린다
   console.warn('[CROXER] VITE_FIREBASE_DATABASE_URL이 없어 방에 연결하지 못했어요. 이 기기 안에서만 동작해요.')
 }
 
