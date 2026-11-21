@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState, type CSSProperties } from 'react'
 import { RoleTransitionPanel } from '../../components'
 import type { ToggleCategoryTone } from '../../components/ToggleCategory'
 import type { ActivityId, RoleId } from '../../data/types'
@@ -19,6 +19,13 @@ const toneByRole: Record<RoleId, ToggleCategoryTone> = {
   'role-runner': 'mint',
 }
 
+/** 왼쪽은 지금 역할, 오른쪽은 다음 역할. 교양 3조 팀장은 #FCD658 */
+const tintByRole: Record<RoleId, string> = {
+  'role-leader': 'var(--color-yellow-200)',
+  'role-editor': 'var(--color-violet-200)',
+  'role-runner': 'var(--color-mint-200)',
+}
+
 const countdownStart = 5
 /** 1이 보인 뒤 패널을 조금 더 두고 다음 화면으로 넘어간다 */
 const holdAfterCountMs = 2000
@@ -35,6 +42,7 @@ export default function RoleSwitchPanel({ nextActivityId, onSwitch, onKeep }: Ro
   const current = getActivity(getCurrentActivityId() ?? nextActivityId)
   const next = getActivity(nextActivityId)
   const role = getRole(current.roleId)
+  const nextRole = getRole(next.roleId)
 
   useEffect(() => {
     onSwitchRef.current = onSwitch
@@ -69,6 +77,12 @@ export default function RoleSwitchPanel({ nextActivityId, onSwitch, onKeep }: Ro
         toActivity={next.name}
         showTrack
         onKeep={onKeep}
+        style={
+          {
+            '--handoff-from': tintByRole[role.id],
+            '--handoff-to': tintByRole[nextRole.id],
+          } as CSSProperties
+        }
       />
     </div>
   )
