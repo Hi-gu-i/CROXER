@@ -21,7 +21,7 @@ const syncHelp: Record<UtSyncStatus, string> = {
 type LinkId = 'participant' | 'facilitator'
 
 interface RoomSectionProps {
-  /** 진행자 패널을 별도 화면(#진행자)으로 열었는지. 방은 이때만 만든다 */
+  /** 진행자 패널을 별도 화면(#facilitator)으로 열었는지. 방은 이때만 만든다 */
   standalone: boolean
 }
 
