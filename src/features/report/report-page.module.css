@@ -68,9 +68,11 @@
 }
 
 /* 이번 주 요일 */
+/* 시안 Selector: 40×52 칸 7개, 칸 사이 10px, 가운데 정렬 */
 .weekStrip {
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
+  gap: var(--gap-150);
   margin: 0;
   padding: 0;
   list-style: none;
@@ -80,8 +82,10 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  min-width: 40px;
-  padding: var(--padding-050) var(--padding-100);
+  justify-content: center;
+  width: 40px;
+  height: 52px;
+  padding: 0;
   border-radius: var(--radius-200);
   background: var(--color-surface-default);
   box-shadow: var(--shadow-card);
