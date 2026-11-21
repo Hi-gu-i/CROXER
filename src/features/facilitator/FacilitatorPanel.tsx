@@ -24,6 +24,7 @@ import {
 import { useUtSession } from '../../data/useUtSession'
 import { ReportPage } from '../report'
 import { NotificationSettingsPage } from '../setup'
+import { RoomSection } from './RoomSection'
 import styles from './facilitator-panel.module.css'
 
 const RAIN_ALERT_ID = 'alert-shoot-rain'
@@ -86,6 +87,7 @@ function nowLabel() {
 /**
  * 진행자 패널(PRD 8.2). 참가자 화면에는 보이지 않는다.
  * 여는 방법: 화면 맨 위 왼쪽 숨은 영역 5번 연속 탭, 키보드 Option(Alt)+Shift+P, 같은 컴퓨터의 다른 탭에서 주소 끝 #facilitator.
+ * 다른 휴대폰에서 열 때는 '두 기기 연결'에서 방을 만들고 참가자 휴대폰에 주소를 보낸다(#76, 실제 연결은 #74).
  * 개입 기록은 이 화면에만 남고 저장소·브라우저 저장소에 쓰지 않는다. 관찰 기록지에 옮길 때 복사한다.
  */
 export function FacilitatorPanel({ onActivityChange, onReset }: FacilitatorPanelProps) {
@@ -217,6 +219,8 @@ export function FacilitatorPanel({ onActivityChange, onReset }: FacilitatorPanel
             </button>
           )}
         </header>
+
+        <RoomSection standalone={standalone} onCreate={(roomId) => record(`방 만듦: ${roomId}`)} />
 
         <section className={styles.section} aria-labelledby="facilitator-status">
           <h3 id="facilitator-status" className={styles.sectionTitle}>
