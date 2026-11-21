@@ -1,4 +1,4 @@
-import { useEffect, useState, type ComponentType, type MouseEvent, type ReactNode } from 'react'
+import { useEffect, useState, type ComponentType, type ReactNode } from 'react'
 import styles from './app.module.css'
 import { IconHome, IconReport, IconSchedule, IconSet } from './icons'
 import type { ActivityId } from './data/types'
@@ -17,7 +17,6 @@ import {
 import BriefingPage from './features/briefing/BriefingPage'
 import { FacilitatorPanel } from './features/facilitator'
 import HomeScreen from './features/home/HomeScreen'
-import RoleStaySheet from './features/role-switch/RoleStaySheet'
 import RoleSwitchPanel from './features/role-switch/RoleSwitchPanel'
 import { ReportPage } from './features/report'
 import SchedulePage from './features/schedule/SchedulePage'
@@ -55,7 +54,6 @@ export default function App() {
   useUtSession()
   const [screen, setScreen] = useState<Screen>({ name: 'home' })
   const [switchTargetId, setSwitchTargetId] = useState<ActivityId | null>(null)
-  const [roleSheetOpen, setRoleSheetOpen] = useState(false)
 
   useEffect(() => {
     function onStorage(event: StorageEvent) {
@@ -72,7 +70,6 @@ export default function App() {
       const activityChanged = (next.currentActivityId ?? null) !== (prev.currentActivityId ?? null)
       if (!briefingChanged && !activityChanged) return
       setSwitchTargetId(null)
-      setRoleSheetOpen(false)
       if (!next.isBriefingConfirmed || briefingChanged) {
         setScreen({ name: 'home' })
         return
@@ -85,17 +82,13 @@ export default function App() {
     return () => window.removeEventListener('storage', onStorage)
   }, [])
 
-  const activityId = screen.name === 'activity' ? screen.activityId : null
-
   function handleFacilitatorActivity(nextActivityId: ActivityId | null) {
     setSwitchTargetId(null)
-    setRoleSheetOpen(false)
     setScreen(nextActivityId ? { name: 'activity', activityId: nextActivityId } : { name: 'schedule' })
   }
 
   function handleFacilitatorReset() {
     setSwitchTargetId(null)
-    setRoleSheetOpen(false)
     setScreen({ name: 'home' })
   }
 
@@ -105,7 +98,6 @@ export default function App() {
         <BriefingPage
           onConfirm={() => {
             setSwitchTargetId(null)
-            setRoleSheetOpen(false)
             setScreen({ name: 'home' })
           }}
         />
@@ -117,14 +109,12 @@ export default function App() {
   function openActivity(activityId: ActivityId) {
     // 브리핑 확정(confirmBriefing)이 첫 활동 진입을 이미 처리했으므로 같은 활동이면 다시 시작하지 않는다.
     if (getCurrentActivityId() !== activityId) enterActivity(activityId)
-    setRoleSheetOpen(false)
     setScreen({ name: 'activity', activityId })
   }
 
   function finishActivity(activityId: ActivityId) {
     if (getScheduleByActivity(activityId).status === 'done') return
     const nextActivityId = completeActivity(activityId)
-    setRoleSheetOpen(false)
     if (nextActivityId) {
       setSwitchTargetId(nextActivityId)
     } else {
@@ -135,24 +125,8 @@ export default function App() {
   function switchToNextActivity() {
     if (!switchTargetId) return
     enterActivity(switchTargetId)
-    setRoleSheetOpen(false)
     setScreen({ name: 'activity', activityId: switchTargetId })
     setSwitchTargetId(null)
-  }
-
-  function closeRoleSheet() {
-    setRoleSheetOpen(false)
-  }
-
-  function handleActivityClickCapture(event: MouseEvent<HTMLDivElement>) {
-    if (screen.name !== 'activity') return
-    const roleLabel = getRole(getActivity(screen.activityId).roleId).label
-    const button = (event.target as HTMLElement).closest('button')
-    if (!button?.querySelector('svg')) return
-    if (button.textContent?.replace(/\s+/g, ' ').trim() !== roleLabel) return
-    event.preventDefault()
-    event.stopPropagation()
-    setRoleSheetOpen(true)
   }
 
   const activityDone =
@@ -173,7 +147,7 @@ export default function App() {
           />
         )}
         {screen.name === 'activity' && ActivityScreen && (
-          <div className={styles.activityScreen} onClickCapture={handleActivityClickCapture}>
+          <div className={styles.activityScreen}>
             <ActivityScreen
               key={screen.activityId}
               activityId={screen.activityId}
@@ -202,13 +176,6 @@ export default function App() {
             </button>
           ))}
         </nav>
-      )}
-      {roleSheetOpen && activityId && (
-        <RoleStaySheet
-          activityId={activityId}
-          onKeep={closeRoleSheet}
-          onDismiss={closeRoleSheet}
-        />
       )}
       {switchTargetId && (
         <RoleSwitchPanel
