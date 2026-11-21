@@ -26,8 +26,10 @@ export function ReportFeedbackCard({ title, body, positiveLabel, negativeLabel, 
     setSavedAt(null)
   }
 
+  const canSave = helpful !== null && note.trim().length > 0
+
   function save() {
-    if (helpful === null) return
+    if (!canSave || helpful === null) return
     const now = new Date()
     const time = [now.getHours(), now.getMinutes()].map((n) => String(n).padStart(2, '0')).join(':')
     setSavedAt(time)
@@ -66,7 +68,7 @@ export function ReportFeedbackCard({ title, body, positiveLabel, negativeLabel, 
       {helpful !== null && (
         <div className={styles.feedbackForm}>
           <label className={styles.feedbackLabel}>
-            {helpful ? '어떤 점이 좋았는지 남겨 주세요 (선택)' : '어떻게 도와드리면 좋을까요? (선택)'}
+            {helpful ? '어떤 점이 좋았는지 남겨 주세요' : '어떻게 도와드리면 좋을까요?'}
             <textarea
               className={styles.feedbackInput}
               rows={2}
@@ -82,7 +84,8 @@ export function ReportFeedbackCard({ title, body, positiveLabel, negativeLabel, 
               {savedAt}에 피드백을 저장했어요.
             </p>
           ) : (
-            <Button variant="secondary" onClick={save}>
+            // 입력 전에는 회색으로 꺼 두고, 내용을 적으면 브랜드 색으로 켠다
+            <Button className={styles.feedbackSave} disabled={!canSave} onClick={save}>
               피드백 저장
             </Button>
           )}
