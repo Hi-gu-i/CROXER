@@ -152,10 +152,8 @@ export default function App() {
     setSwitchTargetId(null)
   }
 
-  const activityDone =
-    screen.name === 'activity' && getScheduleByActivity(screen.activityId).status === 'done'
-  // 흐름을 마치면 바로 완료다. 유지하기 뒤에 하단 탭이 남고, 완료 버튼을 다시 누를 수 있으면 전환 패널이 또 열린다.
-  const showTabBar = screen.name !== 'activity' || (activityDone && !switchTargetId)
+  // 활동 화면은 마친 뒤에도 하단 탭을 두지 않는다. 나갈 때는 상단 홈 버튼을 쓴다.
+  const showTabBar = screen.name !== 'activity'
   const activeTab: TabId | null = screen.name === 'activity' ? null : screen.name
   const ActivityScreen =
     screen.name === 'activity' ? (activityScreens[screen.activityId] ?? TempActivityScreen) : null
