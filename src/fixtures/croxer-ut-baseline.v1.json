@@ -1,5 +1,5 @@
 {
-  "version": "1.2",
+  "version": "1.3",
   "today": "2026-11-14",
   "roles": [
     { "id": "role-leader", "name": "교양 3조 팀장", "label": "교양 3조 팀장" },
@@ -133,16 +133,16 @@
     {
       "id": "course-run-paved",
       "activityId": "activity-run",
-      "name": "한강 포장 산책로 코스",
+      "name": "강변 포장 B코스",
       "meetingPoint": "여의도한강공원 물빛광장",
-      "description": "거리 5km · 예상 40분 · 강변 포장 산책로를 따라 왕복해요. 원래 코스와 풍경이 비슷하고, 길이 넓고 가로등이 많아요."
+      "description": "거리 3.8km · 예상 37분 · 강변을 돌아가는 코스로, 강가를 구경하기 좋아요."
     },
     {
       "id": "course-run-park",
       "activityId": "activity-run",
-      "name": "여의도공원 순환 코스",
+      "name": "공원 순환 A코스",
       "meetingPoint": "여의도공원 문화의마당",
-      "description": "거리 4km · 예상 30분 · 공원 둘레 보도를 두 바퀴 돌아요. 나무가 많아 바람이 덜하고, 물웅덩이가 적어요."
+      "description": "거리 4.2km · 예상 45분 · 공원 포장길로, 크루가 함께 달리기 편해요."
     }
   ],
   "announcements": [
