@@ -2,8 +2,10 @@
 // 모든 화면은 이 파일의 함수로만 데이터를 읽고 쓴다(docs/dev-guide.md 데이터 접근 규칙).
 // - 초기 데이터(baseline): 가상 하루. 읽기 전용
 // - 참가자 세션(session): 참가자가 바꾼 상태. 브라우저 저장소의 UT 전용 키 하나에 저장
+//   주소에 ?room=방번호 가 있으면 같은 방의 다른 기기와 세션을 맞춘다(utRoomSync.ts). 없으면 기기 안에서만 동작한다.
 // 상태 변경 규칙은 docs/prd.md 6.2를 따른다.
 import baselineJson from '../fixtures/croxer-ut-baseline.v1.json'
+import { startRoomSync, type UtSessionChanges, type UtSyncStatus } from './utRoomSync'
 import type {
   Activity,
   ActivityId,
@@ -32,10 +34,23 @@ import type {
 // 초기 데이터는 UT 담당의 src/fixtures/croxer-ut-baseline.v1.json(UtBaseline 모양)을 쓴다.
 const baseline = baselineJson as UtBaseline
 
-/** 브라우저 저장소의 UT 전용 키 */
-export const UT_STORAGE_KEY = 'croxer-ut-session'
+/** 방 번호 모양(6자리 숫자). 주소의 ?room= 값이 이 모양일 때만 방에 들어간다. 데이터베이스 규칙과 같다 */
+const ROOM_ID_PATTERN = /^\d{6}$/
+
+function readRoomIdFromUrl(): string | null {
+  if (typeof window === 'undefined') return null
+  const value = new URLSearchParams(window.location.search).get('room')?.trim() ?? ''
+  return ROOM_ID_PATTERN.test(value) ? value : null
+}
+
+const roomId = readRoomIdFromUrl()
+
+/** 브라우저 저장소의 UT 전용 키. 방에 들어가 있으면 방마다 따로 둔다 */
+export const UT_STORAGE_KEY = roomId ? `croxer-ut-session:room:${roomId}` : 'croxer-ut-session'
+/** 서버가 아직 받지 않은 방 변경을 기억하는 키 */
+const PENDING_KEY = `${UT_STORAGE_KEY}:pending`
 /** 세션 저장 형식 버전. UtSession 모양을 바꾸면 올린다 */
-const SESSION_VERSION = '1'
+const SESSION_VERSION = '2'
 
 // ── 세션 보관과 구독 ─────────────────────────────────
 
@@ -44,8 +59,11 @@ function sessionVersion() {
 }
 
 function createInitialSession(): UtSession {
+  const now = new Date().toISOString()
   return {
     version: sessionVersion(),
+    startedAt: now,
+    updatedAt: now,
     briefingOrder: [...baseline.briefingOrder],
     isBriefingConfirmed: false,
     activeRoleId: null,
@@ -87,23 +105,113 @@ function writeStoredSession(next: UtSession) {
 
 let session: UtSession = readStoredSession() ?? createInitialSession()
 const listeners = new Set<() => void>()
+const externalListeners = new Set<(previous: UtSession, next: UtSession) => void>()
+const syncStatusListeners = new Set<() => void>()
 
 function notify() {
   listeners.forEach((listener) => listener())
 }
 
-function commit(update: (current: UtSession) => UtSession) {
-  session = update(session)
+/** 이 기기 밖(다른 탭·다른 기기)에서 바뀐 세션으로 교체한다 */
+function replaceFromOutside(next: UtSession) {
+  const previous = session
+  session = next
   writeStoredSession(session)
   notify()
+  externalListeners.forEach((listener) => listener(previous, next))
 }
 
-// 다른 탭(예: 진행자 탭)에서 바꾼 세션을 반영한다
-if (typeof window !== 'undefined') {
+function commit(update: (current: UtSession) => UtSession) {
+  const previous = session
+  session = { ...update(session), updatedAt: new Date().toISOString() }
+  writeStoredSession(session)
+  notify()
+  roomSync?.push(previous, session)
+}
+
+/**
+ * 서버에서 받은 세션을 이 앱의 모양으로 맞춘다.
+ * 데이터베이스는 빈 목록·null 값을 저장하지 않으므로 빠진 칸을 초기 모양으로 채운다.
+ * 저장 형식 버전이 다르면 null.
+ */
+function normalizeRemoteSession(raw: unknown): UtSession | null {
+  if (!raw || typeof raw !== 'object') return null
+  const remote = raw as Partial<UtSession>
+  if (remote.version !== sessionVersion()) return null
+  const base = createInitialSession()
+  return {
+    ...base,
+    ...remote,
+    briefingOrder: Array.isArray(remote.briefingOrder) ? remote.briefingOrder : base.briefingOrder,
+    isBriefingConfirmed: remote.isBriefingConfirmed ?? false,
+    activeRoleId: remote.activeRoleId ?? null,
+    currentActivityId: remote.currentActivityId ?? null,
+    selectedCourseId: remote.selectedCourseId ?? null,
+    scheduleStatus: { ...base.scheduleStatus, ...remote.scheduleStatus },
+    aiJobStatus: { ...base.aiJobStatus, ...remote.aiJobStatus },
+    aiJobRequestedAt: { ...remote.aiJobRequestedAt },
+    alertStatus: { ...base.alertStatus, ...remote.alertStatus },
+    alertFiredAt: { ...remote.alertFiredAt },
+    inquiryFiredAt: { ...remote.inquiryFiredAt },
+    announcementStatus: { ...base.announcementStatus, ...remote.announcementStatus },
+  }
+}
+
+function loadPendingChanges(): UtSessionChanges {
+  try {
+    const raw = window.localStorage.getItem(PENDING_KEY)
+    const parsed: unknown = raw ? JSON.parse(raw) : null
+    return parsed && typeof parsed === 'object' ? (parsed as UtSessionChanges) : {}
+  } catch {
+    return {}
+  }
+}
+
+function savePendingChanges(changes: UtSessionChanges) {
+  try {
+    if (Object.keys(changes).length > 0) window.localStorage.setItem(PENDING_KEY, JSON.stringify(changes))
+    else window.localStorage.removeItem(PENDING_KEY)
+  } catch {
+    // 저장소를 쓸 수 없으면 이번 화면 동안만 기억한다
+  }
+}
+
+const databaseUrl = (import.meta.env.VITE_FIREBASE_DATABASE_URL as string | undefined)?.trim() || null
+let syncStatus: UtSyncStatus = 'local'
+
+function setSyncStatus(next: UtSyncStatus) {
+  syncStatus = next
+  syncStatusListeners.forEach((listener) => listener())
+}
+
+const roomSync =
+  typeof window !== 'undefined' && roomId && databaseUrl && typeof EventSource !== 'undefined'
+    ? startRoomSync({
+        roomId,
+        databaseUrl,
+        getSession: () => session,
+        normalizeRemote: normalizeRemoteSession,
+        applyRemote: replaceFromOutside,
+        loadPending: loadPendingChanges,
+        savePending: savePendingChanges,
+        onStatus: setSyncStatus,
+      })
+    : null
+
+// 개발 중 이 파일이 다시 불러와지면 이전 연결을 닫는다
+import.meta.hot?.dispose(() => roomSync?.stop())
+
+if (roomId && !roomSync) {
+  // 방 번호는 있는데 데이터베이스 주소가 없다. 기기 안의 상태로만 계속 동작한다
+  syncStatus = 'offline'
+  console.warn('[CROXER] VITE_FIREBASE_DATABASE_URL이 없어 방에 연결하지 못했어요. 이 기기 안에서만 동작해요.')
+}
+
+// 다른 탭(예: 같은 컴퓨터의 진행자 탭)에서 바꾼 세션을 반영한다. 방에 들어가 있으면 방 연결이 맡는다
+if (typeof window !== 'undefined' && !roomSync) {
   window.addEventListener('storage', (event) => {
     if (event.key !== UT_STORAGE_KEY) return
-    session = readStoredSession() ?? createInitialSession()
-    notify()
+    replaceFromOutside(readStoredSession() ?? createInitialSession())
   })
 }
 
@@ -118,6 +226,56 @@ export function subscribeUtSession(listener: () => void) {
 /** 현재 세션 값. 화면에서는 보통 useUtSession()을 쓴다 */
 export function getUtSession(): UtSession {
   return session
+}
+
+/**
+ * 이 기기 밖(같은 컴퓨터의 다른 탭, 같은 방의 다른 기기)에서 세션이 바뀌었을 때만 부른다.
+ * 이 기기에서 commit한 변경에는 부르지 않는다. 화면 이동(예: 다른 기기에서 초기화)에 쓴다.
+ * 반환값을 부르면 구독을 끝낸다.
+ */
+export function subscribeUtExternalChange(listener: (previous: UtSession, next: UtSession) => void) {
+  externalListeners.add(listener)
+  return () => {
+    externalListeners.delete(listener)
+  }
+}
+
+// ── 방 연결(서로 다른 기기) ───────────────────────────
+
+/** 지금 들어와 있는 방 번호. 주소에 ?room= 이 없거나 모양이 틀리면 null */
+export function getUtRoomId(): string | null {
+  return roomId
+}
+
+/**
+ * 방 연결 상태.
+ * local: 방 없이 기기 안에서만 동작 / connecting: 연결 중 / connected: 연결됨 / offline: 끊김(기기 안 상태로 계속 동작)
+ */
+export function getUtSyncStatus(): UtSyncStatus {
+  return syncStatus
+}
+
+/** 방 연결 상태가 바뀔 때마다 listener를 부른다. 반환값을 부르면 구독을 끝낸다 */
+export function subscribeUtSyncStatus(listener: () => void) {
+  syncStatusListeners.add(listener)
+  return () => {
+    syncStatusListeners.delete(listener)
+  }
+}
+
+/** 새 방 번호(6자리 숫자)를 만든다. 진행자 패널에서 참가자마다 하나씩 쓴다 */
+export function createUtRoomId(): string {
+  const value = new Uint32Array(1)
+  crypto.getRandomValues(value)
+  return String(100000 + (value[0] % 900000))
+}
+
+/** 방 주소를 만든다. 참가자 휴대폰은 participant, 진행자 휴대폰은 facilitator */
+export function buildUtRoomUrl(nextRoomId: string, target: 'participant' | 'facilitator' = 'participant') {
+  const url = new URL(window.location.href)
+  url.search = `?room=${nextRoomId}`
+  url.hash = target === 'facilitator' ? '#facilitator' : ''
+  return url.toString()
 }
 
 /** 진행자 패널 전용: 참가자 세션을 초기 데이터로 되돌린다 */

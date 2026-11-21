@@ -172,6 +172,10 @@ export interface UtBaseline {
 export interface UtSession {
   /** 저장 형식 버전. 형식이 바뀌면 이전 저장값을 버리고 초기 데이터로 시작한다 */
   version: string
+  /** 이 세션을 처음 만든 시각(ISO). 새 참가자로 초기화할 때마다 새로 찍는다. 다른 기기에서 초기화했는지 알 때 쓴다 */
+  startedAt: string
+  /** 마지막으로 바뀐 시각(ISO). 표시·기록용이며 순서 판단에는 쓰지 않는다 */
+  updatedAt: string
   briefingOrder: ScheduleId[]
   /** 참가자가 브리핑 순서를 확정했는지 */
   isBriefingConfirmed: boolean

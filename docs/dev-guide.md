@@ -40,7 +40,7 @@
 화면은 아래 함수로만 UT 데이터를 읽고 씁니다. 타입은 `src/data/types.ts`, 함수는 `src/data/utStore.ts`에 있습니다. 필요한 함수가 없거나 동작을 바꿔야 하면 데이터·흐름 담당에게 요청합니다.
 
 - **화면 다시 그리기.** 컴포넌트 맨 위에서 `useUtSession()`을 부른 뒤 조회 함수로 값을 읽습니다. 저장 함수를 부르면 값을 쓰는 모든 화면이 함께 갱신됩니다.
-- **저장 위치.** 참가자 세션은 브라우저 저장소의 UT 전용 키 `croxer-ut-session` 하나에 저장되어 새로고침해도 유지됩니다. 초기 데이터는 읽기 전용이며 세션과 섞이지 않습니다.
+- **저장 위치.** 참가자 세션은 브라우저 저장소의 UT 전용 키 `croxer-ut-session` 하나에 저장되어 새로고침해도 유지됩니다. 주소에 `?room=방번호`가 있으면 방마다 `croxer-ut-session:room:방번호`에 따로 저장하고, 같은 방의 다른 기기와 맞춥니다(아래 '방 연결'). 초기 데이터는 읽기 전용이며 세션과 섞이지 않습니다.
 - **상태 규칙.** 함수가 [PRD](prd.md) 6.2를 지킵니다. 예를 들어 `completeActivity`는 현재 역할과 AI 작업 상태를 바꾸지 않고, `requestAiJob`은 작업을 완료로 만들지 않습니다. 화면에서 상태 값을 직접 조합하지 않습니다.
 
 | 화면·기능 | 조회 | 저장·변경 |
@@ -55,8 +55,48 @@
 | 채팅 입력 | `findKeywordReply(활동 ID, 입력)`, `getFallbackChoices(활동 ID)` | — |
 | 스케줄(F-11) | `getScheduleSections()` — 진행 완료·진행 중·백그라운드·진행 후 | — |
 | 진행자 패널 | — | `resetUtSession()`, `skipToNextActivity()`, `fireAlert`, `fireInquiry` |
+| 방 연결(다른 기기) | `getUtRoomId()` — 방 번호 또는 `null`, `getUtSyncStatus()` — `local` / `connecting` / `connected` / `offline`, `subscribeUtSyncStatus(listener)` | `createUtRoomId()` — 새 6자리 방 번호, `buildUtRoomUrl(방번호, 'participant' \| 'facilitator')` — 참가자·진행자 주소 |
+| 앱 셸(화면 이동) | `subscribeUtExternalChange((이전, 다음) => …)` — 다른 탭·다른 기기에서 세션이 바뀌었을 때만 부름. 이 기기의 변경에는 부르지 않음 | — |
 
 초기 데이터는 UT 담당의 `src/fixtures/croxer-ut-baseline.v1.json`을 쓰며, 이 파일은 `types.ts`의 `UtBaseline` 모양을 따릅니다. 화면에서 이 파일을 직접 불러오지 않고 위 함수로 읽습니다.
+
+### 방 연결 (참가자·진행자가 서로 다른 기기일 때)
+
+참가자 휴대폰과 진행자 휴대폰이 같은 방 번호로 앱을 열면 세션이 서로 맞춰집니다. 서버 코드는 두지 않고 Firebase Realtime Database를 주소(REST)로만 씁니다. 추가 라이브러리는 없습니다. 코드는 `src/data/utRoomSync.ts`에 있고, 화면은 위 표의 함수만 씁니다.
+
+- **주소.** 참가자 `https://배포주소/?room=482193`, 진행자 `https://배포주소/?room=482193#facilitator`. 방 번호가 없으면 지금처럼 기기 안에서만 동작하고, 같은 컴퓨터의 탭끼리는 브라우저 저장소로 맞춰집니다.
+- **맞추는 방식.** 이 기기에서 바뀔 때마다 세션의 바뀐 칸만(예: `scheduleStatus/schedule-run`) `rooms/{방번호}/session`에 올리고, 다른 기기의 변경은 듣기 연결로 받습니다. 그래서 진행자가 비 알림을 띄우는 순간 참가자가 코스를 골라도 둘 다 남습니다. 같은 칸을 두 기기가 동시에 바꾸면 서버에 나중에 도착한 값이 남습니다. 나중에 연 기기는 지금 값을 먼저 받습니다. 기기 시계는 순서 판단에 쓰지 않습니다.
+- **끊겼을 때.** 기기 안의 상태로 계속 동작하고(`offline`), 다시 연결되면 보내지 못한 변경을 올립니다. 보내지 못한 변경이 없으면 서버 값을 받습니다.
+- **버전.** 두 기기는 같은 배포를 열어야 합니다. 저장 형식 버전(`version`)이 다른 값은 반영하지 않으니, 배포 뒤에는 두 기기를 모두 새로고침합니다.
+- **개인정보.** 주고받는 값은 진행 상태(`UtSession`)뿐입니다. 참가자 이름 같은 개인정보와 개입 기록은 올리지 않습니다.
+
+**처음 설정 (팀원이 한 번)**
+
+1. [Firebase 콘솔](https://console.firebase.google.com)에서 프로젝트를 만들고, 빌드 → Realtime Database → 데이터베이스 만들기를 누릅니다. 위치는 가까운 곳(예: 싱가포르 `asia-southeast1`), 시작 모드는 '잠금 모드'를 고릅니다.
+2. Realtime Database의 규칙 탭에 아래 규칙을 붙여 넣고 게시합니다. `rooms/{6자리 숫자}/session`만 읽고 쓸 수 있고, 세션 모양이 아니면 쓰지 못합니다.
+3. 데이터 탭 위쪽의 데이터베이스 주소(`https://…firebasedatabase.app`)를 복사합니다.
+4. Vercel 프로젝트 → Settings → Environment Variables에 `VITE_FIREBASE_DATABASE_URL`로 넣고(Production·Preview 모두), 다시 배포합니다. 로컬에서 시험할 때는 `.env.local`에 같은 이름으로 넣습니다. `.env.local`은 저장소에 올라가지 않습니다.
+
+```json
+{
+  "rules": {
+    ".read": false,
+    ".write": false,
+    "rooms": {
+      "$room": {
+        ".read": "$room.matches(/^[0-9]{6}$/)",
+        ".write": "$room.matches(/^[0-9]{6}$/)",
+        "session": {
+          ".validate": "!newData.exists() || newData.hasChildren(['version', 'startedAt', 'updatedAt', 'briefingOrder', 'scheduleStatus'])"
+        },
+        "$other": { ".validate": false }
+      }
+    }
+  }
+}
+```
+
+`VITE_`로 시작하는 값은 배포된 화면 코드에 들어가므로 비밀이 아닙니다. 데이터베이스는 위 규칙이 지키며, 방 번호를 아는 사람만 그 방을 읽고 쓸 수 있습니다. 비밀키(서비스 계정 키 등)는 쓰지 않습니다.
 
 ## 화면별 CSS
 
@@ -101,6 +141,7 @@
 
 | 버전 | 날짜 | 수정자 | 수정 내용과 이유 |
 | --- | --- | --- | --- |
+| 1.6 | 2026-11-21 | Claude Code · 지유 요청 | 참가자·진행자가 서로 다른 기기로 UT를 진행할 수 있게 방 연결(`?room=`, Firebase Realtime Database REST) 함수와 처음 설정·데이터베이스 규칙을 추가. 현지 님 요청 카드 반영 |
 | 1.5 | 2026-11-15 | Claude Code · 지유 요청 | UT 담당의 초기 데이터 파일이 합쳐져 저장·조회 함수가 임시값 대신 이 파일을 쓰도록 안내 문구 수정 |
 | 1.4 | 2026-11-15 | Claude Code · 지유 요청 | 0단계 데이터 기반: 공용 데이터 폴더 `src/data/`를 파일 위치 표에 추가하고, 화면별 저장·조회 함수 이름과 저장 키를 공유하기 위해 `저장·조회 함수` 섹션 추가 |
 | 1.3 | 2026-11-14 | Claude Code · 지유 요청 | 팀 회의 결정 반영: 화면은 저장·조회 함수로만 데이터에 접근하고, ID와 상태 값은 UT 데이터 베이스라인을 그대로 쓰도록 약속 추가 |
