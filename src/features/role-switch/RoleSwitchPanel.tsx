@@ -25,7 +25,7 @@ const holdAfterCountMs = 2000
 
 /**
  * 활동 전환 패널이 내려오고 5초를 센다.
- * 뒤는 활동 화면을 가린 투명 배경만 보이고, 선은 그리지 않는다.
+ * 뒤는 활동 화면을 가린 빈 딤만 보이고, 아치 선은 민선 부품 그대로 보인다.
  * 유지하기는 방금 끝낸 활동에 남기고, 그대로 두면 잠시 더 있다가 다음 활동으로 넘어간다.
  */
 export default function RoleSwitchPanel({ nextActivityId, onSwitch, onKeep }: RoleSwitchPanelProps) {
@@ -67,6 +67,7 @@ export default function RoleSwitchPanel({ nextActivityId, onSwitch, onKeep }: Ro
         count={left}
         fromActivity={current.name}
         toActivity={next.name}
+        showTrack
         onKeep={onKeep}
       />
     </div>
