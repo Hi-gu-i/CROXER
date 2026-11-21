@@ -5,22 +5,10 @@
   display: flex;
   justify-content: center;
   align-items: flex-start;
-  /* 패널 자체의 보라→민트 틴트가 보이게 뒤는 비운다. 패널 아래만 살짝 가린다. */
-  background: transparent;
-  --handoff-mix: 0%;
-  --handoff-current: var(--color-role-leader);
-  --handoff-next: var(--color-role-editor);
-}
-
-.stage::before {
-  content: "";
-  position: absolute;
-  top: 406px;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  background: var(--color-opacity-black-400);
-  pointer-events: none;
+  /* 유지하기 글자는 흰색 60%라 흰 표면만으로는 안 보인다.
+     빈 표면 위에 가장 진한 딤을 올려 글자는 읽고, 활동 화면은 비치지 않게 한다. */
+  background-color: var(--color-surface-default);
+  background-image: linear-gradient(var(--color-opacity-black-600), var(--color-opacity-black-600));
 }
 
 .stage section {
@@ -41,12 +29,6 @@
   text-overflow: ellipsis;
 }
 
-/* 5, 4, 3, 2, 1은 지금 역할 색에서 다음 역할 색으로 바뀐다 */
-.digit {
-  color: color-mix(in srgb, var(--handoff-next) var(--handoff-mix), var(--handoff-current));
-  transition: color 700ms linear;
-}
-
 @keyframes handoff-drop {
   from {
     transform: translateY(-100%);
@@ -60,9 +42,5 @@
 @media (prefers-reduced-motion: reduce) {
   .stage section {
     animation: none;
-  }
-
-  .digit {
-    transition: none;
   }
 }

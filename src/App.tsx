@@ -9,7 +9,6 @@ import {
   getActiveRoleId,
   getActivity,
   getCurrentActivityId,
-  getNextActivityId,
   getRole,
   getScheduleByActivity,
   isBriefingConfirmed,
@@ -97,7 +96,7 @@ export default function App() {
   function handleFacilitatorReset() {
     setSwitchTargetId(null)
     setRoleSheetOpen(false)
-      setScreen({ name: 'home' })
+    setScreen({ name: 'home' })
   }
 
   if (!isBriefingConfirmed()) {
@@ -143,17 +142,6 @@ export default function App() {
 
   function closeRoleSheet() {
     setRoleSheetOpen(false)
-  }
-
-  function warnRoleSwitch() {
-    if (screen.name !== 'activity') return
-    const nextActivityId = getNextActivityId(screen.activityId)
-    setRoleSheetOpen(false)
-    if (!nextActivityId) {
-      setScreen({ name: 'schedule' })
-      return
-    }
-    setSwitchTargetId(nextActivityId)
   }
 
   function handleActivityClickCapture(event: MouseEvent<HTMLDivElement>) {
@@ -220,7 +208,6 @@ export default function App() {
           activityId={activityId}
           onKeep={closeRoleSheet}
           onDismiss={closeRoleSheet}
-          onSwitch={warnRoleSwitch}
         />
       )}
       {switchTargetId && (

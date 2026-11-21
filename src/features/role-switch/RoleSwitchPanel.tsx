@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type CSSProperties } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { RoleTransitionPanel } from '../../components'
 import type { ToggleCategoryTone } from '../../components/ToggleCategory'
 import type { ActivityId, RoleId } from '../../data/types'
@@ -19,19 +19,13 @@ const toneByRole: Record<RoleId, ToggleCategoryTone> = {
   'role-runner': 'mint',
 }
 
-const roleColor: Record<RoleId, string> = {
-  'role-leader': 'var(--color-role-leader)',
-  'role-editor': 'var(--color-role-editor)',
-  'role-runner': 'var(--color-role-runner)',
-}
-
 const countdownStart = 5
 /** 1이 보인 뒤 패널을 조금 더 두고 다음 화면으로 넘어간다 */
 const holdAfterCountMs = 2000
 
 /**
  * 활동 전환 패널이 내려오고 5초를 센다.
- * 숫자는 지금 역할 색에서 다음 역할 색으로 서서히 바뀐다.
+ * 뒤는 활동 화면을 가린 빈 딤만 보이고, 아치 선은 민선 부품 그대로 보인다.
  * 유지하기는 방금 끝낸 활동에 남기고, 그대로 두면 잠시 더 있다가 다음 활동으로 넘어간다.
  */
 export default function RoleSwitchPanel({ nextActivityId, onSwitch, onKeep }: RoleSwitchPanelProps) {
@@ -41,8 +35,6 @@ export default function RoleSwitchPanel({ nextActivityId, onSwitch, onKeep }: Ro
   const current = getActivity(getCurrentActivityId() ?? nextActivityId)
   const next = getActivity(nextActivityId)
   const role = getRole(current.roleId)
-  const nextRole = getRole(next.roleId)
-  const colorMix = `${((countdownStart - left) / (countdownStart - 1)) * 100}%`
 
   useEffect(() => {
     onSwitchRef.current = onSwitch
@@ -67,21 +59,12 @@ export default function RoleSwitchPanel({ nextActivityId, onSwitch, onKeep }: Ro
   }, [holding])
 
   return (
-    <div
-      className={styles.stage}
-      style={
-        {
-          ['--handoff-mix' as string]: colorMix,
-          ['--handoff-current' as string]: roleColor[role.id],
-          ['--handoff-next' as string]: roleColor[nextRole.id],
-        } as CSSProperties
-      }
-    >
+    <div className={styles.stage}>
       <RoleTransitionPanel
         phase="before"
         roleLabel={role.label}
         roleTone={toneByRole[role.id]}
-        count={<span className={styles.digit}>{left}</span>}
+        count={left}
         fromActivity={current.name}
         toActivity={next.name}
         showTrack
