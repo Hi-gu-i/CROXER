@@ -29,24 +29,21 @@
   width: 100%;
 }
 
-/* 원본 20 Medium / 26 · center */
+/* ios/Body/strong · 17 SemiBold / 26 */
 .title {
   margin: 0;
   width: 100%;
-  font-family: var(--font-family-sans);
-  font-weight: var(--font-weight-medium);
-  font-size: var(--font-size-500);
-  line-height: var(--line-height-350);
-  letter-spacing: var(--letter-spacing-200);
+  font: var(--type-ios-body-strong-font);
+  letter-spacing: var(--type-ios-body-strong-tracking);
   color: var(--color-gray-900);
 }
 
-/* 16 Regular / 24 · gray-700 · center */
+/* ios/Body/small · 14 Regular / 22 */
 .description {
   margin: 0;
   width: 100%;
-  font: var(--type-ios-body-medium-font);
-  letter-spacing: var(--type-ios-body-medium-tracking);
+  font: var(--type-ios-body-small-font);
+  letter-spacing: var(--type-ios-body-small-tracking);
   color: var(--color-gray-700);
   white-space: pre-wrap;
 }
