@@ -1,12 +1,11 @@
 import type { ButtonHTMLAttributes } from "react";
 import { IconAi } from "../icons";
 import glowSrc from "./assets/icon-ai-alert-glow.png";
-import spinSrc from "./assets/icon-ai-alert-spin.gif";
 import styles from "./IconAiAlert.module.css";
 
 type IconAiAlertProps = {
   /**
-   * true면 펼치기 전 alert 모션(글래스 뒤 glow 회전 + 아이콘 스핀 GIF).
+   * true면 펼치기 전 alert 모션(글래스 뒤 glow 회전).
    * 사용자가 눌러 알림을 연 뒤에는 false.
    */
   active?: boolean;
@@ -14,7 +13,7 @@ type IconAiAlertProps = {
 
 /**
  * Figma `iconai alert` (MYA_Interaction · 417:40537).
- * 그라데이션은 글래스 버튼 뒤에서 회전하고, 아이콘은 글래스 위에 있다.
+ * 그라데이션만 글래스 뒤에서 회전하고, 아이콘은 글래스 위 IconAi 하나.
  */
 export function IconAiAlert({
   active = false,
@@ -36,11 +35,7 @@ export function IconAiAlert({
         </span>
       ) : null}
       <button type={type} className={buttonClasses} aria-label={ariaLabel} {...rest}>
-        {active ? (
-          <img className={styles.spin} src={spinSrc} alt="" draggable={false} />
-        ) : (
-          <IconAi className={styles.icon} size={22} />
-        )}
+        <IconAi className={styles.icon} size={22} />
       </button>
     </span>
   );
