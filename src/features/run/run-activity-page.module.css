@@ -75,6 +75,7 @@
   min-height: 0;
   padding: 185px var(--padding-ios-x) var(--padding-section);
   box-sizing: border-box;
+  overflow: visible;
 }
 
 .sentResult {

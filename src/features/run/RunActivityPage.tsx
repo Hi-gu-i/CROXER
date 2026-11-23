@@ -758,6 +758,7 @@ export function RunActivityPage({
         <div className={styles.sentBody}>
           <StatusResult
             className={styles.sentResult}
+            motion="sendFly"
             icon={<ResImgSend size={64} />}
             title="변경된 소식을 전송했어요"
             description={

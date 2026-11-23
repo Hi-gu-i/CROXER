@@ -27,6 +27,7 @@ export { ScheduleSwapCard } from "./ScheduleSwapCard";
 export { SectionIntro } from "./SectionIntro";
 export { ShotPoint } from "./ShotPoint";
 export { StatusResult } from "./StatusResult";
+export type { StatusResultMotion } from "./StatusResult";
 export { Tag } from "./Tag";
 export { ToggleCategory } from "./ToggleCategory";
 /** DS 원본 전환 패널. 앱 셸 연결은 `features/role-switch/RoleSwitchPanel`을 쓴다. */

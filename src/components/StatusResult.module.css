@@ -18,6 +18,81 @@
   justify-content: center;
   width: 86px;
   height: 86px;
+  /* sendFly가 박스 밖으로 나가도 잘리지 않게 */
+  overflow: visible;
+}
+
+.iconMotion {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 64px;
+  height: 56px;
+  transform-origin: 50% 50%;
+}
+
+/* Figma `386:17912` · 달력 앞장 펄럭 2s loop · GIF는 ResImgCalendar 시안 모션 */
+.calendarFlip {
+  display: block;
+  width: 64px;
+  height: auto;
+  max-height: 86px;
+  object-fit: contain;
+  pointer-events: none;
+}
+
+.calendarStill {
+  display: none;
+}
+
+/* Figma `304:17033` · 전송 그룹 2s loop · x/y/opacity */
+.motionSend .iconMotion {
+  animation: status-send-fly 2s linear infinite;
+  will-change: transform, opacity;
+}
+
+@keyframes status-send-fly {
+  /* Figma 304:17035 · opacity times 0/0.275/0.5/1 · x/y times 0/0.125/0.215/0.525/1 */
+  0%,
+  12.5% {
+    opacity: 1;
+    transform: translate(0, 0);
+  }
+  21.5% {
+    opacity: 1;
+    transform: translate(-18px, 18px);
+  }
+  27.5% {
+    opacity: 1;
+    transform: translate(5px, -5px);
+  }
+  50% {
+    opacity: 0;
+    transform: translate(90px, -90px);
+  }
+  52.5%,
+  100% {
+    opacity: 0;
+    transform: translate(100px, -100px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .calendarFlip {
+    display: none;
+  }
+
+  .motionCalendar .calendarStill {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .motionSend .iconMotion {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
 }
 
 .copy {
