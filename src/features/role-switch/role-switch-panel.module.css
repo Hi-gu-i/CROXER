@@ -27,17 +27,11 @@
 }
 
 /* 전환 패널은 민선 컴포넌트를 그대로 쓴다.
-   역할 칩은 가운데 둔다. 칸 이름은 짧아 잘리지 않고, 더 긴 문구만 칸 안에서 자른다.
+   역할 칩만 가운데. 활동 이름 가운데·말줄임은 RoleTransitionPanel lanes가 담당.
    아치 선은 showTrack으로 민선 부품에 들어 있어 그대로 보인다. */
 .stage section > header {
   justify-content: center !important;
   padding-left: 0 !important;
-}
-
-.stage section > div:nth-of-type(4) > span {
-  max-width: calc(var(--padding-700) * 4);
-  overflow: hidden;
-  text-overflow: ellipsis;
 }
 
 @keyframes handoff-drop {

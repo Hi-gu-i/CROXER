@@ -15,10 +15,10 @@
   --rtp-countdown-top: 124px;
   --rtp-labels-top: 170px;
   --rtp-titles-top: 204px;
-  --rtp-from-label-left: calc(100% * 79 / var(--rtp-design-w));
-  --rtp-to-label-left: calc(100% * 262 / var(--rtp-design-w));
-  --rtp-from-title-left: calc(100% * 68 / var(--rtp-design-w));
-  --rtp-to-title-left: calc(100% * 251 / var(--rtp-design-w));
+  /* before: 이름표→활동명 간격 (204 − 170 − label line-height) */
+  --rtp-lane-title-gap: calc(
+    var(--rtp-titles-top) - var(--rtp-labels-top) - var(--line-height-250)
+  );
   --rtp-keep-top: 352px;
   --rtp-line-left: calc(100% * -80 / var(--rtp-design-w));
   --rtp-line-top: 268px;
@@ -87,6 +87,7 @@
 .countdown,
 .labels,
 .titles,
+.lanes,
 .track,
 .keep {
   position: relative;
@@ -138,6 +139,54 @@
   color: var(--color-text-secondary);
 }
 
+/* before: 좌·우 반칸 — 이름표·활동명을 칸 가운데 정렬, 길면 … */
+.lanes {
+  position: absolute;
+  top: var(--rtp-labels-top);
+  left: 0;
+  z-index: 2;
+  display: flex;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 0 var(--padding-ios-x);
+}
+
+.lane {
+  display: flex;
+  flex: 1 1 0;
+  flex-direction: column;
+  align-items: center;
+  min-width: 0;
+  gap: var(--rtp-lane-title-gap);
+  text-align: center;
+}
+
+.laneLabel {
+  display: block;
+  width: 100%;
+  overflow: hidden;
+  font: var(--font-weight-regular) var(--font-size-200) / var(--line-height-250)
+    var(--font-family-sans);
+  letter-spacing: var(--letter-spacing-200);
+  color: var(--color-text-tertiary);
+  text-align: center;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.laneTitle {
+  display: block;
+  width: 100%;
+  overflow: hidden;
+  color: var(--color-text-secondary);
+  font: var(--type-ios-title-small-font);
+  letter-spacing: var(--type-ios-title-small-tracking);
+  text-align: center;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* countdown: 기존 중앙 좌표 유지 */
 .labels {
   position: absolute;
   top: var(--rtp-labels-top);
@@ -153,19 +202,8 @@
 
 .fromLabel {
   position: absolute;
-  left: var(--rtp-from-label-left);
-  text-align: center;
-}
-
-.toLabel {
-  position: absolute;
-  left: var(--rtp-to-label-left);
-  text-align: center;
-}
-
-/* countdown(전환): 현재 활동만 중앙 x171 */
-.countdown .fromLabel {
   left: 171px;
+  text-align: center;
 }
 
 .titles {
@@ -177,28 +215,14 @@
   height: var(--line-height-500);
 }
 
-.fromActivity,
 .toActivity {
   position: absolute;
-  white-space: nowrap;
+  left: 160px;
   color: var(--color-text-secondary);
-  /* 원본 전환전/전환 공통: 20/30 SemiBold */
   font: var(--type-ios-title-small-font);
   letter-spacing: var(--type-ios-title-small-tracking);
   text-align: center;
-}
-
-.before .fromActivity {
-  left: var(--rtp-from-title-left);
-}
-
-.before .toActivity {
-  left: var(--rtp-to-title-left);
-}
-
-/* countdown: 단일 활동 중앙 x160 */
-.countdown .toActivity {
-  left: 160px;
+  white-space: nowrap;
 }
 
 /* 아치 곡선 + cell — 원본 line VECTOR / cell */
