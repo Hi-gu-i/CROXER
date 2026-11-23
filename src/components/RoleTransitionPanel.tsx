@@ -110,19 +110,27 @@ export function RoleTransitionPanel({
         <span className={styles.countSuffix}>{countSuffix}</span>
       </p>
 
-      <div className={styles.labels}>
-        <span className={styles.fromLabel}>{fromLabel}</span>
-        {!isCountdown ? (
-          <span className={styles.toLabel}>{toLabel}</span>
-        ) : null}
-      </div>
-
-      <div className={styles.titles}>
-        {!isCountdown ? (
-          <span className={styles.fromActivity}>{fromActivity}</span>
-        ) : null}
-        <span className={styles.toActivity}>{toActivity}</span>
-      </div>
+      {isCountdown ? (
+        <>
+          <div className={styles.labels}>
+            <span className={styles.fromLabel}>{fromLabel}</span>
+          </div>
+          <div className={styles.titles}>
+            <span className={styles.toActivity}>{toActivity}</span>
+          </div>
+        </>
+      ) : (
+        <div className={styles.lanes}>
+          <div className={styles.lane}>
+            <span className={styles.laneLabel}>{fromLabel}</span>
+            <span className={styles.laneTitle}>{fromActivity}</span>
+          </div>
+          <div className={styles.lane}>
+            <span className={styles.laneLabel}>{toLabel}</span>
+            <span className={styles.laneTitle}>{toActivity}</span>
+          </div>
+        </div>
+      )}
 
       {showTrack ? (
         <div className={styles.track} aria-hidden="true">
