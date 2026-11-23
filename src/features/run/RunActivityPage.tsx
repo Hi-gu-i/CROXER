@@ -274,6 +274,8 @@ type RunActivityPageProps = {
   activityId: ActivityId;
   /** 활동의 UT 흐름을 마쳤을 때 한 번 부른다. 완료 처리와 전환 패널은 App이 맡는다 */
   onFinish: () => void;
+  /** 전환 패널 유지하기 · 06 전송 완료에서 공지 초안으로 되돌림 */
+  stayNonce?: number;
 };
 
 /**
@@ -284,10 +286,13 @@ type RunActivityPageProps = {
 export function RunActivityPage({
   activityId,
   onFinish,
+  stayNonce = 0,
 }: RunActivityPageProps) {
   useUtSession();
 
   const [step, setStep] = useState<RunStep>("inquiry");
+  const stepRef = useRef<RunStep>("inquiry");
+  stepRef.current = step;
   const [draft, setDraft] = useState("");
   /** 시안 `02 · 레퍼런스 · 대화 시작` · 빈 대화로 시작 */
   const [messages, setMessages] = useState<ChatMessage[]>([]);
@@ -376,6 +381,14 @@ export function RunActivityPage({
     }, SENT_FLASH_MS);
     return () => window.clearTimeout(id);
   }, [step]);
+
+  /** 전환 패널 유지하기 · 06 전송/직후 측정에서 공지 초안(직전)으로 복귀 */
+  useEffect(() => {
+    if (stayNonce < 1) return;
+    const current = stepRef.current;
+    if (current !== "sent" && current !== "running") return;
+    setStep("announcement");
+  }, [stayNonce]);
 
   useEffect(() => {
     if (meterPhase !== "running") return;
