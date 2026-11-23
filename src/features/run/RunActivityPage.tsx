@@ -274,8 +274,8 @@ type RunActivityPageProps = {
   activityId: ActivityId;
   /** 활동의 UT 흐름을 마쳤을 때 한 번 부른다. 완료 처리와 전환 패널은 App이 맡는다 */
   onFinish: () => void;
-  /** 전환 패널 유지하기 · 06 전송 완료에서 공지 초안으로 되돌림 */
-  stayNonce?: number;
+  /** 공지→측정 패널 유지하기 · 공지 초안으로 되돌림 */
+  runHandoffStayNonce?: number;
   /** 유지하기 후 「다음으로」· 측정 화면으로 안전하게 진행 */
   onContinueForward?: () => void;
 };
@@ -288,7 +288,7 @@ type RunActivityPageProps = {
 export function RunActivityPage({
   activityId,
   onFinish,
-  stayNonce = 0,
+  runHandoffStayNonce = 0,
   onContinueForward,
 }: RunActivityPageProps) {
   useUtSession();
@@ -387,14 +387,14 @@ export function RunActivityPage({
     return () => window.clearTimeout(id);
   }, [step]);
 
-  /** 전환 패널 유지하기 · 06 전송/직후 측정에서 공지 초안(직전)으로 복귀 */
+  /** 공지→측정 패널 유지하기만 · 일반 활동 전환 유지하기는 측정 화면에 남김 */
   useEffect(() => {
-    if (stayNonce < 1) return;
+    if (runHandoffStayNonce < 1) return;
     const current = stepRef.current;
     if (current !== "sent" && current !== "running") return;
     setAnnounceAfterKeep(true);
     setStep("announcement");
-  }, [stayNonce]);
+  }, [runHandoffStayNonce]);
 
   function handleAnnounceNext() {
     setAnnounceAfterKeep(false);

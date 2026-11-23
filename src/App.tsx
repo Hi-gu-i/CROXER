@@ -46,10 +46,15 @@ interface ActivityScreenProps {
   /** 공지→측정 전환 패널이 끝난 뒤에만 true. 측정 화면을 열 때 쓴다 */
   runMeterReady?: boolean
   /**
-   * 전환 패널 「유지하기」. 값이 바뀌면 완료 플래시(12·06)에서
-   * 직전 화면으로 되돌린다.
+   * 공지→측정 패널 「유지하기」.
+   * 러닝만 듣고 공지 초안(직전)으로 되돌린다.
    */
-  stayNonce?: number
+  runHandoffStayNonce?: number
+  /**
+   * 활동 전환 패널 「유지하기」(촬영 일정 완료 뒤 등).
+   * 해당 활동만 듣고 완료 직전 화면으로 되돌린다.
+   */
+  activityKeepNonce?: number
   /** 유지하기 후 「다음으로」· 공지→측정으로 안전하게 진행 */
   onContinueForward?: () => void
 }
@@ -78,18 +83,23 @@ export default function App() {
   const [switchTargetId, setSwitchTargetId] = useState<ActivityId | null>(null)
   const [runHandoff, setRunHandoff] = useState(false)
   const [runMeterReady, setRunMeterReady] = useState(false)
-  const [stayNonce, setStayNonce] = useState(0)
+  const [runHandoffStayNonce, setRunHandoffStayNonce] = useState(0)
+  const [activityKeepNonce, setActivityKeepNonce] = useState(0)
   const runMeterReadyRef = useRef(false)
   const facilitatorStandalone = useFacilitatorStandalone()
 
-  /** 전환 패널 유지하기 · 패널만 닫고 완료 직전 화면으로 되돌리게 알린다 */
-  function keepCurrentActivity() {
+  /** 다음 활동 전환 패널 유지하기 · 패널만 닫고(촬영 완료 직후 등은 직전 화면 신호) */
+  function keepActivitySwitch() {
     setSwitchTargetId(null)
+    setActivityKeepNonce((value) => value + 1)
+  }
+
+  /** 공지→측정 패널 유지하기 · 측정으로 넘기지 않고 공지 초안 복귀 신호 */
+  function keepRunHandoff() {
     setRunHandoff(false)
-    // 측정으로 넘기지 않음. 공지→측정 준비 플래그만 리셋
     runMeterReadyRef.current = false
     setRunMeterReady(false)
-    setStayNonce((value) => value + 1)
+    setRunHandoffStayNonce((value) => value + 1)
   }
 
   function clearRunHandoff() {
@@ -259,7 +269,8 @@ export default function App() {
               onHome={goHome}
               onRunHandoff={screen.activityId === 'activity-run' ? requestRunHandoff : undefined}
               runMeterReady={screen.activityId === 'activity-run' && runMeterReady}
-              stayNonce={stayNonce}
+              runHandoffStayNonce={runHandoffStayNonce}
+              activityKeepNonce={activityKeepNonce}
               onContinueForward={
                 screen.activityId === 'activity-run' ? finishRunHandoff : undefined
               }
@@ -293,7 +304,7 @@ export default function App() {
         <RoleSwitchPanel
           nextActivityId={switchTargetId}
           onSwitch={switchToNextActivity}
-          onKeep={keepCurrentActivity}
+          onKeep={keepActivitySwitch}
         />
       )}
       {runHandoff && !switchTargetId && (
@@ -302,7 +313,7 @@ export default function App() {
           fromActivityName="코스 변경 공지"
           toActivityName="러닝 측정"
           onSwitch={finishRunHandoff}
-          onKeep={keepCurrentActivity}
+          onKeep={keepRunHandoff}
         />
       )}
       <FacilitatorPanel onActivityChange={handleFacilitatorActivity} onReset={handleFacilitatorReset} />

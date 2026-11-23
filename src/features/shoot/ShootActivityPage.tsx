@@ -188,8 +188,8 @@ type ShootActivityPageProps = {
   initialResourceId?: string;
   /** 프리뷰·딥링크용. 지정 시 해당 단계로 바로 연다 */
   initialStep?: ShootStep;
-  /** 전환 패널 유지하기 · 일정 완료(12)에서 교체 제안(11)으로 되돌림 */
-  stayNonce?: number;
+  /** 활동 전환 패널 유지하기 · 일정 완료(12)에서 교체 제안(11)으로 되돌림 */
+  activityKeepNonce?: number;
 };
 
 /**
@@ -203,7 +203,7 @@ export function ShootActivityPage({
   onHome,
   initialResourceId,
   initialStep,
-  stayNonce = 0,
+  activityKeepNonce = 0,
 }: ShootActivityPageProps) {
   useUtSession();
 
@@ -242,14 +242,14 @@ export function ShootActivityPage({
     };
   }, []);
 
-  /** 전환 패널 유지하기 · 12 완료 → 11 일정 교체 제안으로 복귀 */
+  /** 활동 전환 패널 유지하기 · 12 완료 → 11 일정 교체 제안으로 복귀 */
   useEffect(() => {
-    if (stayNonce < 1) return;
+    if (activityKeepNonce < 1) return;
     if (stepRef.current !== "scheduleDone") return;
     scheduleFinishSentRef.current = true;
     setSwapAfterKeep(true);
     setStep("scheduleSwap");
-  }, [stayNonce]);
+  }, [activityKeepNonce]);
 
   /** AI 결과(ai_result)는 작업 completed 후에만 getResources에 포함된다 */
   const resources = [...getResources(activityId)].sort((a, b) => {
