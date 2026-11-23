@@ -15,7 +15,7 @@
   z-index: 1;
 }
 
-/* 글래스 원 뒤에서만 회전 */
+/* 글래스 원 뒤에서만 회전 · 원 안(48px)은 마스크로 뚫어 바깥 고리만 보임 */
 .glow {
   position: absolute;
   inset: -28%;
@@ -23,6 +23,19 @@
   pointer-events: none;
   transform-origin: 50% 50%;
   animation: icon-ai-alert-glow 2s ease-out infinite;
+  /* wrap 중심 기준 반지름 24px = 글래스 면 · 안쪽 transparent */
+  -webkit-mask-image: radial-gradient(
+    circle at 50% 50%,
+    transparent 0,
+    transparent 23.5px,
+    #000 24px
+  );
+  mask-image: radial-gradient(
+    circle at 50% 50%,
+    transparent 0,
+    transparent 23.5px,
+    #000 24px
+  );
 }
 
 .glowImg {
@@ -46,7 +59,8 @@
   padding: 0;
   border: none;
   border-radius: var(--radius-control);
-  background: var(--color-opacity-white-600);
+  /* 글래스 안쪽은 glow가 비치지 않도록 불투명에 가깝게 */
+  background: color-mix(in srgb, #ffffff 88%, transparent);
   box-shadow: var(--shadow-glass);
   backdrop-filter: var(--effect-glass-background-backdrop);
   -webkit-backdrop-filter: var(--effect-glass-background-backdrop);
