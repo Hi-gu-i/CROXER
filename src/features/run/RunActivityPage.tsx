@@ -13,7 +13,6 @@ import {
   RunMeter,
   SectionIntro,
   StatusResult,
-  type AiJobToastTone,
   type RunMeterPhase,
 } from "../../components";
 import type { ActivityId } from "../../data/types";
@@ -75,7 +74,6 @@ function SwappingJobToast({
   }, [phase, shown]);
 
   const isDone = shown === "done";
-  const tone: AiJobToastTone = isDone ? "done" : "ack";
 
   return (
     <div
@@ -87,8 +85,9 @@ function SwappingJobToast({
         .filter(Boolean)
         .join(" ")}
     >
+      {/* 시안 기존 ack 글래스 형태 유지 · 문구·액션만 바꿈 */}
       <AiJobToast
-        tone={tone}
+        tone="ack"
         message={isDone ? JOB_TOAST_DONE_MESSAGE : JOB_TOAST_ACK_MESSAGE}
         actionLabel={isDone ? "러닝 마치기" : undefined}
         onAction={isDone ? onDoneAction : undefined}
