@@ -510,6 +510,7 @@ export function RunActivityPage({
         roleLabel="러닝 크루장"
         roleTone="mint"
         showAi={step !== "chat" && step !== "job"}
+        aiAlert={step === "inquiry" && !assessmentOpen}
         trailing={step === "chat" || step === "job" ? "close" : "home"}
         onAiClick={
           step === "sent" || step === "chat" || step === "job"
