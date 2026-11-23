@@ -23,6 +23,17 @@ const toneByRole: Record<RoleId, ToggleCategoryTone> = {
   'role-runner': 'mint',
 }
 
+/** 패널 칸에만 쓰는 짧은 이름. 홈·브리핑·스케줄의 원래 이름은 바꾸지 않는다. */
+const panelNameByActivity: Partial<Record<ActivityId, string>> = {
+  'activity-research': '리서치 검토',
+  'activity-shoot': '강변 촬영',
+  'activity-run': '한강 러닝',
+}
+
+function panelActivityName(activityId: ActivityId, fullName: string) {
+  return panelNameByActivity[activityId] ?? fullName
+}
+
 /** 왼쪽은 지금 역할, 오른쪽은 다음 역할. 전환 워시는 semantic soft */
 const tintByRole: Record<RoleId, string> = {
   'role-leader': 'var(--color-role-leader-soft)',
@@ -130,8 +141,8 @@ export default function RoleSwitchPanel({
         roleLabel={role.label}
         roleTone={toneByRole[role.id]}
         count={left}
-        fromActivity={fromActivityName ?? current.name}
-        toActivity={toActivityName ?? next.name}
+        fromActivity={fromActivityName ?? panelActivityName(current.id, current.name)}
+        toActivity={toActivityName ?? panelActivityName(next.id, next.name)}
         showTrack
         onKeep={onKeep}
         style={

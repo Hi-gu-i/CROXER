@@ -109,23 +109,21 @@
   width: 100%;
 }
 
-/* ios/Body/strong 크기·웨이트 유지 · 줄간격만 타이트하게 (첨부 시안 옵티컬) */
+/* ios/Title/small · 20 SemiBold / 30 · 시안 타이틀 크기 */
 .title {
   margin: 0;
   width: 100%;
-  font: var(--type-ios-body-strong-font);
-  letter-spacing: var(--type-ios-body-strong-tracking);
-  line-height: 22px;
+  font: var(--type-ios-title-small-font);
+  letter-spacing: var(--type-ios-title-small-tracking);
   color: var(--color-gray-900);
 }
 
-/* ios/Body/small 크기·웨이트 유지 · 타이틀과 8px */
+/* ios/Body/medium · 16 Regular / 24 · 타이틀과 8px */
 .description {
   margin: 8px 0 0;
   width: 100%;
-  font: var(--type-ios-body-small-font);
-  letter-spacing: var(--type-ios-body-small-tracking);
-  line-height: 20px;
+  font: var(--type-ios-body-medium-font);
+  letter-spacing: var(--type-ios-body-medium-tracking);
   color: var(--color-gray-700);
   white-space: pre-wrap;
 }
