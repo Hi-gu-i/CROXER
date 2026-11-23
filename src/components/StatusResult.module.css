@@ -119,9 +119,9 @@
   color: var(--color-gray-900);
 }
 
-/* ios/Body/small 크기·웨이트 유지 · 타이틀과 4px */
+/* ios/Body/small 크기·웨이트 유지 · 타이틀과 8px */
 .description {
-  margin: 4px 0 0;
+  margin: 8px 0 0;
   width: 100%;
   font: var(--type-ios-body-small-font);
   letter-spacing: var(--type-ios-body-small-tracking);
