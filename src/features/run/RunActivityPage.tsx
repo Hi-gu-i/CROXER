@@ -276,6 +276,8 @@ type RunActivityPageProps = {
   onFinish: () => void;
   /** 전환 패널 유지하기 · 06 전송 완료에서 공지 초안으로 되돌림 */
   stayNonce?: number;
+  /** 유지하기 후 「다음으로」· 측정 화면으로 안전하게 진행 */
+  onContinueForward?: () => void;
 };
 
 /**
@@ -287,12 +289,15 @@ export function RunActivityPage({
   activityId,
   onFinish,
   stayNonce = 0,
+  onContinueForward,
 }: RunActivityPageProps) {
   useUtSession();
 
   const [step, setStep] = useState<RunStep>("inquiry");
   const stepRef = useRef<RunStep>("inquiry");
   stepRef.current = step;
+  /** 유지하기 후 공지 초안 · 보내기 막고 「다음으로」 */
+  const [announceAfterKeep, setAnnounceAfterKeep] = useState(false);
   const [draft, setDraft] = useState("");
   /** 시안 `02 · 레퍼런스 · 대화 시작` · 빈 대화로 시작 */
   const [messages, setMessages] = useState<ChatMessage[]>([]);
@@ -387,8 +392,21 @@ export function RunActivityPage({
     if (stayNonce < 1) return;
     const current = stepRef.current;
     if (current !== "sent" && current !== "running") return;
+    setAnnounceAfterKeep(true);
     setStep("announcement");
   }, [stayNonce]);
+
+  function handleAnnounceNext() {
+    setAnnounceAfterKeep(false);
+    runAccumulatedRef.current = 0;
+    runStartedAtRef.current = null;
+    setElapsedMs(0);
+    setMeterPhase("idle");
+    setReturnedAfterJob(false);
+    setJobToastPhase("hidden");
+    setStep("running");
+    onContinueForward?.();
+  }
 
   useEffect(() => {
     if (meterPhase !== "running") return;
@@ -457,10 +475,12 @@ export function RunActivityPage({
 
   function goAnnouncement() {
     if (!getSelectedCourseId()) return;
+    setAnnounceAfterKeep(false);
     setStep("announcement");
   }
 
   function handleSendAnnouncement() {
+    if (announceAfterKeep) return;
     sendAnnouncement(ANNOUNCEMENT_ID);
     setStep("sent");
   }
@@ -843,9 +863,21 @@ export function RunActivityPage({
             />
           </div>
           <div className={styles.footer}>
-            <Button fullWidth onClick={handleSendAnnouncement}>
-              공지 보내기
-            </Button>
+            {announceAfterKeep ? (
+              <>
+                <p className={styles.footerHint}>이미 보낸 공지예요</p>
+                <Button fullWidth disabled>
+                  공지 보내기
+                </Button>
+                <Button fullWidth onClick={handleAnnounceNext}>
+                  다음으로
+                </Button>
+              </>
+            ) : (
+              <Button fullWidth onClick={handleSendAnnouncement}>
+                공지 보내기
+              </Button>
+            )}
           </div>
         </>
       ) : null}

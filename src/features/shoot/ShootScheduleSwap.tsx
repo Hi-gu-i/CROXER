@@ -36,6 +36,12 @@ type ShootScheduleSwapProps = {
   onHome?: () => void;
   /** `12 · 일정 수정 완료`로 전환. 본실행 로직은 없음 */
   onConfirm?: () => void;
+  /**
+   * 전환 패널 유지하기 후 복귀.
+   * 일정 교체하기는 막고 「다음으로」로 다음 활동 패널만 연다.
+   */
+  afterKeep?: boolean;
+  onNext?: () => void;
 };
 
 /** YYYY-MM-DD → 다음 날 YYYY-MM-DD (가상 UT 날짜) */
@@ -67,7 +73,12 @@ function formatClock(startsAt: string) {
  * Status+Header · SectionIntro · blue-050 위 교체 카드 2장 · 이유 카드 · 하단 Button.
  * 오늘 시각은 브리핑 자리의 촬영 일정, 내일은 getToday() 다음 날(#96·#81).
  */
-export function ShootScheduleSwap({ onHome, onConfirm }: ShootScheduleSwapProps) {
+export function ShootScheduleSwap({
+  onHome,
+  onConfirm,
+  afterKeep = false,
+  onNext,
+}: ShootScheduleSwapProps) {
   useUtSession();
 
   const shootStartsAt = getScheduleByActivity("activity-shoot").startsAt;
@@ -144,9 +155,21 @@ export function ShootScheduleSwap({ onHome, onConfirm }: ShootScheduleSwapProps)
       </div>
 
       <div className={styles.footer}>
-        <Button fullWidth onClick={onConfirm}>
-          일정 교체하기
-        </Button>
+        {afterKeep ? (
+          <>
+            <p className={styles.footerHint}>일정 조정을 마친 상태예요</p>
+            <Button fullWidth disabled>
+              일정 교체하기
+            </Button>
+            <Button fullWidth onClick={onNext}>
+              다음으로
+            </Button>
+          </>
+        ) : (
+          <Button fullWidth onClick={onConfirm}>
+            일정 교체하기
+          </Button>
+        )}
       </div>
     </main>
   );

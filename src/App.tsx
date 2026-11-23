@@ -50,6 +50,8 @@ interface ActivityScreenProps {
    * 직전 화면으로 되돌린다.
    */
   stayNonce?: number
+  /** 유지하기 후 「다음으로」· 공지→측정으로 안전하게 진행 */
+  onContinueForward?: () => void
 }
 
 /** 전송 완료 화면이 잠깐 보인 뒤 패널이 내려온다 */
@@ -258,6 +260,9 @@ export default function App() {
               onRunHandoff={screen.activityId === 'activity-run' ? requestRunHandoff : undefined}
               runMeterReady={screen.activityId === 'activity-run' && runMeterReady}
               stayNonce={stayNonce}
+              onContinueForward={
+                screen.activityId === 'activity-run' ? finishRunHandoff : undefined
+              }
             />
           </div>
         )}

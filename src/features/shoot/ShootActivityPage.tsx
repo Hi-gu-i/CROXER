@@ -212,6 +212,8 @@ export function ShootActivityPage({
   );
   /** 일정 완료 플래시 onFinish는 한 번만 · 유지하기 후에도 재호출되지 않게 */
   const scheduleFinishSentRef = useRef(false);
+  /** 유지하기 후 교체 제안 화면 · 완료 CTA 막고 「다음으로」 */
+  const [swapAfterKeep, setSwapAfterKeep] = useState(false);
   const [resourceId, setResourceId] = useState<string | null>(
     initialResourceId ?? null,
   );
@@ -245,6 +247,7 @@ export function ShootActivityPage({
     if (stayNonce < 1) return;
     if (stepRef.current !== "scheduleDone") return;
     scheduleFinishSentRef.current = true;
+    setSwapAfterKeep(true);
     setStep("scheduleSwap");
   }, [stayNonce]);
 
@@ -561,10 +564,12 @@ export function ShootActivityPage({
   }
 
   function openScheduleSwap() {
+    setSwapAfterKeep(false);
     setStep("scheduleSwap");
   }
 
   function openScheduleDone() {
+    setSwapAfterKeep(false);
     scheduleFinishSentRef.current = false;
     setStep("scheduleDone");
   }
@@ -585,7 +590,12 @@ export function ShootActivityPage({
 
   if (isScheduleSwap) {
     return (
-      <ShootScheduleSwap onHome={onHome} onConfirm={openScheduleDone} />
+      <ShootScheduleSwap
+        onHome={onHome}
+        onConfirm={openScheduleDone}
+        afterKeep={swapAfterKeep}
+        onNext={onFinish}
+      />
     );
   }
 
