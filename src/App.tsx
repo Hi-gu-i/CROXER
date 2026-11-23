@@ -10,6 +10,7 @@ import {
   getActivity,
   getCurrentActivityId,
   getNextActivityId,
+  getAnnouncement,
   getRole,
   getScheduleByActivity,
   isBriefingConfirmed,
@@ -45,6 +46,9 @@ interface ActivityScreenProps {
   /** 공지→측정 전환 패널이 끝난 뒤에만 true. 측정 화면을 열 때 쓴다 */
   runMeterReady?: boolean
 }
+
+/** 전송 완료 화면이 잠깐 보인 뒤 패널이 내려온다 */
+const runNoticeFlashMs = 1800
 
 const tabs: { id: TabId; label: string; Icon: typeof IconHome }[] = [
   { id: 'home', label: '홈', Icon: IconHome },
@@ -87,6 +91,28 @@ export default function App() {
     setRunHandoff(false)
     setRunMeterReady(true)
   }
+
+  const onRunScreen = screen.name === 'activity' && screen.activityId === 'activity-run'
+  const runNoticeSent = onRunScreen && getAnnouncement('activity-run')?.status === 'simulated_sent'
+  const runNoticeWasDraft = useRef(false)
+
+  useEffect(() => {
+    if (!onRunScreen) {
+      runNoticeWasDraft.current = getAnnouncement('activity-run')?.status !== 'simulated_sent'
+      return
+    }
+    if (!runNoticeSent) {
+      runNoticeWasDraft.current = true
+      return
+    }
+    if (!runNoticeWasDraft.current || runMeterReadyRef.current) return
+    const timer = window.setTimeout(() => {
+      runNoticeWasDraft.current = false
+      if (runMeterReadyRef.current) return
+      setRunHandoff(true)
+    }, runNoticeFlashMs)
+    return () => window.clearTimeout(timer)
+  }, [onRunScreen, runNoticeSent])
 
   // 이 기기의 저장은 부르지 않는다. 다른 탭·다른 기기가 세션을 바꿨을 때만 화면을 옮긴다.
   useEffect(() => {
@@ -254,6 +280,7 @@ export default function App() {
       {runHandoff && !switchTargetId && (
         <RoleSwitchPanel
           nextActivityId="activity-run"
+          fromActivityName="코스 변경 공지"
           toActivityName="러닝 측정"
           onSwitch={finishRunHandoff}
           onKeep={finishRunHandoff}
