@@ -358,3 +358,47 @@
   pointer-events: auto;
   margin-inline: auto;
 }
+
+/* ack → done · 아래로 fade-out 후 아래에서 위로 fade-in */
+.toastSwap {
+  width: 100%;
+  max-width: 333px;
+  will-change: opacity, transform;
+}
+
+.toastSwapOut {
+  animation: run-job-toast-out 280ms ease forwards;
+}
+
+.toastSwapIn {
+  animation: run-job-toast-in 320ms ease;
+}
+
+@keyframes run-job-toast-out {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+}
+
+@keyframes run-job-toast-in {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .toastSwapOut,
+  .toastSwapIn {
+    animation: none;
+  }
+}

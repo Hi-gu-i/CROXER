@@ -13,6 +13,7 @@ import {
   RunMeter,
   SectionIntro,
   StatusResult,
+  type AiJobToastTone,
   type RunMeterPhase,
 } from "../../components";
 import type { ActivityId } from "../../data/types";
@@ -42,6 +43,59 @@ import styles from "./run-activity-page.module.css";
 
 /** IconAi alert 모션 시작 전 여유 (촬영 비 알림과 동일) */
 const ICON_AI_ALERT_DELAY_MS = 5_000;
+/** 채팅 X로 나간 뒤 ack → 완료 토스트 전환 */
+const JOB_TOAST_DONE_DELAY_MS = 5_000;
+const JOB_TOAST_ACK_MESSAGE = "정리가 끝나면 알려드릴게요.";
+const JOB_TOAST_DONE_MESSAGE = "레퍼런스 정리가 완료됐어요";
+const TOAST_SWAP_MS = 280;
+
+type JobToastPhase = "hidden" | "ack" | "done";
+
+/** ack → done 전환 시 아래로 fade-out 후 위로 fade-in */
+function SwappingJobToast({
+  phase,
+  onDoneAction,
+  className,
+}: {
+  phase: "ack" | "done";
+  onDoneAction?: () => void;
+  className?: string;
+}) {
+  const [shown, setShown] = useState<"ack" | "done">(phase);
+  const [exiting, setExiting] = useState(false);
+
+  useEffect(() => {
+    if (phase === shown) return;
+    setExiting(true);
+    const id = window.setTimeout(() => {
+      setShown(phase);
+      setExiting(false);
+    }, TOAST_SWAP_MS);
+    return () => window.clearTimeout(id);
+  }, [phase, shown]);
+
+  const isDone = shown === "done";
+  const tone: AiJobToastTone = isDone ? "done" : "ack";
+
+  return (
+    <div
+      className={[
+        styles.toastSwap,
+        exiting ? styles.toastSwapOut : styles.toastSwapIn,
+        className ?? "",
+      ]
+        .filter(Boolean)
+        .join(" ")}
+    >
+      <AiJobToast
+        tone={tone}
+        message={isDone ? JOB_TOAST_DONE_MESSAGE : JOB_TOAST_ACK_MESSAGE}
+        actionLabel={isDone ? "러닝 마치기" : undefined}
+        onAction={isDone ? onDoneAction : undefined}
+      />
+    </div>
+  );
+}
 
 /** A 루트 · 원본 viewBox 좌표 + map(361×256) 배치 */
 const ROUTE_A = {
@@ -248,18 +302,43 @@ export function RunActivityPage({
   const [pickedCourseId, setPickedCourseId] = useState<string | null>(null);
   const [meterPhase, setMeterPhase] = useState<RunMeterPhase>("idle");
   const [elapsedMs, setElapsedMs] = useState(0);
-  /** 러닝을 한 번 이상 시작 후 멈춤 */
-  const [hasPausedRun, setHasPausedRun] = useState(false);
   /** 작업 카드(job)를 본 뒤 채팅을 나가 러닝으로 복귀 */
   const [returnedAfterJob, setReturnedAfterJob] = useState(false);
+  /** ack=접수 안내 · done=완료 (채팅을 나가도 유지) */
+  const [jobToastPhase, setJobToastPhase] = useState<JobToastPhase>("hidden");
   /** 정지(■) 후 · 채팅 없이 마치기 확인 토스트 */
   const [showStopFinishConfirm, setShowStopFinishConfirm] = useState(false);
   const runAccumulatedRef = useRef(0);
   const runStartedAtRef = useRef<number | null>(null);
+  const jobToastTimerRef = useRef<number | null>(null);
 
   useEffect(() => {
     fireInquiry(INQUIRY_ID);
   }, []);
+
+  useEffect(() => {
+    return () => {
+      if (jobToastTimerRef.current != null) {
+        window.clearTimeout(jobToastTimerRef.current);
+      }
+    };
+  }, []);
+
+  function clearJobToastTimer() {
+    if (jobToastTimerRef.current != null) {
+      window.clearTimeout(jobToastTimerRef.current);
+      jobToastTimerRef.current = null;
+    }
+  }
+
+  /** 채팅을 닫은 뒤 5초 → 완료 토스트 */
+  function scheduleJobToastDone() {
+    clearJobToastTimer();
+    jobToastTimerRef.current = window.setTimeout(() => {
+      setJobToastPhase("done");
+      jobToastTimerRef.current = null;
+    }, JOB_TOAST_DONE_DELAY_MS);
+  }
 
   /** 문의 화면 첫 진입 후 5초 → IconAi alert 모션 (한 번 뜬 뒤에는 타이머 재시작 안 함) */
   useEffect(() => {
@@ -289,8 +368,8 @@ export function RunActivityPage({
       runStartedAtRef.current = null;
       setElapsedMs(0);
       setMeterPhase("idle");
-      setHasPausedRun(false);
       setReturnedAfterJob(false);
+      setJobToastPhase("hidden");
       setStep("running");
     }, SENT_FLASH_MS);
     return () => window.clearTimeout(id);
@@ -378,12 +457,10 @@ export function RunActivityPage({
 
   function handleMeterPause() {
     setMeterPhase("paused");
-    setHasPausedRun(true);
   }
 
   function handleMeterStop() {
     setMeterPhase("paused");
-    setHasPausedRun(true);
     // 채팅 경로 토스트가 없을 때만 정지 확인 토스트
     if (!returnedAfterJob) {
       setShowStopFinishConfirm(true);
@@ -401,16 +478,21 @@ export function RunActivityPage({
   function openChat() {
     if (meterPhase === "running") {
       setMeterPhase("paused");
-      setHasPausedRun(true);
+    }
+    // 채팅으로 돌아가면 완료 전환 타이머는 멈춤 · 이미 done이면 유지
+    if (jobToastPhase !== "done") {
+      clearJobToastTimer();
     }
     setStep("chat");
     setShowFallback(false);
   }
 
   function closeChat() {
-    // 작업 카드를 본 뒤에만 복귀 플래그 설정
+    // 작업 카드를 본 뒤에만 복귀 플래그 · ack 토스트 유지 후 5초 뒤 완료
     if (step === "job" && jobRequested) {
       setReturnedAfterJob(true);
+      setJobToastPhase("ack");
+      scheduleJobToastDone();
     }
     setStep("running");
     setShowFallback(false);
@@ -449,6 +531,7 @@ export function RunActivityPage({
       markAiJobRunning(JOB_ID);
     }
     setReferenceJobAssigned(true);
+    setJobToastPhase("ack");
     setDraft("");
     setShowFallback(false);
     setStep("job");
@@ -782,17 +865,14 @@ export function RunActivityPage({
             onReset={handleMeterReset}
           />
           {/*
-            러닝 종료 토스트 · 작업은 running 유지(ut-data-baseline).
-            채팅 경로: 작업 카드 후 복귀 + 일시정지/정지
+            채팅 경로: 맡기기 후 X로 나와도 ack 유지 → 5초 뒤 완료 토스트
             비채팅 경로(#72): 정지(■) 후 확인 토스트
           */}
-          {returnedAfterJob && hasPausedRun ? (
+          {jobToastPhase === "ack" || jobToastPhase === "done" ? (
             <div className={styles.runJobToast}>
-              <AiJobToast
-                tone="ack"
-                message="레퍼런스 정리 중이에요"
-                actionLabel="러닝 마치기"
-                onAction={handleJobDone}
+              <SwappingJobToast
+                phase={jobToastPhase}
+                onDoneAction={handleJobDone}
               />
             </div>
           ) : showStopFinishConfirm ? (
@@ -880,11 +960,11 @@ export function RunActivityPage({
             onSubmit={onChatSubmit}
           >
             {/* 시안 `07 · 레퍼런스 · 작업 진행` · 입력창 위 ack 토스트 */}
-            {step === "job" && jobRequested ? (
+            {step === "job" && jobRequested && jobToastPhase !== "done" ? (
               <AiJobToast
                 className={styles.chatJobToast}
                 tone="ack"
-                message="정리가 끝나면 알려드릴게요."
+                message={JOB_TOAST_ACK_MESSAGE}
                 actionLabel="작업 상세"
                 showActionChevron
               />
