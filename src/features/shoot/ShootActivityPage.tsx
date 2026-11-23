@@ -8,7 +8,6 @@ import {
   ChatResultCard,
   ResourceSetCard,
   ScheduleSwapCard,
-  StatusBar,
 } from "../../components";
 import type { ActivityId, FallbackChoice } from "../../data/types";
 import {
@@ -584,7 +583,6 @@ export function ShootActivityPage({
         </div>
       ) : null}
 
-      <StatusBar />
       <ActivityHeader
         roleLabel={isDetail ? detailTitle : "편집자"}
         roleTone={isDetail ? "neutral" : "violet"}

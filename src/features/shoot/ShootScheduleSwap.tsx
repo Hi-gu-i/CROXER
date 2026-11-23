@@ -3,7 +3,6 @@ import {
   ActivityHeader,
   Button,
   SectionIntro,
-  StatusBar,
 } from "../../components";
 import { getScheduleByActivity, getToday } from "../../data/utStore";
 import { useUtSession } from "../../data/useUtSession";
@@ -102,7 +101,6 @@ export function ShootScheduleSwap({ onHome, onConfirm }: ShootScheduleSwapProps)
 
   return (
     <main className={styles.page}>
-      <StatusBar />
       <ActivityHeader
         roleLabel="편집자"
         roleTone="violet"

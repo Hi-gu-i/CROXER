@@ -1,7 +1,6 @@
 import { useEffect } from "react";
 import {
   ActivityHeader,
-  StatusBar,
   StatusResult,
 } from "../../components";
 import { getToday } from "../../data/utStore";
@@ -54,7 +53,6 @@ export function ShootScheduleDone({ onHome, onFinish }: ShootScheduleDoneProps) 
 
   return (
     <main className={styles.page}>
-      <StatusBar />
       <ActivityHeader
         roleLabel="편집자"
         roleTone="violet"
