@@ -283,8 +283,9 @@ export function ShootActivityPage({
     setAlertArmed(false);
   }
 
-  /** Header IconAi — 모션 확인 후 탭하면 비 알림 펼침 · 예약 타이머는 취소 */
+  /** Header IconAi — 모션(arm) 확인 후 탭하면 비 알림 펼침 */
   function openRainAlert() {
+    if (step === "resource" && !alertArmed) return;
     clearRainTimer();
     fireAlert(ALERT_ID);
     markAlertRead(ALERT_ID);
