@@ -204,3 +204,11 @@
   padding: var(--padding-ios-y) var(--padding-ios-x) var(--gap-md);
   box-sizing: border-box;
 }
+
+.footerHint {
+  margin: 0;
+  font: var(--type-ios-body-small-font);
+  letter-spacing: var(--type-ios-body-small-tracking);
+  color: var(--color-text-tertiary);
+  text-align: center;
+}

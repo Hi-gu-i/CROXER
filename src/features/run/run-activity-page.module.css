@@ -340,6 +340,14 @@
   box-sizing: border-box;
 }
 
+.footerHint {
+  margin: 0;
+  font: var(--type-ios-body-small-font);
+  letter-spacing: var(--type-ios-body-small-tracking);
+  color: var(--color-text-tertiary);
+  text-align: center;
+}
+
 .chatFooter {
   align-items: center;
   /* 시안 `07`: 토스트 y=423 · 입력 영역 y=488 → 간격 ≈ 20 */
