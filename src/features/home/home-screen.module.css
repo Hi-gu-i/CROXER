@@ -75,6 +75,12 @@
   background: var(--color-surface-subtle);
 }
 
+.cardLocked,
+.cardLocked:active {
+  background: var(--color-surface-default);
+  cursor: default;
+}
+
 .caption {
   display: flex;
   align-items: center;
@@ -276,34 +282,3 @@
   letter-spacing: var(--type-ios-body-small-tracking);
 }
 
-.finished {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: var(--gap-md);
-  padding: var(--padding-card-lg);
-  border-radius: var(--radius-card-lg);
-  background: var(--color-surface-default);
-  box-shadow: var(--shadow-card);
-}
-
-.finishedText {
-  margin: 0;
-  font: var(--type-ios-body-strong-font);
-  letter-spacing: var(--type-ios-body-strong-tracking);
-}
-
-.scheduleButton {
-  padding: var(--padding-control-y) var(--padding-control-x);
-  border: 0;
-  border-radius: var(--radius-control);
-  background: var(--color-brand-default);
-  color: var(--color-text-inverse);
-  font: var(--type-ios-body-strong-font);
-  letter-spacing: var(--type-ios-body-strong-tracking);
-  cursor: pointer;
-}
-
-.scheduleButton:active {
-  background: var(--color-brand-pressed);
-}
