@@ -40,28 +40,6 @@
   text-overflow: ellipsis;
 }
 
-/* 흰 점은 보이는 아치의 왼쪽에서 오른쪽 끝까지 선을 따라 간다.
-   5초 카운트와 같은 시간이고, 도착한 뒤에는 오른쪽에 머문다. */
-.stage section > div:nth-of-type(5) > span {
-  left: 0;
-  top: 0;
-  offset-path: path(
-    "M 0 276 C 0 123.57 123.79 0 276.5 0 C 429.21 0 553 123.57 553 276"
-  );
-  offset-rotate: 0deg;
-  animation: role-cell-along 5s linear forwards;
-}
-
-@keyframes role-cell-along {
-  from {
-    offset-distance: 34%;
-  }
-
-  to {
-    offset-distance: 68%;
-  }
-}
-
 @keyframes handoff-drop {
   from {
     transform: translateY(-100%);
@@ -75,10 +53,5 @@
 @media (prefers-reduced-motion: reduce) {
   .stage section {
     animation: none;
-  }
-
-  .stage section > div:nth-of-type(5) > span {
-    animation: none;
-    offset-distance: 68%;
   }
 }

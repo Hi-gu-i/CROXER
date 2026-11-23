@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type CSSProperties } from 'react'
+import { useEffect, useLayoutEffect, useRef, useState, type CSSProperties } from 'react'
 import { RoleTransitionPanel } from '../../components'
 import type { ToggleCategoryTone } from '../../components/ToggleCategory'
 import type { ActivityId, RoleId } from '../../data/types'
@@ -33,6 +33,10 @@ const tintByRole: Record<RoleId, string> = {
 const countdownStart = 5
 /** 1이 보인 뒤 패널을 조금 더 두고 다음 화면으로 넘어간다 */
 const holdAfterCountMs = 2000
+/** 보이는 아치의 왼쪽 끝에서 오른쪽 끝까지. 5초 카운트와 같은 시간 */
+const cellFrom = 0.34
+const cellTo = 0.68
+const cellTravelMs = 5000
 
 /**
  * 활동 전환 패널이 내려오고 5초를 센다.
@@ -47,6 +51,7 @@ export default function RoleSwitchPanel({
   toActivityName,
 }: RoleSwitchPanelProps) {
   const onSwitchRef = useRef(onSwitch)
+  const stageRef = useRef<HTMLDivElement>(null)
   const [left, setLeft] = useState(countdownStart)
   const [holding, setHolding] = useState(false)
   const current = getActivity(getCurrentActivityId() ?? nextActivityId)
@@ -59,6 +64,46 @@ export default function RoleSwitchPanel({
   useEffect(() => {
     onSwitchRef.current = onSwitch
   }, [onSwitch])
+
+  // 선이 화면 너비에 맞춰 줄어들므로, 고정 좌표 대신 지금 그려진 아치 위에 점을 둔다.
+  useLayoutEffect(() => {
+    const root = stageRef.current
+    const svg = [...(root?.querySelectorAll('section svg') ?? [])].find(
+      (item): item is SVGSVGElement => item instanceof SVGSVGElement && item.viewBox.baseVal.width > 100,
+    )
+    const path = svg?.querySelector('path')
+    const track = svg?.parentElement
+    const cell = track?.querySelector(':scope > span')
+    if (!(path instanceof SVGPathElement) || !(svg instanceof SVGSVGElement) || !(track instanceof HTMLElement) || !(cell instanceof HTMLElement)) {
+      return
+    }
+
+    const place = (ratio: number) => {
+      const matrix = path.getScreenCTM()
+      if (!matrix) return
+      const point = path.getPointAtLength(path.getTotalLength() * ratio).matrixTransform(matrix)
+      const trackBox = track.getBoundingClientRect()
+      const size = cell.offsetWidth
+      cell.style.left = `${point.x - trackBox.left - size / 2}px`
+      cell.style.top = `${point.y - trackBox.top - size / 2}px`
+    }
+
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      place(cellTo)
+      return
+    }
+
+    const motion = { frame: 0 }
+    const started = performance.now()
+    const tick = (now: number) => {
+      const progress = Math.min(1, (now - started) / cellTravelMs)
+      place(cellFrom + (cellTo - cellFrom) * progress)
+      if (progress < 1) motion.frame = window.requestAnimationFrame(tick)
+    }
+    place(cellFrom)
+    motion.frame = window.requestAnimationFrame(tick)
+    return () => window.cancelAnimationFrame(motion.frame)
+  }, [])
 
   useEffect(() => {
     if (holding) {
@@ -79,7 +124,7 @@ export default function RoleSwitchPanel({
   }, [holding])
 
   return (
-    <div className={sameRole ? `${styles.stage} ${styles.flatWash}` : styles.stage}>
+    <div ref={stageRef} className={sameRole ? `${styles.stage} ${styles.flatWash}` : styles.stage}>
       <RoleTransitionPanel
         phase="before"
         roleLabel={role.label}
