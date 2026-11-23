@@ -11,6 +11,8 @@ interface RoleSwitchPanelProps {
   onSwitch: () => void
   /** 유지하기. 역할은 그대로 두고 방금 끝낸 활동 화면에 남긴다 */
   onKeep: () => void
+  /** 현재 칸 문구. 없으면 지금 활동 이름을 쓴다 */
+  fromActivityName?: string
   /** 다음 칸 문구. 없으면 다음 활동 이름을 쓴다 */
   toActivityName?: string
 }
@@ -41,6 +43,7 @@ export default function RoleSwitchPanel({
   nextActivityId,
   onSwitch,
   onKeep,
+  fromActivityName,
   toActivityName,
 }: RoleSwitchPanelProps) {
   const onSwitchRef = useRef(onSwitch)
@@ -50,6 +53,8 @@ export default function RoleSwitchPanel({
   const next = getActivity(nextActivityId)
   const role = getRole(current.roleId)
   const nextRole = getRole(next.roleId)
+  const sameRole = role.id === nextRole.id
+  const washRole = sameRole ? role : nextRole
 
   useEffect(() => {
     onSwitchRef.current = onSwitch
@@ -74,20 +79,20 @@ export default function RoleSwitchPanel({
   }, [holding])
 
   return (
-    <div className={styles.stage}>
+    <div className={sameRole ? `${styles.stage} ${styles.flatWash}` : styles.stage}>
       <RoleTransitionPanel
         phase="before"
         roleLabel={role.label}
         roleTone={toneByRole[role.id]}
         count={left}
-        fromActivity={current.name}
+        fromActivity={fromActivityName ?? current.name}
         toActivity={toActivityName ?? next.name}
         showTrack
         onKeep={onKeep}
         style={
           {
             '--handoff-from': tintByRole[role.id],
-            '--handoff-to': tintByRole[nextRole.id],
+            '--handoff-to': tintByRole[sameRole ? role.id : washRole.id],
           } as CSSProperties
         }
       />

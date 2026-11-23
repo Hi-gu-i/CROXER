@@ -16,9 +16,14 @@
 }
 
 /* 민선 패널의 고정 보라→민트 위에, 역할 색 워시를 덮는다.
-   오른쪽이 다음 역할이다. 색은 --color-role-*-soft. */
+   오른쪽이 다음 역할이다. 색은 --color-role-*-soft.
+   역할이 같으면 그라데이션 없이 그 역할 색 하나만 깐다. */
 .stage section > div:nth-of-type(1) {
   background: linear-gradient(90deg, var(--handoff-from) 0%, var(--handoff-to) 100%);
+}
+
+.flatWash section > div:nth-of-type(1) {
+  background: var(--handoff-from);
 }
 
 /* 전환 패널은 민선 컴포넌트를 그대로 쓴다.
