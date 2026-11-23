@@ -1,15 +1,16 @@
 /* Task 9 러닝 측정 — 시안 `01 · 러닝` 본문.
    원본 393×732 → 앱 셸 390×844(Status+Header 아래 잔여 높이)에 맞춤 */
 .root {
-  /* 세로·가로는 원본 732×393 비율을 %로 유지 */
-  --rm-ring: min(253px, calc(100% * 253 / 393));
+  /* 세로 좌표는 원본 732 비율(%). 원 크기는 고정 —
+     width/height에 같은 %를 쓰면 가로·세로 기준이 달라 원이 찌그러짐(#105) */
+  --rm-ring: 253px;
   --rm-ring-top: calc(100% * 78 / 732);
   --rm-controls-top: calc(100% * 371 / 732);
   --rm-metrics-top: calc(100% * 484 / 732);
   --rm-toolbar-top: var(--padding-300); /* 16 */
   --rm-toolbar-right: 15px;
   --rm-control-gap: var(--gap-400); /* 20 · 원본 side↔primary */
-  --rm-metrics-width: min(265px, calc(100% * 265 / 393));
+  --rm-metrics-width: 265px;
   /* 메트릭 흰 패널 · y≈465부터 화면 하단까지 */
   --rm-metrics-panel-top: calc(100% * 465 / 732);
 
