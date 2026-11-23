@@ -6,15 +6,15 @@ import styles from "./IconAiAlert.module.css";
 
 type IconAiAlertProps = {
   /**
-   * true면 펼치기 전 alert 모션(주변 glow 회전 + 아이콘 스핀 GIF).
-   * 사용자가 눌러 알림을 연 뒤에는 false.
+   * true면 펼치기 전 alert 모션
+   * (글래스 뒤 glow 회전 + 글래스 위 다이아몬드 스핀 GIF).
    */
   active?: boolean;
 } & Omit<ButtonHTMLAttributes<HTMLButtonElement>, "children">;
 
 /**
  * Figma `iconai alert` (MYA_Interaction · 417:40537).
- * 알림을 열기 전에 모션이 돌고, 탭하면 알림이 펼쳐진다.
+ * glow는 글래스 뒤, 다이아몬드 스핀은 글래스 위 — 둘 중 아이콘은 하나만.
  */
 export function IconAiAlert({
   active = false,
@@ -23,32 +23,25 @@ export function IconAiAlert({
   "aria-label": ariaLabel = "AI 알림",
   ...rest
 }: IconAiAlertProps) {
-  const classes = [
-    styles.root,
-    active ? styles.active : "",
-    className ?? "",
-  ]
-    .filter(Boolean)
-    .join(" ");
+  const buttonClasses = [styles.face, className ?? ""].filter(Boolean).join(" ");
 
   return (
-    <button
-      type={type}
-      className={classes}
-      aria-label={ariaLabel}
+    <span
+      className={[styles.wrap, active ? styles.active : ""].filter(Boolean).join(" ")}
       data-alert-active={active ? "true" : "false"}
-      {...rest}
     >
       {active ? (
         <span className={styles.glow} aria-hidden="true">
           <img className={styles.glowImg} src={glowSrc} alt="" />
         </span>
       ) : null}
-      {active ? (
-        <img className={styles.spin} src={spinSrc} alt="" draggable={false} />
-      ) : (
-        <IconAi className={styles.icon} size={22} />
-      )}
-    </button>
+      <button type={type} className={buttonClasses} aria-label={ariaLabel} {...rest}>
+        {active ? (
+          <img className={styles.spin} src={spinSrc} alt="" draggable={false} />
+        ) : (
+          <IconAi className={styles.icon} size={22} />
+        )}
+      </button>
+    </span>
   );
 }
