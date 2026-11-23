@@ -241,6 +241,8 @@ export function RunActivityPage({
   const [assessmentOpen, setAssessmentOpen] = useState(false);
   /** 10초 후 IconAi alert 모션 · 탭하면 평가 알림 펼침 */
   const [alertArmed, setAlertArmed] = useState(false);
+  /** 모션이 한 번이라도 켜졌으면 닫은 뒤에도 바로 다시 열 수 있음 */
+  const [alertEverArmed, setAlertEverArmed] = useState(false);
   /** 화면 선택 상태. 공지 발송 후에도 시안처럼 선택이 보이게 유지 */
   const [pickedCourseId, setPickedCourseId] = useState<string | null>(null);
   const [meterPhase, setMeterPhase] = useState<RunMeterPhase>("idle");
@@ -258,18 +260,23 @@ export function RunActivityPage({
     fireInquiry(INQUIRY_ID);
   }, []);
 
-  /** 문의 화면 진입 후 10초 → IconAi alert 모션 */
+  /** 문의 화면 첫 진입 후 10초 → IconAi alert 모션 (한 번 뜬 뒤에는 타이머 재시작 안 함) */
   useEffect(() => {
-    if (step !== "inquiry" || assessmentOpen) {
+    if (step !== "inquiry") {
+      setAlertArmed(false);
+      return;
+    }
+    if (assessmentOpen || alertEverArmed) {
       setAlertArmed(false);
       return;
     }
     setAlertArmed(false);
     const id = window.setTimeout(() => {
       setAlertArmed(true);
+      setAlertEverArmed(true);
     }, ICON_AI_ALERT_DELAY_MS);
     return () => window.clearTimeout(id);
-  }, [step, assessmentOpen]);
+  }, [step, assessmentOpen, alertEverArmed]);
 
   useEffect(() => {
     if (step !== "sent") return;
@@ -412,8 +419,8 @@ export function RunActivityPage({
       openChat();
       return;
     }
-    // 문의: 모션(arm) 확인 후에만 알림 펼침
-    if (step === "inquiry" && !alertArmed) return;
+    // 문의: 첫 모션 전에는 막고, 한 번 뜬 뒤에는 바로 다시 펼침
+    if (step === "inquiry" && !alertArmed && !alertEverArmed) return;
     openAssessment();
   }
 

@@ -292,9 +292,9 @@ export function ShootActivityPage({
     setAlertArmed(false);
   }
 
-  /** Header IconAi — 모션(arm) 확인 후 탭하면 비 알림 펼침 */
+  /** Header IconAi — 아직 fire 전·모션 대기 중일 때만 막고, 한 번 뜬 뒤엔 다시 펼침 */
   function openRainAlert() {
-    if (step === "resource" && !alertArmed) return;
+    if (step === "resource" && !alertArmed && !isAlertFired(ALERT_ID)) return;
     clearRainTimer();
     fireAlert(ALERT_ID);
     markAlertRead(ALERT_ID);
