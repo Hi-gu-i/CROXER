@@ -866,9 +866,6 @@ export function RunActivityPage({
             {announceAfterKeep ? (
               <>
                 <p className={styles.footerHint}>이미 보낸 공지예요</p>
-                <Button fullWidth disabled>
-                  공지 보내기
-                </Button>
                 <Button fullWidth onClick={handleAnnounceNext}>
                   다음으로
                 </Button>

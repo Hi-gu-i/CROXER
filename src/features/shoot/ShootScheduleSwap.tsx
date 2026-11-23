@@ -158,9 +158,6 @@ export function ShootScheduleSwap({
         {afterKeep ? (
           <>
             <p className={styles.footerHint}>일정 조정을 마친 상태예요</p>
-            <Button fullWidth disabled>
-              일정 교체하기
-            </Button>
             <Button fullWidth onClick={onNext}>
               다음으로
             </Button>
