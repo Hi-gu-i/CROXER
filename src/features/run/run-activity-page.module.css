@@ -16,8 +16,12 @@
   background: var(--color-bg-default);
 }
 
-/* 시안 `01 · 러닝` · 전체 bg-subtle (메트릭 흰 패널은 RunMeter) */
+/* 시안 `01 · 러닝` · 전체 bg-subtle (메트릭 흰 패널은 RunMeter)
+   RunMeter min-height(732)가 셸보다 클 때 스크롤로 간격 압축을 막음 */
 .pageRunning {
+  flex: 1 0 auto;
+  min-height: 100%;
+  overflow-y: auto;
   background: var(--color-bg-subtle);
 }
 

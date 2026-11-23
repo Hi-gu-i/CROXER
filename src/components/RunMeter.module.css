@@ -1,24 +1,28 @@
 /* Task 9 러닝 측정 — 시안 `01 · 러닝` 본문.
-   원본 393×732 → 앱 셸 390×844(Status+Header 아래 잔여 높이)에 맞춤 */
+   원본 393×732 → 앱 셸 390×844(Status+Header 아래 잔여 높이)에 맞춤.
+   짧은 뷰포트(14 Pro Safari 등)에서 %만 쓰면 간격이 줄어듦 →
+   시안 높이 732 미만으로 줄지 않게 두고, 부족분은 부모가 스크롤. */
 .root {
   /* 세로 좌표는 원본 732 비율(%). 원 크기는 고정 —
      width/height에 같은 %를 쓰면 가로·세로 기준이 달라 원이 찌그러짐(#105) */
+  --rm-design-h: 732px;
   --rm-ring: 253px;
-  --rm-ring-top: calc(100% * 78 / 732);
-  --rm-controls-top: calc(100% * 371 / 732);
-  --rm-metrics-top: calc(100% * 484 / 732);
+  /* 짧은 높이에서는 시안 px 바닥, 긴 셸에서는 %로 여백 확장 */
+  --rm-ring-top: max(78px, calc(100% * 78 / 732));
+  --rm-controls-top: max(371px, calc(100% * 371 / 732));
+  --rm-metrics-top: max(484px, calc(100% * 484 / 732));
   --rm-toolbar-top: var(--padding-300); /* 16 */
   --rm-toolbar-right: 15px;
   --rm-control-gap: var(--gap-400); /* 20 · 원본 side↔primary */
   --rm-metrics-width: 265px;
   /* 메트릭 흰 패널 · y≈465부터 화면 하단까지 */
-  --rm-metrics-panel-top: calc(100% * 465 / 732);
+  --rm-metrics-panel-top: max(465px, calc(100% * 465 / 732));
 
   position: relative;
-  flex: 1;
+  flex: 1 0 auto;
   width: 100%;
   max-width: 100%;
-  min-height: 0;
+  min-height: var(--rm-design-h);
   margin: 0 auto;
   box-sizing: border-box;
   overflow: hidden;
