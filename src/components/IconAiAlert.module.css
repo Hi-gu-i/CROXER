@@ -60,7 +60,7 @@
   border: none;
   border-radius: var(--radius-control);
   /* 글래스 안쪽은 glow가 비치지 않도록 불투명에 가깝게 */
-  background: color-mix(in srgb, #ffffff 88%, transparent);
+  background: color-mix(in srgb, var(--color-surface-default) 88%, transparent);
   box-shadow: var(--shadow-glass);
   backdrop-filter: var(--effect-glass-background-backdrop);
   -webkit-backdrop-filter: var(--effect-glass-background-backdrop);
