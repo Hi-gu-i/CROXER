@@ -1,4 +1,4 @@
-/* 원본 `11 · 일정 교체 제안` · 393×852 */
+/* 원본 `11 · 일정 교체 제안` · 앱 셸 390×844 */
 .page {
   position: relative;
   display: flex;
@@ -29,7 +29,7 @@
 
 /*
  * 시안 Rectangle blue-050: 교체 카드만 감쌈 (카드 위·아래 여백 포함).
- * full-bleed · 좌우 16 패딩으로 카드 363폭 유지.
+ * full-bleed · 좌우 16 패딩으로 본문 너비에 맞춤.
  */
 .swapRegion {
   width: 100%;

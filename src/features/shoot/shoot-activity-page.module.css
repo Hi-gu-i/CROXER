@@ -1,4 +1,4 @@
-/* 앱 셸 393×852 · Figma `01 · 편집자 자료` 상단 Status+Header */
+/* 앱 셸 390×844 · Figma `01 · 편집자 자료` 상단 Status+Header */
 .page {
   position: relative;
   display: flex;
@@ -47,12 +47,12 @@
   pointer-events: none;
 }
 
-/* Figma GradientImage: x -95 · w 585 on 393 frame · opacity 60% */
+/* Figma GradientImage: x -95 · w 585 · 셸 너비 기준 · opacity 60% */
 .chatBgGradient {
   position: absolute;
   top: 0;
-  left: calc(100% * -95 / 393);
-  width: calc(100% * 585 / 393);
+  left: calc(100% * -95 / 390);
+  width: calc(100% * 585 / 390);
   height: 100%;
   object-fit: cover;
   object-position: center;

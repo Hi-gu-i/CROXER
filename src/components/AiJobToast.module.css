@@ -5,7 +5,7 @@
   flex-direction: column;
   align-items: stretch;
   width: 100%;
-  max-width: 333px;
+  max-width: 100%;
   height: 44px;
   padding: var(--padding-050) 3px var(--padding-050) var(--padding-500);
   box-sizing: border-box;

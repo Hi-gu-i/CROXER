@@ -1,4 +1,4 @@
-/* 원본 `03 · 러닝 문의` 외 · 393×852 */
+/* 원본 `03 · 러닝 문의` 외 · 앱 셸 390×844에 맞춤 */
 .page {
   position: relative;
   display: flex;
@@ -34,12 +34,12 @@
   pointer-events: none;
 }
 
-/* Figma GradientImage: x -95 · w 585 on 393 frame · opacity 60% */
+/* Figma GradientImage: x -95 · w 585 · 셸 너비 기준 · opacity 60% */
 .chatBgGradient {
   position: absolute;
   top: 0;
-  left: calc(100% * -95 / 393);
-  width: calc(100% * 585 / 393);
+  left: calc(100% * -95 / 390);
+  width: calc(100% * 585 / 390);
   height: 100%;
   object-fit: cover;
   object-position: center;
@@ -183,7 +183,7 @@
   z-index: 0;
   isolation: isolate;
   width: 100%;
-  max-width: 361px;
+  max-width: 100%;
   aspect-ratio: 361 / 256;
   overflow: hidden;
   border-radius: var(--radius-card-md);
@@ -238,7 +238,7 @@
   flex-direction: column;
   gap: var(--gap-md);
   width: 100%;
-  max-width: 361px;
+  max-width: 100%;
   min-width: 0;
 }
 

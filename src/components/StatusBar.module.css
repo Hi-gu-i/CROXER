@@ -1,4 +1,4 @@
-/* 원본: Status 393×48 · 시간 좌 · reception/wifi/battery 우 · 좌우 inset 대칭 */
+/* 원본: Status · 시간 좌 · reception/wifi/battery 우 · 앱 셸 너비 100% */
 .root {
   display: flex;
   flex-shrink: 0;

@@ -1,7 +1,8 @@
-/* RoleTransitionPanel — 원본 전환전/전환 패널 393×406 */
+/* RoleTransitionPanel — 원본 393×406 → 앱 셸 너비 100%에 맞춤 */
 
 .panel {
-  --rtp-width: 393px;
+  --rtp-design-w: 393;
+  --rtp-width: 100%;
   --rtp-height: 406px;
   --rtp-radius-bottom: 24px;
   --rtp-header-top: 48px;
@@ -14,19 +15,19 @@
   --rtp-countdown-top: 124px;
   --rtp-labels-top: 170px;
   --rtp-titles-top: 204px;
-  --rtp-from-label-left: 79px;
-  --rtp-to-label-left: 262px;
-  --rtp-from-title-left: 68px;
-  --rtp-to-title-left: 251px;
+  --rtp-from-label-left: calc(100% * 79 / var(--rtp-design-w));
+  --rtp-to-label-left: calc(100% * 262 / var(--rtp-design-w));
+  --rtp-from-title-left: calc(100% * 68 / var(--rtp-design-w));
+  --rtp-to-title-left: calc(100% * 251 / var(--rtp-design-w));
   --rtp-keep-top: 352px;
-  --rtp-line-left: -80px;
+  --rtp-line-left: calc(100% * -80 / var(--rtp-design-w));
   --rtp-line-top: 268px;
-  --rtp-line-width: 553px;
+  --rtp-line-width: calc(100% * 553 / var(--rtp-design-w));
   --rtp-line-height: 276px;
   --rtp-line-stroke: 3px;
   --rtp-cell-size: 8px;
   --rtp-cell-radius: 3px;
-  --rtp-cell-x: 351px;
+  --rtp-cell-x: calc(100% * 351 / var(--rtp-design-w));
   --rtp-cell-y: 314px;
   --rtp-tint-a: 0.6;
   --rtp-blur: 6px;
@@ -34,6 +35,7 @@
   position: relative;
   box-sizing: border-box;
   width: var(--rtp-width);
+  max-width: 100%;
   height: var(--rtp-height);
   overflow: hidden;
   border: none;
@@ -62,7 +64,7 @@
   z-index: 0;
 }
 
-/* 2) 위로 갈수록 하얀 페이드, 아래는 투명 (원본 240652320 · 393×332) */
+/* 2) 위로 갈수록 하얀 페이드, 아래는 투명 (원본 240652320) */
 .whiteFade {
   position: absolute;
   top: 0;

@@ -3,7 +3,7 @@
   align-items: center;
   gap: var(--gap-100);
   width: 100%;
-  max-width: 361px;
+  max-width: 100%;
   min-height: 48px;
   padding: var(--padding-050) var(--padding-050) var(--padding-050) var(--padding-400);
   border-radius: var(--radius-card-md);
