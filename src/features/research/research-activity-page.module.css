@@ -121,7 +121,8 @@
   display: flex;
   flex-direction: column;
   gap: var(--gap-700);
-  padding-top: var(--padding-600);
+  /* 활동 화면은 셸 여백 없이 가득 차므로(#110) 좌우 16px은 이 화면이 둔다 */
+  padding: var(--padding-600) var(--padding-ios-x) 0;
 }
 
 .folderHero {
@@ -313,6 +314,7 @@
 
 /* 본문 화면 */
 .documentView {
+  padding: 0 var(--padding-ios-x) var(--padding-ios-x);
   animation: rise-in 280ms ease-out both;
 }
 
@@ -321,7 +323,7 @@
   position: sticky;
   bottom: 0;
   margin-top: auto;
-  padding-top: var(--padding-300);
+  padding: var(--padding-300) var(--padding-ios-x) var(--padding-ios-x);
 }
 
 @keyframes folder-pop {
