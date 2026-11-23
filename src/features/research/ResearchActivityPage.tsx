@@ -3,7 +3,7 @@ import { ActivityHeader, Button } from '../../components'
 import type { ActivityId, Resource } from '../../data/types'
 import { IconArrowL, IconClose } from '../../icons'
 import { ResImgFile } from '../../res-img'
-import { getActivity, getResources, getRole, getScheduleByActivity } from '../../data/utStore'
+import { getActivity, getResources, getRole } from '../../data/utStore'
 import { useUtSession } from '../../data/useUtSession'
 import { DocumentPage } from './DocumentPage'
 import { researchFolders, type DocumentSource, type ResearchFolder } from './researchFolders'
@@ -55,7 +55,6 @@ export function ResearchActivityPage({ activityId, onFinish, onHome }: ResearchA
   const [hasReviewed, setHasReviewed] = useState(false)
 
   const role = getRole(getActivity(activityId).roleId)
-  const isDone = getScheduleByActivity(activityId).status === 'done'
   const folders = researchFolders.map((folder) => resolveFolder(folder, getResources(activityId)))
   const currentFolder = view.name === 'folders' ? null : folders.find((f) => f.id === view.folderId)
   const currentDocument =
@@ -179,8 +178,8 @@ export function ResearchActivityPage({ activityId, onFinish, onHome }: ResearchA
         </div>
       )}
 
-      {/* 마친 뒤 유지하기로 남으면 자료만 다시 보는 화면이라 버튼을 숨긴다. 다음 활동은 하단 탭 홈에서 연다(#84) */}
-      {hasReviewed && !isDone && view.name !== 'document' && (
+      {/* 자료를 연 뒤에는 마친 뒤(유지하기)에도 보여 전환 패널을 다시 열 수 있다(#103). 완료 처리를 반복하지 않는 건 App이 맡는다 */}
+      {hasReviewed && view.name !== 'document' && (
         <div className={styles.footer}>
           <Button fullWidth onClick={onFinish}>
             검토 마침
