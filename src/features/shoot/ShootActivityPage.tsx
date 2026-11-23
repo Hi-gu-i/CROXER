@@ -270,9 +270,18 @@ export function ShootActivityPage({
     setResourceId(id);
     setStep("resource");
     setAlertOpen(false);
-    setAlertArmed(false);
     // AI 결과 확인 경로에서는 비 알림을 걸지 않는다
-    if (id !== EXTRA_ID) scheduleRainAlert();
+    if (id === EXTRA_ID) {
+      setAlertArmed(false);
+      return;
+    }
+    // 이미 떴지만 미읽음이면 모션 즉시 재개 (닫았다 다시 연 경우)
+    if (isAlertFired(ALERT_ID) && getAlert(ALERT_ID).status === "unread") {
+      setAlertArmed(true);
+      return;
+    }
+    setAlertArmed(false);
+    scheduleRainAlert();
   }
 
   function backToMaterials() {
