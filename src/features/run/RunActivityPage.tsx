@@ -26,6 +26,7 @@ import {
   getScheduleByActivity,
   getSelectedCourseId,
   isAiJobRequested,
+  markAiJobCompleted,
   markAiJobRunning,
   requestAiJob,
   selectCourse,
@@ -330,10 +331,11 @@ export function RunActivityPage({
     }
   }
 
-  /** 채팅을 닫은 뒤 5초 → 완료 토스트 */
+  /** 채팅을 닫은 뒤 5초 → 완료 토스트 + job-shoot-extra completed */
   function scheduleJobToastDone() {
     clearJobToastTimer();
     jobToastTimerRef.current = window.setTimeout(() => {
+      markAiJobCompleted(JOB_ID);
       setJobToastPhase("done");
       jobToastTimerRef.current = null;
     }, JOB_TOAST_DONE_DELAY_MS);
