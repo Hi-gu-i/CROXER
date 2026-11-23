@@ -41,7 +41,7 @@ import coursePreviewA from "./assets/course-preview-a.png";
 import styles from "./run-activity-page.module.css";
 
 /** IconAi alert 모션 시작 전 여유 (촬영 비 알림과 동일) */
-const ICON_AI_ALERT_DELAY_MS = 10_000;
+const ICON_AI_ALERT_DELAY_MS = 5_000;
 
 /** A 루트 · 원본 viewBox 좌표 + map(361×256) 배치 */
 const ROUTE_A = {
@@ -239,7 +239,7 @@ export function RunActivityPage({
   const [referenceJobAssigned, setReferenceJobAssigned] = useState(false);
   const [showFallback, setShowFallback] = useState(false);
   const [assessmentOpen, setAssessmentOpen] = useState(false);
-  /** 10초 후 IconAi alert 모션 · 탭하면 평가 알림 펼침 */
+  /** 5초 후 IconAi alert 모션 · 탭하면 평가 알림 펼침 */
   const [alertArmed, setAlertArmed] = useState(false);
   /** 모션이 한 번이라도 켜졌으면 닫은 뒤에도 바로 다시 열 수 있음 (effect 재실행 방지용 ref) */
   const alertEverArmedRef = useRef(false);
@@ -260,7 +260,7 @@ export function RunActivityPage({
     fireInquiry(INQUIRY_ID);
   }, []);
 
-  /** 문의 화면 첫 진입 후 10초 → IconAi alert 모션 (한 번 뜬 뒤에는 타이머 재시작 안 함) */
+  /** 문의 화면 첫 진입 후 5초 → IconAi alert 모션 (한 번 뜬 뒤에는 타이머 재시작 안 함) */
   useEffect(() => {
     if (step !== "inquiry") {
       setAlertArmed(false);

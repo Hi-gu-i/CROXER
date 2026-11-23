@@ -44,8 +44,8 @@ import { SHOOT_PLACES } from "./shootPlaceData";
 import styles from "./shoot-activity-page.module.css";
 
 const ALERT_ID = "alert-shoot-rain";
-/** UT 베이스라인: 촬영 자료 진입 후 기본 10초 */
-const RAIN_ALERT_DELAY_MS = 10_000;
+/** 촬영 자료 진입 후 IconAi alert 모션 시작 (러닝과 동일 5초) */
+const RAIN_ALERT_DELAY_MS = 5_000;
 /** `05 · 추천 결과` — 다른 장소 찾기 / 장소 키워드 */
 const PLACE_CHOICE_ID = "choice-shoot-indoor";
 const PLACE_REPLY_ID = "reply-shoot-indoor";
