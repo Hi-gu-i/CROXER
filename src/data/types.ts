@@ -26,7 +26,7 @@ export type ReorderableScheduleId = 'schedule-research' | 'schedule-shoot' | 'sc
 // ── 상태 값 ─────────────────────────────────────────
 /** 일정 상태. 항상 오늘 기준(PRD 6.2) */
 export type ScheduleStatus = 'waiting' | 'in_progress' | 'done'
-/** AI 작업 상태. 일정 상태와 별개이며 요청 접수만으로 completed가 되지 않는다 */
+/** AI 작업 상태. 일정 상태와 별개. 요청 접수만으로 completed가 되지 않으며, 실행 중을 거친 뒤 completed로 맞출 수 있다 */
 export type AiJobStatus = 'queued' | 'running' | 'completed'
 export type AlertStatus = 'unread' | 'read'
 export type AnnouncementStatus = 'draft' | 'simulated_sent'

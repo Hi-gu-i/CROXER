@@ -544,12 +544,24 @@ export function requestAiJob(jobId: string): boolean {
   return true
 }
 
-/** 요청한 AI 작업을 실행 중으로 바꾼다. 첫 UT에서는 completed로 바꾸는 함수가 없다 */
+/** 요청한 AI 작업을 실행 중으로 바꾼다 */
 export function markAiJobRunning(jobId: string) {
   if (!isAiJobRequested(jobId) || session.aiJobStatus[jobId] !== 'queued') return
   commit((current) => ({
     ...current,
     aiJobStatus: { ...current.aiJobStatus, [jobId]: 'running' },
+  }))
+}
+
+/**
+ * 실행 중인 AI 작업을 완료로 바꾼다.
+ * Task 9: 러닝 토스트가 완료 문구로 바뀌는 시점에 호출. 완료 전 결과 자료는 계속 숨김.
+ */
+export function markAiJobCompleted(jobId: string) {
+  if (!isAiJobRequested(jobId) || session.aiJobStatus[jobId] !== 'running') return
+  commit((current) => ({
+    ...current,
+    aiJobStatus: { ...current.aiJobStatus, [jobId]: 'completed' },
   }))
 }
 

@@ -51,7 +51,7 @@
 | 자료(Task 4) | `getResources(활동 ID)`, `getResource` — AI 작업 결과는 완료 전 숨김 | — |
 | 비 알림(Task 6) | `getFiredAlerts(활동 ID)`, `getAlert`, `isAlertFired` | `fireAlert` — 진입 10초 후·진행자 패널, `markAlertRead` |
 | 러닝 문의·코스·공지(Task 8) | `getFiredInquiries`, `isInquiryFired`, `getAiAssessment(문의 ID)`, `getCourses`, `getSelectedCourseId`, `getAnnouncement(활동 ID)` — 선택 코스·집결지 반영 | `fireInquiry` — 진입 시·진행자 패널, `selectCourse`, `sendAnnouncement` — 한 번만, 코스 선택 후에만 |
-| AI 작업(Task 9) | `getAiJobs`, `getAiJob`, `isAiJobRequested` | `requestAiJob` — `queued`, 한 번만, `markAiJobRunning` — `running` |
+| AI 작업(Task 9) | `getAiJobs`, `getAiJob`, `isAiJobRequested` | `requestAiJob` — `queued`, 한 번만, `markAiJobRunning` — `running`, `markAiJobCompleted` — `completed`(실행 중일 때만) |
 | 채팅 입력 | `findKeywordReply(활동 ID, 입력)`, `getFallbackChoices(활동 ID)` | — |
 | 스케줄(F-11) | `getScheduleSections()` — 진행 완료·진행 중·백그라운드·진행 후 | — |
 | 진행자 패널 | — | `resetUtSession()`, `skipToNextActivity()`, `fireAlert`, `fireInquiry` |
@@ -141,6 +141,7 @@
 
 | 버전 | 날짜 | 수정자 | 수정 내용과 이유 |
 | --- | --- | --- | --- |
+| 1.9 | 2026-11-23 | Cursor · 김민선 요청 | AI 작업 표에 `markAiJobCompleted`를 추가(PR #120) |
 | 1.8 | 2026-11-21 | Claude Code · 지유 요청 | 같은 컴퓨터 탭 두 개로 쓸 때 다른 탭에서 받은 세션을 저장소에 다시 쓰던 문제를 고침(두 탭이 낡은 값을 주고받아 확정·과제 넘기기가 되돌아감). 탭 사이 변경은 이벤트에 담긴 값으로 읽는다고 저장 위치 설명에 추가 |
 | 1.7 | 2026-11-21 | Claude Code · 지유 요청 | 방 연결 중에는 탭마다 따로인 저장소를 쓰도록 바꿔, 같은 브라우저 두 탭에서 화면이 튀던 문제를 고침. 데이터베이스 주소가 없을 때 연결 상태를 `offline` 대신 `local`로 알림 |
 | 1.6 | 2026-11-21 | Claude Code · 지유 요청 | 참가자·진행자가 서로 다른 기기로 UT를 진행할 수 있게 방 연결(`?room=`, Firebase Realtime Database REST) 함수와 처음 설정·데이터베이스 규칙을 추가. 현지 님 요청 카드 반영 |
