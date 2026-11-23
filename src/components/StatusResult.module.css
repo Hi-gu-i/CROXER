@@ -105,26 +105,27 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  /* 시안: 타이틀 박스 → 캡션 박스 12 · 옵티컬은 더 타이트하게 */
-  gap: var(--gap-050);
+  gap: 0;
   width: 100%;
 }
 
-/* ios/Body/strong · 17 SemiBold / 26 */
+/* ios/Body/strong 크기·웨이트 유지 · 줄간격만 타이트하게 (첨부 시안 옵티컬) */
 .title {
   margin: 0;
   width: 100%;
   font: var(--type-ios-body-strong-font);
   letter-spacing: var(--type-ios-body-strong-tracking);
+  line-height: 22px;
   color: var(--color-gray-900);
 }
 
-/* ios/Body/small · 14 Regular / 22 */
+/* ios/Body/small 크기·웨이트 유지 · 타이틀과 4px */
 .description {
-  margin: 0;
+  margin: 4px 0 0;
   width: 100%;
   font: var(--type-ios-body-small-font);
   letter-spacing: var(--type-ios-body-small-tracking);
+  line-height: 20px;
   color: var(--color-gray-700);
   white-space: pre-wrap;
 }
