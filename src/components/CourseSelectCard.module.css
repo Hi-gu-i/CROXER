@@ -3,7 +3,7 @@
   flex-direction: column;
   align-items: flex-start;
   width: 100%;
-  max-width: 361px;
+  max-width: 100%;
   min-height: 189px;
   padding: var(--padding-300);
   border-radius: var(--radius-card-md);

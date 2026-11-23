@@ -5,7 +5,7 @@
   align-items: stretch;
   gap: var(--gap-300);
   width: 100%;
-  max-width: 361px;
+  max-width: 100%;
   padding: var(--padding-400) var(--padding-300);
   border-radius: var(--radius-300);
   background: var(--color-surface-default);

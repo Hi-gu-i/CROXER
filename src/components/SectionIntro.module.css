@@ -5,7 +5,7 @@
   align-items: flex-start;
   gap: var(--gap-025);
   width: 100%;
-  max-width: 361px;
+  max-width: 100%;
   box-sizing: border-box;
 }
 
