@@ -3,7 +3,8 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: var(--gap-300);
+  /* 대표 시안: 카드 스택 ↔ 원문보기 여백 (겹침 없이) */
+  gap: var(--gap-400);
   width: 100%;
   max-width: 100%;
   box-sizing: border-box;
@@ -13,7 +14,8 @@
 .stackFlat {
   position: relative;
   width: 100%;
-  min-height: 125px;
+  /* front 125 · layerBack top 27 + h 111 = 138 · 뒤 카드가 gap을 침범하지 않게 */
+  min-height: 138px;
 }
 
 .stackFlat {
