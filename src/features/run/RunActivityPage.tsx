@@ -241,8 +241,8 @@ export function RunActivityPage({
   const [assessmentOpen, setAssessmentOpen] = useState(false);
   /** 10초 후 IconAi alert 모션 · 탭하면 평가 알림 펼침 */
   const [alertArmed, setAlertArmed] = useState(false);
-  /** 모션이 한 번이라도 켜졌으면 닫은 뒤에도 바로 다시 열 수 있음 */
-  const [alertEverArmed, setAlertEverArmed] = useState(false);
+  /** 모션이 한 번이라도 켜졌으면 닫은 뒤에도 바로 다시 열 수 있음 (effect 재실행 방지용 ref) */
+  const alertEverArmedRef = useRef(false);
   /** 화면 선택 상태. 공지 발송 후에도 시안처럼 선택이 보이게 유지 */
   const [pickedCourseId, setPickedCourseId] = useState<string | null>(null);
   const [meterPhase, setMeterPhase] = useState<RunMeterPhase>("idle");
@@ -266,17 +266,19 @@ export function RunActivityPage({
       setAlertArmed(false);
       return;
     }
-    if (assessmentOpen || alertEverArmed) {
+    if (assessmentOpen) {
       setAlertArmed(false);
       return;
     }
+    // 이미 모션이 한 번 떴으면 유지 · armed를 끄지 않음 (닫은 뒤 재오픈용)
+    if (alertEverArmedRef.current) return;
     setAlertArmed(false);
     const id = window.setTimeout(() => {
+      alertEverArmedRef.current = true;
       setAlertArmed(true);
-      setAlertEverArmed(true);
     }, ICON_AI_ALERT_DELAY_MS);
     return () => window.clearTimeout(id);
-  }, [step, assessmentOpen, alertEverArmed]);
+  }, [step, assessmentOpen]);
 
   useEffect(() => {
     if (step !== "sent") return;
@@ -420,7 +422,7 @@ export function RunActivityPage({
       return;
     }
     // 문의: 첫 모션 전에는 막고, 한 번 뜬 뒤에는 바로 다시 펼침
-    if (step === "inquiry" && !alertArmed && !alertEverArmed) return;
+    if (step === "inquiry" && !alertArmed && !alertEverArmedRef.current) return;
     openAssessment();
   }
 
