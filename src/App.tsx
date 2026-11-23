@@ -1,4 +1,4 @@
-import { useEffect, useState, type ComponentType, type MouseEvent, type ReactNode } from 'react'
+import { useEffect, useRef, useState, type ComponentType, type MouseEvent, type ReactNode } from 'react'
 import styles from './app.module.css'
 import { IconHome, IconReport, IconSchedule, IconSet } from './icons'
 import type { ActivityId, UtSession } from './data/types'
@@ -37,6 +37,13 @@ interface ActivityScreenProps {
   onFinish: () => void
   /** 헤더의 홈. 그 버튼이 있는 활동 화면이 부른다 */
   onHome?: () => void
+  /**
+   * 카톡 공지 전송 완료 화면 다음, 측정으로 넘어가기 전에 부른다.
+   * 전환 패널이 끝나면 runMeterReady가 true가 된다.
+   */
+  onRunHandoff?: () => void
+  /** 공지→측정 전환 패널이 끝난 뒤에만 true. 측정 화면을 열 때 쓴다 */
+  runMeterReady?: boolean
 }
 
 const tabs: { id: TabId; label: string; Icon: typeof IconHome }[] = [
@@ -58,7 +65,28 @@ export default function App() {
   useUtSession()
   const [screen, setScreen] = useState<Screen>({ name: 'home' })
   const [switchTargetId, setSwitchTargetId] = useState<ActivityId | null>(null)
+  const [runHandoff, setRunHandoff] = useState(false)
+  const [runMeterReady, setRunMeterReady] = useState(false)
+  const runMeterReadyRef = useRef(false)
   const facilitatorStandalone = useFacilitatorStandalone()
+
+  function clearRunHandoff() {
+    runMeterReadyRef.current = false
+    setRunHandoff(false)
+    setRunMeterReady(false)
+  }
+
+  function requestRunHandoff() {
+    if (runMeterReadyRef.current) return
+    setRunHandoff(true)
+  }
+
+  function finishRunHandoff() {
+    // 같은 러닝 안의 측정 시작이다. 역할을 바꾸거나 일정을 완료로 만들지 않는다.
+    runMeterReadyRef.current = true
+    setRunHandoff(false)
+    setRunMeterReady(true)
+  }
 
   // 이 기기의 저장은 부르지 않는다. 다른 탭·다른 기기가 세션을 바꿨을 때만 화면을 옮긴다.
   useEffect(() => {
@@ -70,6 +98,7 @@ export default function App() {
       const startedAtChanged = prevStarted !== undefined && nextStarted !== prevStarted
       if (!briefingChanged && !activityChanged && !startedAtChanged) return
       setSwitchTargetId(null)
+      clearRunHandoff()
       if (!next.isBriefingConfirmed || briefingChanged || startedAtChanged) {
         setScreen({ name: 'home' })
         return
@@ -82,11 +111,13 @@ export default function App() {
 
   function handleFacilitatorActivity(nextActivityId: ActivityId | null) {
     setSwitchTargetId(null)
+    clearRunHandoff()
     setScreen(nextActivityId ? { name: 'activity', activityId: nextActivityId } : { name: 'schedule' })
   }
 
   function handleFacilitatorReset() {
     setSwitchTargetId(null)
+    clearRunHandoff()
     setScreen({ name: 'home' })
   }
 
@@ -105,6 +136,7 @@ export default function App() {
         <BriefingPage
           onConfirm={() => {
             setSwitchTargetId(null)
+            clearRunHandoff()
             setScreen({ name: 'home' })
           }}
         />
@@ -115,7 +147,7 @@ export default function App() {
 
   function goHome() {
     // 전환 패널이 떠 있으면 그 선택이 우선이다. 홈으로 보내며 패널을 닫지 않는다.
-    if (switchTargetId) return
+    if (switchTargetId || runHandoff) return
     setScreen({ name: 'home' })
   }
 
@@ -130,6 +162,7 @@ export default function App() {
   function openActivity(activityId: ActivityId) {
     // 브리핑 확정(confirmBriefing)이 첫 활동 진입을 이미 처리했으므로 같은 활동이면 다시 시작하지 않는다.
     if (getCurrentActivityId() !== activityId) enterActivity(activityId)
+    clearRunHandoff()
     setScreen({ name: 'activity', activityId })
   }
 
@@ -148,6 +181,7 @@ export default function App() {
   function switchToNextActivity() {
     if (!switchTargetId || screen.name !== 'activity') return
     enterActivity(switchTargetId)
+    clearRunHandoff()
     setScreen({ name: 'activity', activityId: switchTargetId })
     setSwitchTargetId(null)
   }
@@ -174,6 +208,8 @@ export default function App() {
               activityId={screen.activityId}
               onFinish={() => finishActivity(screen.activityId)}
               onHome={goHome}
+              onRunHandoff={screen.activityId === 'activity-run' ? requestRunHandoff : undefined}
+              runMeterReady={screen.activityId === 'activity-run' && runMeterReady}
             />
           </div>
         )}
@@ -205,6 +241,14 @@ export default function App() {
           nextActivityId={switchTargetId}
           onSwitch={switchToNextActivity}
           onKeep={() => setSwitchTargetId(null)}
+        />
+      )}
+      {runHandoff && !switchTargetId && (
+        <RoleSwitchPanel
+          nextActivityId="activity-run"
+          toActivityName="러닝 측정"
+          onSwitch={finishRunHandoff}
+          onKeep={finishRunHandoff}
         />
       )}
       <FacilitatorPanel onActivityChange={handleFacilitatorActivity} onReset={handleFacilitatorReset} />
