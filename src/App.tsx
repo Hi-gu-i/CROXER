@@ -160,7 +160,15 @@ export default function App() {
 
   return (
     <Frame>
-      <main className={showTabBar ? `${styles.screen} ${styles.screenWithTabBar}` : styles.screen}>
+      <main
+        className={
+          screen.name === 'activity'
+            ? styles.activityHost
+            : showTabBar
+              ? `${styles.screen} ${styles.screenWithTabBar}`
+              : styles.screen
+        }
+      >
         {screen.name === 'home' && (
           <HomeScreen
             onOpenActivity={openActivity}
