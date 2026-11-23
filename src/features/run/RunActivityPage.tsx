@@ -12,7 +12,6 @@ import {
   InquiryCard,
   RunMeter,
   SectionIntro,
-  StatusBar,
   StatusResult,
   type RunMeterPhase,
 } from "../../components";
@@ -507,7 +506,6 @@ export function RunActivityPage({
         </div>
       ) : null}
 
-      <StatusBar />
       <ActivityHeader
         roleLabel="러닝 크루장"
         roleTone="mint"
