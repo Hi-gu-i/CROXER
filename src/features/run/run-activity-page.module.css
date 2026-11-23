@@ -17,12 +17,20 @@
 }
 
 /* 시안 `01 · 러닝` · 전체 bg-subtle (메트릭 흰 패널은 RunMeter)
-   RunMeter min-height(732)가 셸보다 클 때 스크롤로 간격 압축을 막음 */
+   페이지는 셸 높이에 고정. 스크롤은 .meterScroll만 — 헤더·토스트는 화면에 남음 */
 .pageRunning {
-  flex: 1 0 auto;
-  min-height: 100%;
-  overflow-y: auto;
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: hidden;
   background: var(--color-bg-subtle);
+}
+
+/* RunMeter min-height(732)가 셸보다 클 때만 이 영역이 스크롤 */
+.meterScroll {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-x: hidden;
+  overflow-y: auto;
 }
 
 /* 시안 `08 · 러닝·AI 업무 요청` · 촬영 채팅과 동일 배경 에셋 */
@@ -344,7 +352,8 @@
   flex-shrink: 0;
 }
 
-/* 시안 `러닝 · 일시정지 및 작업 완료` · 토스트 y=752 → bottom 56 */
+/* 시안 `러닝 · 일시정지 및 작업 완료` · 토스트 y=752 → bottom 56
+   .page(보이는 셸) 기준 absolute — meterScroll과 함께 밀리지 않음 */
 .runJobToast {
   position: absolute;
   left: 50%;
