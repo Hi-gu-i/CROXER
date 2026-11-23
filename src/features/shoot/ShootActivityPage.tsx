@@ -211,6 +211,8 @@ export function ShootActivityPage({
     initialResourceId ?? null,
   );
   const [alertOpen, setAlertOpen] = useState(false);
+  /** 타이머 후 IconAi alert 모션 · 탭하면 알림 펼침 */
+  const [alertArmed, setAlertArmed] = useState(false);
   const [draft, setDraft] = useState("");
   const [showFallback, setShowFallback] = useState(false);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
@@ -256,11 +258,10 @@ export function ShootActivityPage({
     if (isAlertFired(ALERT_ID) || timerRef.current !== null) return;
     timerRef.current = window.setTimeout(() => {
       fireAlert(ALERT_ID);
-      markAlertRead(ALERT_ID);
       timerRef.current = null;
-      // 자료 상세에 있을 때만 펼침 · 채팅 중 재등장 방지
+      // 자료 상세에 있을 때만 모션 arm · 탭 전까지 펼치지 않음
       if (stepRef.current === "resource") {
-        setAlertOpen(true);
+        setAlertArmed(true);
       }
     }, RAIN_ALERT_DELAY_MS);
   }
@@ -270,7 +271,17 @@ export function ShootActivityPage({
     setStep("resource");
     setAlertOpen(false);
     // AI 결과 확인 경로에서는 비 알림을 걸지 않는다
-    if (id !== EXTRA_ID) scheduleRainAlert();
+    if (id === EXTRA_ID) {
+      setAlertArmed(false);
+      return;
+    }
+    // 이미 떴지만 미읽음이면 모션 즉시 재개 (닫았다 다시 연 경우)
+    if (isAlertFired(ALERT_ID) && getAlert(ALERT_ID).status === "unread") {
+      setAlertArmed(true);
+      return;
+    }
+    setAlertArmed(false);
+    scheduleRainAlert();
   }
 
   function backToMaterials() {
@@ -278,24 +289,29 @@ export function ShootActivityPage({
     setStep("materials");
     setResourceId(null);
     setAlertOpen(false);
+    setAlertArmed(false);
   }
 
-  /** Header IconAi — 비 알림 펼침 · 예약 타이머는 취소 */
+  /** Header IconAi — 아직 fire 전·모션 대기 중일 때만 막고, 한 번 뜬 뒤엔 다시 펼침 */
   function openRainAlert() {
+    if (step === "resource" && !alertArmed && !isAlertFired(ALERT_ID)) return;
     clearRainTimer();
     fireAlert(ALERT_ID);
     markAlertRead(ALERT_ID);
+    setAlertArmed(false);
     setAlertOpen(true);
   }
 
   function closeAlert() {
     clearRainTimer();
+    setAlertArmed(false);
     setAlertOpen(false);
   }
 
   function startPlanChat() {
     clearRainTimer();
     markAlertRead(ALERT_ID);
+    setAlertArmed(false);
     setAlertOpen(false);
     setShowFallback(false);
     setMessages([
@@ -588,6 +604,9 @@ export function ShootActivityPage({
         roleTone={isDetail ? "neutral" : "violet"}
         showRoleIcon={!isDetail}
         showAi={!isChatLike && !isMap}
+        aiAlert={
+          step === "resource" && alertArmed && !alertOpen
+        }
         trailing={isDetail ? "close" : "home"}
         onAiClick={openRainAlert}
         onHomeClick={onHome}

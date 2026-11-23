@@ -40,6 +40,9 @@ import courseMarker from "./assets/course-marker.svg?url";
 import coursePreviewA from "./assets/course-preview-a.png";
 import styles from "./run-activity-page.module.css";
 
+/** IconAi alert 모션 시작 전 여유 (촬영 비 알림과 동일) */
+const ICON_AI_ALERT_DELAY_MS = 10_000;
+
 /** A 루트 · 원본 viewBox 좌표 + map(361×256) 배치 */
 const ROUTE_A = {
   path: "M86.0478 176.445L170.284 77.9227C171.082 76.9899 171.407 75.7424 171.167 74.5389L170.814 72.775C170.641 71.9126 170.189 71.131 169.528 70.5513L129.058 35.0837C127.396 33.6268 124.867 33.7944 123.412 35.4579L107.693 53.4223C106.234 55.0898 103.697 55.2536 102.036 53.7877L88.7391 42.0551C88.2842 41.6537 87.9266 41.1542 87.6932 40.5942L83.4024 30.2961C83.1691 29.7362 82.8114 29.2366 82.3565 28.8352L52.0574 2.10071C50.3969 0.635563 47.862 0.798349 46.4026 2.46385L7.30134 47.0852C6.80884 47.6473 6.48363 48.336 6.36257 49.0734L1.15284 80.8054C1.08327 81.2291 1.08239 81.6613 1.15024 82.0854L2.93657 93.25C3.01016 93.7099 3.16351 94.1534 3.38971 94.5606L7.8514 102.592C7.982 102.827 8.13598 103.048 8.311 103.252L13.8453 109.709C13.9801 109.866 14.1269 110.013 14.2844 110.147L36.4361 129.069C37.4442 129.93 37.9601 131.234 37.8137 132.552L37.7792 132.863C37.6343 134.167 38.1381 135.459 39.1276 136.321L84.0478 175.445",
@@ -237,6 +240,10 @@ export function RunActivityPage({
   const [referenceJobAssigned, setReferenceJobAssigned] = useState(false);
   const [showFallback, setShowFallback] = useState(false);
   const [assessmentOpen, setAssessmentOpen] = useState(false);
+  /** 10초 후 IconAi alert 모션 · 탭하면 평가 알림 펼침 */
+  const [alertArmed, setAlertArmed] = useState(false);
+  /** 모션이 한 번이라도 켜졌으면 닫은 뒤에도 바로 다시 열 수 있음 (effect 재실행 방지용 ref) */
+  const alertEverArmedRef = useRef(false);
   /** 화면 선택 상태. 공지 발송 후에도 시안처럼 선택이 보이게 유지 */
   const [pickedCourseId, setPickedCourseId] = useState<string | null>(null);
   const [meterPhase, setMeterPhase] = useState<RunMeterPhase>("idle");
@@ -253,6 +260,26 @@ export function RunActivityPage({
   useEffect(() => {
     fireInquiry(INQUIRY_ID);
   }, []);
+
+  /** 문의 화면 첫 진입 후 10초 → IconAi alert 모션 (한 번 뜬 뒤에는 타이머 재시작 안 함) */
+  useEffect(() => {
+    if (step !== "inquiry") {
+      setAlertArmed(false);
+      return;
+    }
+    if (assessmentOpen) {
+      setAlertArmed(false);
+      return;
+    }
+    // 이미 모션이 한 번 떴으면 유지 · armed를 끄지 않음 (닫은 뒤 재오픈용)
+    if (alertEverArmedRef.current) return;
+    setAlertArmed(false);
+    const id = window.setTimeout(() => {
+      alertEverArmedRef.current = true;
+      setAlertArmed(true);
+    }, ICON_AI_ALERT_DELAY_MS);
+    return () => window.clearTimeout(id);
+  }, [step, assessmentOpen]);
 
   useEffect(() => {
     if (step !== "sent") return;
@@ -310,14 +337,17 @@ export function RunActivityPage({
     selectedCourseId === "course-run-paved" ? ROUTE_B : ROUTE_A;
 
   function openAssessment() {
+    setAlertArmed(false);
     setAssessmentOpen(true);
   }
 
   function closeAssessment() {
+    setAlertArmed(false);
     setAssessmentOpen(false);
   }
 
   function goCourses() {
+    setAlertArmed(false);
     setAssessmentOpen(false);
     // 시안: A 코스 기본 선택
     const nextId = getSelectedCourseId() ?? COURSE_ORDER[0];
@@ -392,6 +422,8 @@ export function RunActivityPage({
       openChat();
       return;
     }
+    // 문의: 첫 모션 전에는 막고, 한 번 뜬 뒤에는 바로 다시 펼침
+    if (step === "inquiry" && !alertArmed && !alertEverArmedRef.current) return;
     openAssessment();
   }
 
@@ -511,6 +543,7 @@ export function RunActivityPage({
         roleLabel="러닝 크루장"
         roleTone="mint"
         showAi={step !== "chat" && step !== "job"}
+        aiAlert={step === "inquiry" && alertArmed && !assessmentOpen}
         trailing={step === "chat" || step === "job" ? "close" : "home"}
         onAiClick={
           step === "sent" || step === "chat" || step === "job"

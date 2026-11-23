@@ -1,0 +1,77 @@
+/* Figma `iconai alert` · 2s loop · glow rotate -180→0 ease-out */
+
+.root {
+  position: relative;
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  padding: 0;
+  border: none;
+  border-radius: var(--radius-control);
+  background: var(--color-opacity-white-600);
+  box-shadow: var(--shadow-glass);
+  backdrop-filter: var(--effect-glass-background-backdrop);
+  -webkit-backdrop-filter: var(--effect-glass-background-backdrop);
+  color: var(--color-icon-brand);
+  cursor: pointer;
+  box-sizing: border-box;
+  overflow: visible;
+}
+
+.active {
+  /* glow가 버튼 밖으로 퍼지도록 */
+  z-index: 1;
+}
+
+.glow {
+  position: absolute;
+  inset: -25%;
+  pointer-events: none;
+  transform-origin: 50% 50%;
+  animation: icon-ai-alert-glow 2s ease-out infinite;
+}
+
+.glowImg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  pointer-events: none;
+  user-select: none;
+}
+
+.spin {
+  position: relative;
+  z-index: 1;
+  display: block;
+  width: 22px;
+  height: 22px;
+  object-fit: contain;
+  pointer-events: none;
+  user-select: none;
+}
+
+.icon {
+  position: relative;
+  z-index: 1;
+  display: block;
+  flex-shrink: 0;
+}
+
+@keyframes icon-ai-alert-glow {
+  from {
+    transform: rotate(-180deg);
+  }
+  to {
+    transform: rotate(0deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .glow {
+    animation: none;
+  }
+}

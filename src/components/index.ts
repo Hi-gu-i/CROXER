@@ -1,5 +1,6 @@
 export { ActivityAiAlert } from "./ActivityAiAlert";
 export { ActivityHeader } from "./ActivityHeader";
+export { IconAiAlert } from "./IconAiAlert";
 export { AiAlertCapsule } from "./AiAlertCapsule";
 export { StatusBar } from "./StatusBar";
 export { AiJobToast } from "./AiJobToast";

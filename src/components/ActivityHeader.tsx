@@ -1,5 +1,6 @@
 import type { ButtonHTMLAttributes, ReactNode } from "react";
-import { IconAi, IconClose, IconHome } from "../icons";
+import { IconClose, IconHome } from "../icons";
+import { IconAiAlert } from "./IconAiAlert";
 import { ToggleCategory, type ToggleCategoryTone } from "./ToggleCategory";
 import styles from "./ActivityHeader.module.css";
 
@@ -11,6 +12,11 @@ type ActivityHeaderProps = {
   showRoleIcon?: boolean;
   /** false면 왼쪽 IconAi 숨김. 장소 제안 채팅(`04`·`05`)용 */
   showAi?: boolean;
+  /**
+   * true면 IconAi alert 모션(펼치기 전 루프).
+   * 알림을 연 뒤에는 false.
+   */
+  aiAlert?: boolean;
   /** home — 목록/홈 · close — 자료 상세 닫기(`02 · 강변 촬영`) */
   trailing?: "home" | "close";
   onRoleClick?: ButtonHTMLAttributes<HTMLButtonElement>["onClick"];
@@ -28,6 +34,7 @@ export function ActivityHeader({
   roleTone = "violet",
   showRoleIcon = true,
   showAi = true,
+  aiAlert = false,
   trailing = "home",
   onRoleClick,
   onAiClick,
@@ -38,14 +45,11 @@ export function ActivityHeader({
     <header className={styles.root}>
       <div className={styles.side}>
         {showAi ? (
-          <button
-            type="button"
-            className={styles.ai}
-            aria-label="AI"
+          <IconAiAlert
+            active={aiAlert}
+            aria-label={aiAlert ? "AI 알림" : "AI"}
             onClick={onAiClick}
-          >
-            <IconAi className={styles.aiIcon} size={22} />
-          </button>
+          />
         ) : null}
       </div>
 
