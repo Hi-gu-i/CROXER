@@ -230,10 +230,7 @@ export default function App() {
         }
       >
         {screen.name === 'home' && (
-          <HomeScreen
-            onOpenActivity={openActivity}
-            onOpenSchedule={() => setScreen({ name: 'schedule' })}
-          />
+          <HomeScreen onOpenActivity={openActivity} />
         )}
         {screen.name === 'activity' && ActivityScreen && (
           <div className={styles.activityScreen} onClickCapture={handleActivityHomeCapture}>

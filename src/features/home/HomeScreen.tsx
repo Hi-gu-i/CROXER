@@ -18,8 +18,10 @@ import styles from './home-screen.module.css'
 
 interface HomeScreenProps {
   onOpenActivity: (activityId: ActivityId) => void
-  onOpenSchedule: () => void
 }
+
+/** 진입 활동을 모두 마친 뒤 홈 카드에만 보여주는 고정 다음 활동. 화면은 없다. */
+const lockedNextActivityId = 'activity-gpt-renewal' satisfies ActivityId
 
 const roleTone: Record<RoleId, TagTone> = {
   'role-leader': 'yellow',
@@ -29,17 +31,19 @@ const roleTone: Record<RoleId, TagTone> = {
 
 type HomeTab = 'waiting' | 'running'
 
-export default function HomeScreen({ onOpenActivity, onOpenSchedule }: HomeScreenProps) {
+export default function HomeScreen({ onOpenActivity }: HomeScreenProps) {
   useUtSession()
-  const activityId = getNextActivityId()
+  const nextActivityId = getNextActivityId()
+  const featuredId = nextActivityId ?? lockedNextActivityId
+  const featuredLocked = nextActivityId === null
   const [expanded, setExpanded] = useState(false)
   const [homeTab, setHomeTab] = useState<HomeTab>('waiting')
 
   useEffect(() => {
-    if (activityId) markActivityShown(activityId)
-  }, [activityId])
+    if (nextActivityId) markActivityShown(nextActivityId)
+  }, [nextActivityId])
 
-  const items = getBriefingItems().filter((item) => item.activity.id !== activityId)
+  const items = getBriefingItems().filter((item) => item.activity.id !== featuredId)
   const waiting = items.filter((item) => item.schedule.status === 'waiting')
   const running = items.filter((item) => item.schedule.status === 'in_progress')
   const listed = homeTab === 'waiting' ? waiting : running
@@ -63,16 +67,11 @@ export default function HomeScreen({ onOpenActivity, onOpenSchedule }: HomeScree
         </span>
       </header>
 
-      {activityId ? (
-        <FeaturedActivity activityId={activityId} onOpen={() => onOpenActivity(activityId)} />
-      ) : (
-        <div className={styles.finished}>
-          <p className={styles.finishedText}>오늘 정한 활동을 모두 마쳤어요</p>
-          <button type="button" className={styles.scheduleButton} onClick={onOpenSchedule}>
-            스케줄 보기
-          </button>
-        </div>
-      )}
+      <FeaturedActivity
+        activityId={featuredId}
+        locked={featuredLocked}
+        onOpen={() => onOpenActivity(featuredId)}
+      />
 
       <section className={styles.section} aria-label="다른 활동">
         <div className={styles.tabs} role="tablist">
@@ -121,15 +120,24 @@ export default function HomeScreen({ onOpenActivity, onOpenSchedule }: HomeScree
   )
 }
 
-function FeaturedActivity({ activityId, onOpen }: { activityId: ActivityId; onOpen: () => void }) {
+function FeaturedActivity({
+  activityId,
+  onOpen,
+  locked = false,
+}: {
+  activityId: ActivityId
+  onOpen: () => void
+  locked?: boolean
+}) {
   const activity = getActivity(activityId)
   const role = getRole(activity.roleId)
   const schedule = getScheduleByActivity(activityId)
   const resources = getResources(activityId).slice(0, 3)
   const resourceTotal = getResources(activityId).length
 
-  return (
-    <button type="button" className={styles.card} onClick={onOpen}>
+  const cardClass = locked ? `${styles.card} ${styles.cardLocked}` : styles.card
+  const body = (
+    <>
       <span className={styles.caption}>
         <Tag tone={roleTone[role.id]}>{role.label}</Tag>
         <IconVerti size={16} className={styles.divider} />
@@ -160,6 +168,13 @@ function FeaturedActivity({ activityId, onOpen }: { activityId: ActivityId; onOp
           </span>
         </span>
       )}
+    </>
+  )
+
+  if (locked) return <div className={cardClass}>{body}</div>
+  return (
+    <button type="button" className={cardClass} onClick={onOpen}>
+      {body}
     </button>
   )
 }
