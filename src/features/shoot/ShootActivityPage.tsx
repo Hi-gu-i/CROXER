@@ -270,11 +270,7 @@ export function ShootActivityPage({
     setResourceId(id);
     setStep("resource");
     setAlertOpen(false);
-    // AI 결과 확인 경로에서는 비 알림을 걸지 않는다
-    if (id === EXTRA_ID) {
-      setAlertArmed(false);
-      return;
-    }
+    // 노을진 풍경(AI 결과) 포함, 어느 자료 세트를 열어도 상세 진입 5초 후 비 알림
     // 이미 떴지만 미읽음이면 모션 즉시 재개 (닫았다 다시 연 경우)
     if (isAlertFired(ALERT_ID) && getAlert(ALERT_ID).status === "unread") {
       setAlertArmed(true);
