@@ -55,15 +55,6 @@
   box-sizing: border-box;
 }
 
-.spin {
-  display: block;
-  width: 22px;
-  height: 22px;
-  object-fit: contain;
-  pointer-events: none;
-  user-select: none;
-}
-
 .icon {
   display: block;
   flex-shrink: 0;
