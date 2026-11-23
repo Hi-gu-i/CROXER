@@ -852,22 +852,25 @@ export function RunActivityPage({
         </div>
       ) : null}
 
-      {/* 시안 `01 · 러닝` · 시작/일시정지 측정 */}
+      {/* 시안 `01 · 러닝` · 시작/일시정지 측정
+          헤더·토스트는 셸에 고정, RunMeter만 meterScroll에서 스크롤 */}
       {step === "running" ? (
         <>
-          <RunMeter
-            phase={meterPhase}
-            time={runMetrics.time}
-            distance={runMetrics.distance}
-            pace={runMetrics.pace}
-            avgPace={runMetrics.avgPace}
-            bpm={runMetrics.bpm}
-            progress={runMetrics.progress}
-            onStart={handleMeterStart}
-            onPause={handleMeterPause}
-            onStop={handleMeterStop}
-            onReset={handleMeterReset}
-          />
+          <div className={styles.meterScroll}>
+            <RunMeter
+              phase={meterPhase}
+              time={runMetrics.time}
+              distance={runMetrics.distance}
+              pace={runMetrics.pace}
+              avgPace={runMetrics.avgPace}
+              bpm={runMetrics.bpm}
+              progress={runMetrics.progress}
+              onStart={handleMeterStart}
+              onPause={handleMeterPause}
+              onStop={handleMeterStop}
+              onReset={handleMeterReset}
+            />
+          </div>
           {/*
             채팅 경로: 맡기기 후 X로 나와도 ack 유지 → 5초 뒤 완료 토스트
             비채팅 경로(#72): 정지(■) 후 확인 토스트
