@@ -33,6 +33,7 @@ import {
 } from "../../data/utStore";
 import { useUtSession } from "../../data/useUtSession";
 import { IconAi } from "../../icons";
+import { ResImgSend } from "../../res-img";
 import chatBgGradient from "../../assets/chat-bg-gradient.png";
 import courseExpandIcon from "./assets/course-expand-icon.svg?url";
 import courseMapBase from "./assets/course-map-base.png";
@@ -757,6 +758,8 @@ export function RunActivityPage({
         <div className={styles.sentBody}>
           <StatusResult
             className={styles.sentResult}
+            motion="sendFly"
+            icon={<ResImgSend size={64} />}
             title="변경된 소식을 전송했어요"
             description={
               "선택한 코스와 집결 안내, 경로 지도를\n크로싱 러닝크루 단톡방에 함께 보냈어요"

@@ -64,6 +64,7 @@ export function ShootScheduleDone({ onHome, onFinish }: ShootScheduleDoneProps) 
       <div className={styles.body}>
         <StatusResult
           className={styles.result}
+          motion="calendarFlip"
           icon={<ResImgCalendar size={64} />}
           title="일정 교체가 완료됐어요."
           description={`날씨와 마감 일정을 반영하여\n${tomorrowLabel} 교체가능한 일정과 바꾸었어요.`}

@@ -12,8 +12,8 @@
 }
 
 /*
- * 시안: Status+Header(120) 아래 달력 y=292 → padding-top ≈ 172.
- * 아이콘·카피만 중앙 정렬.
+ * `12 · 일정 수정 완료` · Header(bottom 120) → 달력 y=292 → padding-top 172.
+ * 가로만 중앙 · 세로는 대표 시안 좌표 (전체 세로 중앙이면 캡션이 너무 내려감).
  */
 .body {
   display: flex;

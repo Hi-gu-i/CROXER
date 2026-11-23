@@ -11,41 +11,121 @@
   box-sizing: border-box;
 }
 
+/*
+ * 아이콘 슬롯은 모션과 무관하게 86×86 고정.
+ * 모션 레이어는 absolute라 sendFly/GIF 크기가 타이틀·캡션 간격을 밀지 않음.
+ */
 .icon {
-  display: flex;
-  flex-shrink: 0;
-  align-items: center;
-  justify-content: center;
+  position: relative;
+  flex: 0 0 86px;
   width: 86px;
   height: 86px;
+  min-height: 86px;
+  max-height: 86px;
+  overflow: visible;
+}
+
+.iconMotion {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 64px;
+  height: 56px;
+  transform: translate(-50%, -50%);
+  transform-origin: 50% 50%;
+}
+
+/* Figma `386:17912` · 달력 앞장 펄럭 2s loop · ResImg 슬롯(64×56)에 맞춤 */
+.calendarFlip {
+  display: block;
+  width: 64px;
+  height: 56px;
+  object-fit: contain;
+  pointer-events: none;
+}
+
+.calendarStill {
+  display: none;
+}
+
+/* Figma `304:17033` · 전송 그룹 2s loop · x/y/opacity */
+.motionSend .iconMotion {
+  animation: status-send-fly 2s linear infinite;
+  will-change: transform, opacity;
+}
+
+@keyframes status-send-fly {
+  /* Figma 304:17035 · centering translate(-50%,-50%) 유지한 채 오프셋 */
+  0%,
+  12.5% {
+    opacity: 1;
+    transform: translate(-50%, -50%) translate(0, 0);
+  }
+  21.5% {
+    opacity: 1;
+    transform: translate(-50%, -50%) translate(-18px, 18px);
+  }
+  27.5% {
+    opacity: 1;
+    transform: translate(-50%, -50%) translate(5px, -5px);
+  }
+  50% {
+    opacity: 0;
+    transform: translate(-50%, -50%) translate(90px, -90px);
+  }
+  52.5%,
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -50%) translate(100px, -100px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .calendarFlip {
+    display: none;
+  }
+
+  .motionCalendar .calendarStill {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .motionSend .iconMotion {
+    animation: none;
+    opacity: 1;
+    transform: translate(-50%, -50%);
+  }
 }
 
 .copy {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: var(--gap-150);
+  gap: 0;
   width: 100%;
 }
 
-/* 원본 20 Medium / 26 · center */
+/* ios/Body/strong 크기·웨이트 유지 · 줄간격만 타이트하게 (첨부 시안 옵티컬) */
 .title {
   margin: 0;
   width: 100%;
-  font-family: var(--font-family-sans);
-  font-weight: var(--font-weight-medium);
-  font-size: var(--font-size-500);
-  line-height: var(--line-height-350);
-  letter-spacing: var(--letter-spacing-200);
+  font: var(--type-ios-body-strong-font);
+  letter-spacing: var(--type-ios-body-strong-tracking);
+  line-height: 22px;
   color: var(--color-gray-900);
 }
 
-/* 16 Regular / 24 · gray-700 · center */
+/* ios/Body/small 크기·웨이트 유지 · 타이틀과 8px */
 .description {
-  margin: 0;
+  margin: 8px 0 0;
   width: 100%;
-  font: var(--type-ios-body-medium-font);
-  letter-spacing: var(--type-ios-body-medium-tracking);
+  font: var(--type-ios-body-small-font);
+  letter-spacing: var(--type-ios-body-small-tracking);
+  line-height: 20px;
   color: var(--color-gray-700);
   white-space: pre-wrap;
 }

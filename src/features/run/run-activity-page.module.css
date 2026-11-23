@@ -63,8 +63,8 @@
 }
 
 /*
- * 시안 `06` · Status+Header(120) 아래 전송 그룹 y=305 → padding-top 185.
- * StatusResult(ResImgSend) · 세로 중앙 정렬 대신 시안 좌표에 맞춤.
+ * `06 · 변경된 코스 전송` · Header(bottom 120) → 전송 그룹 y=305 → padding-top 185.
+ * 가로만 중앙 · 세로는 대표 시안 좌표 (전체 세로 중앙이면 캡션이 너무 내려감).
  */
 .sentBody {
   display: flex;
@@ -75,6 +75,7 @@
   min-height: 0;
   padding: 185px var(--padding-ios-x) var(--padding-section);
   box-sizing: border-box;
+  overflow: visible;
 }
 
 .sentResult {
