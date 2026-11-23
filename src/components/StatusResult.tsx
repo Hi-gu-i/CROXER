@@ -47,7 +47,7 @@ export function StatusResult({
           src={calendarFlipSrc}
           alt=""
           width={64}
-          height={61}
+          height={56}
           draggable={false}
         />
         <span className={styles.calendarStill}>{icon}</span>
