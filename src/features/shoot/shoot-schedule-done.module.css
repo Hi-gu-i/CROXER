@@ -12,16 +12,17 @@
 }
 
 /*
- * `12 · 일정 수정 완료` · Header 아래 남은 영역 정중앙에 StatusResult.
+ * `12 · 일정 수정 완료` · Header(bottom 120) → 달력 y=292 → padding-top 172.
+ * 가로만 중앙 · 세로는 대표 시안 좌표 (전체 세로 중앙이면 캡션이 너무 내려감).
  */
 .body {
   display: flex;
   flex: 1;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
   min-height: 0;
-  padding: var(--padding-section) var(--padding-ios-x);
+  padding: 172px var(--padding-ios-x) var(--padding-section);
   box-sizing: border-box;
 }
 

@@ -63,16 +63,17 @@
 }
 
 /*
- * `06 · 변경된 코스 전송` · Header 아래 남은 영역 정중앙에 StatusResult.
+ * `06 · 변경된 코스 전송` · Header(bottom 120) → 전송 그룹 y=305 → padding-top 185.
+ * 가로만 중앙 · 세로는 대표 시안 좌표 (전체 세로 중앙이면 캡션이 너무 내려감).
  */
 .sentBody {
   display: flex;
   flex: 1;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
   min-height: 0;
-  padding: var(--padding-section) var(--padding-ios-x);
+  padding: 185px var(--padding-ios-x) var(--padding-section);
   box-sizing: border-box;
 }
 
