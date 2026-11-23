@@ -8,9 +8,8 @@
   --rtp-header-top: 48px;
   --rtp-header-height: 76px;
   --rtp-header-pad-top: 24px;
-  --rtp-header-pad-right: 16px;
+  --rtp-header-pad-x: 0px;
   --rtp-header-pad-bottom: 24px;
-  --rtp-header-pad-left: 12px;
   --rtp-header-gap: 10px;
   --rtp-countdown-top: 124px;
   --rtp-labels-top: 170px;
@@ -101,31 +100,25 @@
   z-index: 2;
   display: flex;
   align-items: center;
+  justify-content: center;
   box-sizing: border-box;
   width: 100%;
   height: var(--rtp-header-height);
-  padding: var(--rtp-header-pad-top) var(--rtp-header-pad-right)
-    var(--rtp-header-pad-bottom) var(--rtp-header-pad-left);
+  padding: var(--rtp-header-pad-top) var(--rtp-header-pad-x)
+    var(--rtp-header-pad-bottom);
   gap: var(--rtp-header-gap);
-}
-
-.before .header {
-  justify-content: flex-start;
-}
-
-.countdown .header {
-  justify-content: center;
-  padding-left: 0;
 }
 
 .countdown {
   position: absolute;
   top: var(--rtp-countdown-top);
-  left: 115px;
+  left: 50%;
   z-index: 2;
   display: flex;
   align-items: baseline;
   margin: 0;
+  transform: translateX(-50%);
+  white-space: nowrap;
   font: var(--font-weight-semibold) var(--font-size-200) / var(--line-height-250)
     var(--font-family-sans);
   letter-spacing: var(--letter-spacing-100);

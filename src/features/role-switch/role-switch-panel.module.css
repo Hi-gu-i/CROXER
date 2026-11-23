@@ -27,12 +27,8 @@
 }
 
 /* 전환 패널은 민선 컴포넌트를 그대로 쓴다.
-   역할 칩만 가운데. 활동 이름 가운데·말줄임은 RoleTransitionPanel lanes가 담당.
+   역할 토글·카운트다운·활동 이름 가운데는 RoleTransitionPanel이 담당.
    아치 선은 showTrack으로 민선 부품에 들어 있어 그대로 보인다. */
-.stage section > header {
-  justify-content: center !important;
-  padding-left: 0 !important;
-}
 
 @keyframes handoff-drop {
   from {
